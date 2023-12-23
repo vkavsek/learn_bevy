@@ -67,9 +67,6 @@ pub enum EnemyType {
 }
 
 #[derive(Component)]
-pub struct Xp(usize);
-
-#[derive(Component)]
 pub struct Health {
     pub current: u32,
     pub max: u32,
@@ -79,3 +76,6 @@ impl Health {
         Health { current, max }
     }
 }
+
+#[derive(Component)]
+pub struct Xp(usize);
