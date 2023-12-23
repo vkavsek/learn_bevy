@@ -2,11 +2,8 @@ use crate::prelude::*;
 
 // NOTE:
 //        —————>  SYSTEMS
-pub fn level_up(mut _query: Query<(&mut Xp, &mut Health)>) {
-    todo!()
-}
-
-pub fn spawn_player(mut cmds: Commands, asset_server: Res<AssetServer>) {
+pub fn setup(mut cmds: Commands, asset_server: Res<AssetServer>) {
+    cmds.spawn(Camera2dBundle::default());
     cmds.spawn(PlayerBundle {
         player: Player::init("TODO"),
         sprite_bundle: SpriteBundle {
@@ -16,7 +13,10 @@ pub fn spawn_player(mut cmds: Commands, asset_server: Res<AssetServer>) {
         },
         ..Default::default()
     });
-    println!("Spawned a player");
+}
+
+pub fn level_up(mut _query: Query<(&mut Xp, &mut Health)>) {
+    todo!()
 }
 
 pub fn exit_game(mut _cmds: Commands) {
