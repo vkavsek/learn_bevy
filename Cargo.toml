@@ -8,6 +8,7 @@ edition = "2021"
 # TODO: Remove 'dynamic_linking' before final release 
 [dependencies]
 bevy = { version = "0.12.1", features = ["dynamic_linking"] }
+rand = "0.8.5"
 
 # Enable a small amount of optimization in debug mode
 [profile.dev]

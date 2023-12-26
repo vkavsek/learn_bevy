@@ -13,6 +13,7 @@ pub struct PlayerBundle {
     pub health: Health,
     pub xp: Xp,
     pub sprite_bundle: SpriteBundle,
+    pub movement: Movement,
 }
 impl Default for PlayerBundle {
     fn default() -> Self {
@@ -21,6 +22,7 @@ impl Default for PlayerBundle {
             health: Health::init(100, 100),
             xp: Xp(0),
             sprite_bundle: Default::default(),
+            movement: Movement { vel: Vec2::ZERO },
         }
     }
 }
@@ -28,17 +30,19 @@ impl Default for PlayerBundle {
 #[derive(Bundle)]
 pub struct EnemyBundle {
     pub enemy: Enemy,
+    pub enemy_type: EnemyType,
     pub health: Health,
     pub sprite_bundle: SpriteBundle,
+    pub movement: Movement,
 }
 impl Default for EnemyBundle {
     fn default() -> Self {
         Self {
-            enemy: Enemy {
-                enemy_type: EnemyType::default(),
-            },
+            enemy: Enemy,
+            enemy_type: EnemyType::default(),
             health: Health::init(50, 50),
             sprite_bundle: Default::default(),
+            movement: Movement { vel: Vec2::ZERO },
         }
     }
 }
@@ -56,23 +60,26 @@ impl Player {
 }
 
 #[derive(Component, Default)]
-pub struct Enemy {
-    pub enemy_type: EnemyType,
-}
+pub struct Enemy;
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Clone, Copy)]
 pub enum EnemyType {
     #[default]
     Basic,
 }
 
 #[derive(Component)]
+pub struct Movement {
+    pub vel: Vec2,
+}
+
+#[derive(Component)]
 pub struct Health {
-    pub current: u32,
-    pub max: u32,
+    pub current: i32,
+    pub max: i32,
 }
 impl Health {
-    pub fn init(current: u32, max: u32) -> Self {
+    pub fn init(current: i32, max: i32) -> Self {
         Health { current, max }
     }
 }
