@@ -2,29 +2,24 @@ use crate::prelude::*;
 use rand::{thread_rng, Rng};
 
 pub fn setup_camera(mut cmds: Commands) {
-    cmds.spawn(Camera2dBundle::default());
+    let mut camera = Camera2dBundle::default();
+    camera.projection.scale = 0.5;
+    cmds.spawn(camera);
 }
 
-pub fn setup_player_enemies(
-    mut cmds: Commands,
+pub fn load_character_texture(
+    mut commands: Commands,
     asset_server: Res<AssetServer>,
-    mut next_state: ResMut<NextState<AppState>>,
+    mut texture_atlas: ResMut<Assets<TextureAtlas>>,
 ) {
-    // PLAYER SPAWN
-    cmds.spawn(PlayerBundle {
-        player: Player::init("TODO"),
-        sprite_bundle: SpriteBundle {
-            sprite: Sprite {
-                custom_size: Some(Vec2::from((PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT))),
-                ..Default::default()
-            },
-            texture: asset_server.load("player.png"),
-            transform: Transform::from_xyz(0.0, 0.0, 0.0),
-            ..Default::default()
-        },
-        ..Default::default()
-    });
+    let image = asset_server.load::<Image>("Characters-32x32.png");
+    let atlas =
+        TextureAtlas::from_grid(image, Vec2::splat(32.0), 4, 8, Some(Vec2::splat(2.0)), None);
+    let atlas_handle = texture_atlas.add(atlas);
+    commands.insert_resource(CharSpriteSheet(atlas_handle));
+}
 
+pub fn setup_enemies(mut cmds: Commands, asset_server: Res<AssetServer>) {
     // ENEMY SPAWN
     let hp = 50;
     let mut rng = thread_rng();
@@ -46,7 +41,7 @@ pub fn setup_player_enemies(
                     ..Default::default()
                 },
                 texture: asset_server.load("enemy.png"),
-                transform: Transform::from_xyz(rng_x, rng_y, 0.0),
+                transform: Transform::from_xyz(rng_x, rng_y, 90.0),
                 // .with_scale(Vec2::splat(0.1).extend(1.)),
                 ..Default::default()
             },
@@ -59,5 +54,26 @@ pub fn setup_player_enemies(
             },
         });
     }
+}
+pub fn setup_player(
+    mut cmds: Commands,
+    mut next_state: ResMut<NextState<AppState>>,
+    spritesheet: Res<CharSpriteSheet>,
+) {
+    let mut sprite = TextureAtlasSprite::new(0);
+    sprite.color = Color::rgb(1., 1., 1.);
+    sprite.custom_size = Some(Vec2::splat(32.));
+
+    cmds.spawn(PlayerBundle {
+        player: Player::init("TODO"),
+        spritesheet: SpriteSheetBundle {
+            sprite,
+            texture_atlas: spritesheet.0.clone(),
+            transform: Transform::from_xyz(0., 0., 900.),
+            ..default()
+        },
+        ..default()
+    });
+
     next_state.set(AppState::Ready)
 }
