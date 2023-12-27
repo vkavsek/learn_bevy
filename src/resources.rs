@@ -7,4 +7,7 @@ pub struct Score(pub usize);
 pub struct CharSpriteSheet(pub Handle<TextureAtlas>);
 
 #[derive(Resource, Deref)]
+pub struct MapSpriteSheet(pub Handle<TextureAtlas>);
+
+#[derive(Resource, Deref)]
 pub struct NoiseMapRoot(pub Entity);

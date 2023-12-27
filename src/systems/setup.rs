@@ -18,6 +18,17 @@ pub fn load_character_texture(
     let atlas_handle = texture_atlas.add(atlas);
     commands.insert_resource(CharSpriteSheet(atlas_handle));
 }
+pub fn load_map_texture(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut texture_atlas: ResMut<Assets<TextureAtlas>>,
+) {
+    let image = asset_server.load::<Image>("Tiles-16x16.png");
+    let atlas =
+        TextureAtlas::from_grid(image, Vec2::splat(16.0), 8, 3, Some(Vec2::splat(0.1)), None);
+    let atlas_handle = texture_atlas.add(atlas);
+    commands.insert_resource(MapSpriteSheet(atlas_handle));
+}
 
 pub fn setup_enemies(mut cmds: Commands, asset_server: Res<AssetServer>) {
     // ENEMY SPAWN
@@ -58,17 +69,17 @@ pub fn setup_enemies(mut cmds: Commands, asset_server: Res<AssetServer>) {
 pub fn setup_player(
     mut cmds: Commands,
     mut next_state: ResMut<NextState<AppState>>,
-    spritesheet: Res<CharSpriteSheet>,
+    char_texture: Res<CharSpriteSheet>,
 ) {
     let mut sprite = TextureAtlasSprite::new(0);
-    sprite.color = Color::rgb(1., 1., 1.);
-    sprite.custom_size = Some(Vec2::splat(32.));
+    sprite.color = Color::rgb(1., 0., 1.);
+    sprite.custom_size = Some(Vec2::splat(TILE_SIZE));
 
     cmds.spawn(PlayerBundle {
         player: Player::init("TODO"),
         spritesheet: SpriteSheetBundle {
             sprite,
-            texture_atlas: spritesheet.0.clone(),
+            texture_atlas: char_texture.0.clone(),
             transform: Transform::from_xyz(0., 0., 900.),
             ..default()
         },

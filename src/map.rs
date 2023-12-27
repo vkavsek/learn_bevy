@@ -29,17 +29,28 @@ fn get_color(val: f64) -> Color {
     };
     color_result.expect("Getting color from HEX error")
 }
+fn get_index(val: f64) -> usize {
+    match val.abs() {
+        v if v < 0.20 => 21,
+        v if v < 0.25 => 0,
+        v if v < 0.3 => 20,
+        v if v <= 1.0 => 19,
+        _ => panic!("unexpected value"),
+    }
+}
 
-pub fn generate_world(mut commands: Commands, mut next_state: ResMut<NextState<AppState>>) {
+pub fn generate_world(
+    mut commands: Commands,
+    map_texture: Res<MapSpriteSheet>,
+    mut next_state: ResMut<NextState<AppState>>,
+) {
     let map = generate_noise_map();
     let (map_w, map_h) = map.size();
 
     info!("Map size: {map_w}x{map_h}");
 
-    let tile_size = 32_f32;
-
-    let start_x = -(map_w as f32) * tile_size / 2.;
-    let start_y = -(map_h as f32) * tile_size / 2.;
+    let start_x = -(map_w as f32) * TILE_SIZE / 2.;
+    let start_y = -(map_h as f32) * TILE_SIZE / 2.;
 
     let noise_map_root = commands
         .spawn(SpatialBundle::default())
@@ -47,15 +58,17 @@ pub fn generate_world(mut commands: Commands, mut next_state: ResMut<NextState<A
             for x_pos in 0..map_w {
                 for y_pos in 0..map_h {
                     let val = map.get_value(x_pos, y_pos);
-                    let x = start_x + x_pos as f32 * tile_size;
-                    let y = start_y + y_pos as f32 * tile_size;
+                    let x = start_x + x_pos as f32 * TILE_SIZE;
+                    let y = start_y + y_pos as f32 * TILE_SIZE;
 
-                    parent.spawn(SpriteBundle {
-                        sprite: Sprite {
+                    parent.spawn(SpriteSheetBundle {
+                        sprite: TextureAtlasSprite {
+                            index: get_index(val),
                             color: get_color(val),
-                            custom_size: Some(Vec2::new(tile_size, tile_size)),
+                            custom_size: Some(Vec2::splat(TILE_SIZE)),
                             ..Default::default()
                         },
+                        texture_atlas: map_texture.0.clone(),
                         transform: Transform::from_translation(Vec3::new(x, y, 0.)),
                         ..Default::default()
                     });

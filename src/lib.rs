@@ -15,6 +15,7 @@ pub mod prelude {
     pub const HALF_WIDTH: f32 = WINDOW_RES.0 / 2.0;
     pub const HALF_HEIGHT: f32 = WINDOW_RES.1 / 2.0;
     pub const MAP_SIZE: usize = 200;
+    pub const TILE_SIZE: f32 = 32_f32;
 
     pub const PLAYER_SPEED: f32 = 300.0;
     pub const PLAYER_SPRITE_WIDTH: f32 = 32.0;
@@ -42,7 +43,7 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(PreStartup, load_character_texture)
+        app.add_systems(PreStartup, (load_character_texture, load_map_texture))
             .add_systems(OnEnter(AppState::Build), generate_world)
             .add_systems(
                 OnEnter(AppState::Setup),
