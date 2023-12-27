@@ -1,8 +1,5 @@
 use crate::prelude::*;
 
-#[derive(Resource)]
-pub struct Score(usize);
-
 #[derive(Component)]
 pub struct Movement {
     pub vel: Vec2,

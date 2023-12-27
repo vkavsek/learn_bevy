@@ -1,7 +1,7 @@
 use crate::prelude::*;
 use noise::{
     utils::{NoiseMap, NoiseMapBuilder, PlaneMapBuilder},
-    BasicMulti, Simplex,
+    BasicMulti, Perlin,
 };
 use rand::{thread_rng, Rng};
 
@@ -9,30 +9,26 @@ fn generate_noise_map() -> NoiseMap {
     let mut rng = thread_rng();
     let seed: u32 = rng.gen();
 
-    let bm = BasicMulti::<Simplex>::new(seed);
+    let mut bm = BasicMulti::<Perlin>::new(seed);
+    bm.lacunarity = 1.;
+    bm.frequency = 2.;
 
-    PlaneMapBuilder::<_, 2>::new(&bm).build()
+    PlaneMapBuilder::<_, 2>::new(&bm)
+        .set_size(MAP_SIZE, MAP_SIZE)
+        .build()
 }
 
 fn get_color(val: f64) -> Color {
     let color_result = match val.abs() {
-        v if v < 0.1 => Color::hex("#0a7e0a"),
-        v if v < 0.2 => Color::hex("#0da50d"),
-        v if v < 0.3 => Color::hex("#10cb10"),
-        v if v < 0.4 => Color::hex("#18ed18"),
-        v if v < 0.5 => Color::hex("#3ff03f"),
-        v if v < 0.6 => Color::hex("#65f365"),
-        v if v < 0.7 => Color::hex("#8cf68c"),
-        v if v < 0.8 => Color::hex("#b2f9b2"),
-        v if v < 0.9 => Color::hex("#d9fcd9"),
-        v if v <= 1.0 => Color::hex("#ffffff"),
+        v if v < 0.1 => Color::hex("#00ff00"),
+        v if v < 0.2 => Color::hex("#3ff03f"),
+        v if v < 0.25 => Color::hex("b35900"),
+        v if v < 0.3 => Color::hex("#ffff1a"),
+        v if v <= 1.0 => Color::hex("#8080ff"),
         _ => panic!("unexpected value"),
     };
     color_result.expect("Getting color from HEX error")
 }
-
-#[derive(Resource, Deref)]
-struct MapRoot(Entity);
 
 pub fn generate_world(mut commands: Commands, mut next_state: ResMut<NextState<AppState>>) {
     let map = generate_noise_map();
@@ -45,7 +41,7 @@ pub fn generate_world(mut commands: Commands, mut next_state: ResMut<NextState<A
     let start_x = -(map_w as f32) * tile_size / 2.;
     let start_y = -(map_h as f32) * tile_size / 2.;
 
-    let root = commands
+    let noise_map_root = commands
         .spawn(SpatialBundle::default())
         .with_children(|parent| {
             for x_pos in 0..map_w {
@@ -67,7 +63,7 @@ pub fn generate_world(mut commands: Commands, mut next_state: ResMut<NextState<A
             }
         })
         .id();
-    commands.insert_resource(MapRoot(root));
+    commands.insert_resource(NoiseMapRoot(noise_map_root));
 
     next_state.set(AppState::Setup);
 }
