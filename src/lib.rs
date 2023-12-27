@@ -1,6 +1,10 @@
 pub mod prelude {
     pub use crate::*;
-    pub use crate::{comps_n_resources::*, systems::*};
+    pub use crate::{
+        components::{common::*, enemy::*, player::*},
+        map::*,
+        systems::{movement::*, setup::*, *},
+    };
     pub use bevy::prelude::*;
 
     pub const TITLE: &str = "Game";
@@ -17,7 +21,8 @@ pub mod prelude {
     pub const ENEMY_SPRITE_WIDTH: f32 = 75.0;
 }
 
-mod comps_n_resources;
+mod components;
+mod map;
 mod systems;
 
 use crate::prelude::*;
@@ -26,14 +31,26 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup).add_systems(
-            Update,
-            (
-                bevy::window::close_on_esc,
-                handle_input,
-                player_movement,
-                enemy_movement,
-            ),
-        );
+        app.add_systems(OnEnter(AppState::Build), generate_world)
+            .add_systems(
+                OnEnter(AppState::Setup),
+                (setup_player_enemies, setup_camera),
+            )
+            .add_systems(
+                Update,
+                (
+                    bevy::window::close_on_esc,
+                    (handle_input, player_movement, enemy_movement)
+                        .run_if(in_state(AppState::Ready)),
+                ),
+            );
     }
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, States)]
+pub enum AppState {
+    #[default]
+    Build,
+    Setup,
+    Ready,
 }
