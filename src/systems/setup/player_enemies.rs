@@ -6,8 +6,7 @@ pub fn setup_enemies(mut cmds: Commands, char_texture: Res<AsciiSpriteSheet>) {
     let half_s = MAP_SIZE_PX / 2.;
 
     for _n in 0..NUM_ENEMIES {
-        let rng_xy =
-            rng.gen_range((-half_s + ENEMY_SPRITE_WIDTH + 1.)..(half_s - ENEMY_SPRITE_WIDTH - 1.));
+        let rng_xy = rng.gen_range((-half_s + ENEMY_SIZE + 1.)..(half_s - ENEMY_SIZE - 1.));
         cmds.spawn(EnemyBundle {
             enemy: Enemy,
             enemy_type: Default::default(),
@@ -16,7 +15,7 @@ pub fn setup_enemies(mut cmds: Commands, char_texture: Res<AsciiSpriteSheet>) {
                 sprite: TextureAtlasSprite {
                     color: Color::RED,
                     index: 42,
-                    custom_size: Some(Vec2::from((ENEMY_SPRITE_WIDTH, ENEMY_SPRITE_WIDTH))),
+                    custom_size: Some(Vec2::from((ENEMY_SIZE, ENEMY_SIZE))),
                     ..default()
                 },
                 texture_atlas: char_texture.0.clone(),

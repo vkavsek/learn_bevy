@@ -5,11 +5,11 @@ use crate::prelude::*;
 // #[derive(Resource, Deref)]
 // pub struct Score(pub usize);
 
-#[derive(Resource, Deref)]
+#[derive(Resource, Deref, DerefMut)]
 pub struct AsciiSpriteSheet(pub Handle<TextureAtlas>);
 
-#[derive(Resource, Deref)]
+#[derive(Resource, Deref, DerefMut)]
 pub struct NoiseMapped(pub NoiseMap);
 
-#[derive(Resource, Deref)]
+#[derive(Resource, Deref, DerefMut)]
 pub struct MapRootHandle(pub Entity);

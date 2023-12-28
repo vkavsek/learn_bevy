@@ -11,34 +11,11 @@ pub fn cam_movement(
     }
 }
 
-pub fn player_movement(
-    time: Res<Time>,
-    mut player_query: Query<(&mut Transform, &Velocity), With<Player>>,
-) {
-    let (mut pos, movement) = player_query.single_mut();
+pub fn apply_velocity(time: Res<Time>, mut query: Query<(&mut Transform, &Velocity, &Speed)>) {
+    for (mut pos, movement, speed) in query.iter_mut() {
+        let speed = **speed;
 
-    pos.translation.x += movement.x * PLAYER_SPEED * time.delta_seconds();
-    pos.translation.y += movement.y * PLAYER_SPEED * time.delta_seconds();
-}
-
-pub fn enemy_movement(
-    time: Res<Time>,
-    mut enemy_query: Query<(&mut Transform, &mut Velocity), With<Enemy>>,
-) {
-    let half_s = MAP_SIZE_PX / 2.;
-    let half_sprite_width = ENEMY_SPRITE_WIDTH / 2.;
-
-    for (mut trans, mut movement) in &mut enemy_query {
-        let x = trans.translation.x;
-        let y = trans.translation.y;
-        if x <= -half_s + half_sprite_width || x >= half_s - half_sprite_width {
-            movement.x *= -1.;
-        }
-        if y <= -half_s + half_sprite_width || y >= half_s - half_sprite_width {
-            movement.y *= -1.;
-        }
-
-        trans.translation.x += movement.x * ENEMY_SPEED * time.delta_seconds();
-        trans.translation.y += movement.y * ENEMY_SPEED * time.delta_seconds();
+        pos.translation.x += movement.x * speed * time.delta_seconds();
+        pos.translation.y += movement.y * speed * time.delta_seconds();
     }
 }

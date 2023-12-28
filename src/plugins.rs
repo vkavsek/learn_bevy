@@ -25,9 +25,8 @@ impl Plugin for GamePlugin {
                     bevy::window::close_on_esc,
                     (
                         handle_input,
-                        player_movement,
-                        enemy_movement,
-                        (player_collisions, cam_movement).after(player_movement),
+                        apply_velocity,
+                        (check_for_collisions_player, cam_movement).after(apply_velocity),
                     )
                         .run_if(in_state(MapState::Ready)),
                 ),

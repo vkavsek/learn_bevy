@@ -86,21 +86,21 @@ pub fn build_houses(
     }
 
     for (x, y, size) in house_positions {
-        commands.spawn((
-            House,
-            HasCollision,
-            SpriteSheetBundle {
+        commands.spawn(HouseBundle {
+            spritesheet: SpriteSheetBundle {
                 sprite: TextureAtlasSprite {
                     index: 255,
                     color: Color::hex("#9b1c00").unwrap(),
                     custom_size: Some(Vec2::splat(size)),
                     ..Default::default()
                 },
-                texture_atlas: map_texture.0.clone(),
+                texture_atlas: map_texture.clone(),
                 transform: Transform::from_translation(Vec3::new(x, y, 50.)),
                 ..Default::default()
             },
-        ));
+            size: Size(Vec2::splat(size)),
+            ..default()
+        });
     }
 }
 
@@ -132,7 +132,7 @@ pub fn generate_world(
                             custom_size: Some(Vec2::splat(TILE_SIZE)),
                             ..Default::default()
                         },
-                        texture_atlas: map_texture.0.clone(),
+                        texture_atlas: map_texture.clone(),
                         transform: Transform::from_translation(Vec3::new(x, y, 0.)),
                         ..Default::default()
                     });

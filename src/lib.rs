@@ -28,14 +28,13 @@ pub mod prelude {
 
     pub const PLAYER_SPEED: f32 = 300.0;
     pub const PLAYER_HEALTH: i32 = 100;
-    pub const PLAYER_SPRITE_WIDTH: f32 = 32.0;
-    pub const PLAYER_SPRITE_HEIGHT: f32 = 32.0;
+    pub const PLAYER_SIZE: f32 = 32.0;
     pub const PLAYER_COLOR: Color = Color::rgb(1., 0., 1.);
 
     pub const NUM_ENEMIES: usize = 30;
-    pub const ENEMY_SPEED: f32 = 500.0;
+    pub const ENEMY_SPEED: f32 = 50.0;
     pub const ENEMY_HEALTH: i32 = 10;
-    pub const ENEMY_SPRITE_WIDTH: f32 = 64.0;
+    pub const ENEMY_SIZE: f32 = 64.0;
 }
 
 mod components;
@@ -52,3 +51,6 @@ pub enum MapState {
     Setup,
     Ready,
 }
+
+// #[derive(Event, Default)]
+// pub struct CollisionEvent;

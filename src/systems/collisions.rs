@@ -1,17 +1,23 @@
+use bevy::sprite::collide_aabb::collide;
+
 use crate::prelude::*;
 
-pub fn player_collisions(
-    mut player_q: Query<(&mut TextureAtlasSprite, &Transform), With<Player>>,
-    colliding_q: Query<&Transform, (With<HasCollision>, Without<Player>)>,
+pub fn check_for_collisions_player(
+    mut query: Query<(&mut Velocity, &Transform, &Size), With<Player>>,
+    collider_query: Query<(&Transform, &Size), With<Collider>>,
+    // mut collision_events: EventWriter<CollisionEvent>,
 ) {
-    let (mut texture_atlas, player_pos) = player_q.single_mut();
-    if colliding_q.iter().any(|collide_pos| {
-        let player_pos = Vec2::new(player_pos.translation.x, player_pos.translation.y);
-        let other_pos = Vec2::new(collide_pos.translation.x, collide_pos.translation.y);
-        player_pos.distance(other_pos) <= PLAYER_SPRITE_WIDTH
-    }) {
-        texture_atlas.color = Color::WHITE;
-    } else {
-        texture_atlas.color = PLAYER_COLOR;
+    let (mut _vel, pos, size) = query.single_mut();
+
+    for (collider_pos, coll_size) in collider_query.iter() {
+        let collision = collide(
+            pos.translation,
+            **size,
+            collider_pos.translation,
+            **coll_size,
+        );
+        if collision.is_some() {
+            info!("Collision");
+        }
     }
 }
