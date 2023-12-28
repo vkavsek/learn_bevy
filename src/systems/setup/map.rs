@@ -70,24 +70,27 @@ pub fn build_houses(
 
     let start_x = -(map_w as f32) * TILE_SIZE / 2.;
     let start_y = -(map_h as f32) * TILE_SIZE / 2.;
+
+    let house_s = (MAX_HOUSE_SIZE / TILE_SIZE) as usize;
     while house_positions.len() < NUM_OF_HOUSES {
-        let rand_x = rng.gen_range(0..map_w);
-        let rand_y = rng.gen_range(0..map_h);
+        let rand_x = rng.gen_range(house_s..map_w - house_s);
+        let rand_y = rng.gen_range(house_s..map_h - house_s);
         let x = start_x + rand_x as f32 * TILE_SIZE;
         let y = start_y + rand_y as f32 * TILE_SIZE;
+        let size = rng.gen_range(150_f32..MAX_HOUSE_SIZE);
 
         let val = map.get_value(rand_x, rand_y);
-        if val.abs() < 0.15 {
-            house_positions.push((x, y));
+        if val.abs() < 0.1 {
+            house_positions.push((x, y, size));
         }
     }
 
-    for (x, y) in house_positions {
+    for (x, y, size) in house_positions {
         commands.spawn(SpriteSheetBundle {
             sprite: TextureAtlasSprite {
                 index: 10,
-                color: Color::ALICE_BLUE,
-                custom_size: Some(Vec2::splat(500.)),
+                color: Color::hex("#9b1c00").unwrap(),
+                custom_size: Some(Vec2::splat(size)),
                 ..Default::default()
             },
             texture_atlas: map_texture.0.clone(),
