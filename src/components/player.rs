@@ -19,6 +19,7 @@ pub struct PlayerBundle {
     pub xp: Xp,
     pub spritesheet: SpriteSheetBundle,
     pub movement: Movement,
+    pub has_coll: HasCollision,
 }
 impl Default for PlayerBundle {
     fn default() -> Self {
@@ -28,6 +29,7 @@ impl Default for PlayerBundle {
             xp: Xp(0),
             spritesheet: Default::default(),
             movement: Movement { vel: Vec2::ZERO },
+            has_coll: HasCollision,
         }
     }
 }

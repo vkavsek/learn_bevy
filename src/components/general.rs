@@ -18,3 +18,9 @@ impl Health {
 
 #[derive(Component)]
 pub struct Xp(pub usize);
+
+#[derive(Component)]
+pub struct House;
+
+#[derive(Component)]
+pub struct HasCollision;

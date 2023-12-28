@@ -1,10 +1,11 @@
 pub mod prelude {
     pub use crate::*;
     pub use crate::{
-        components::{common::*, enemy::*, player::*},
+        components::{enemy::*, general::*, player::*},
         plugins::*,
         resources::*,
         systems::{
+            collisions::*,
             input::*,
             movement::*,
             setup::{general::*, map::*, player_enemies::*},
@@ -29,9 +30,11 @@ pub mod prelude {
     pub const PLAYER_HEALTH: i32 = 100;
     pub const PLAYER_SPRITE_WIDTH: f32 = 32.0;
     pub const PLAYER_SPRITE_HEIGHT: f32 = 32.0;
+    pub const PLAYER_COLOR: Color = Color::rgb(1., 0., 1.);
+    pub const NUM_ENEMIES: usize = 30;
     pub const ENEMY_SPEED: f32 = 100.0;
     pub const ENEMY_HEALTH: i32 = 10;
-    pub const ENEMY_SPRITE_WIDTH: f32 = 32.0;
+    pub const ENEMY_SPRITE_WIDTH: f32 = 64.0;
 }
 
 mod components;

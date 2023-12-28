@@ -27,7 +27,7 @@ impl Plugin for GamePlugin {
                         handle_input,
                         player_movement,
                         enemy_movement,
-                        cam_movement.after(player_movement),
+                        (player_collisions, cam_movement).after(player_movement),
                     )
                         .run_if(in_state(MapState::Ready)),
                 ),

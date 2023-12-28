@@ -86,17 +86,21 @@ pub fn build_houses(
     }
 
     for (x, y, size) in house_positions {
-        commands.spawn(SpriteSheetBundle {
-            sprite: TextureAtlasSprite {
-                index: 10,
-                color: Color::hex("#9b1c00").unwrap(),
-                custom_size: Some(Vec2::splat(size)),
+        commands.spawn((
+            House,
+            HasCollision,
+            SpriteSheetBundle {
+                sprite: TextureAtlasSprite {
+                    index: 10,
+                    color: Color::hex("#9b1c00").unwrap(),
+                    custom_size: Some(Vec2::splat(size)),
+                    ..Default::default()
+                },
+                texture_atlas: map_texture.0.clone(),
+                transform: Transform::from_translation(Vec3::new(x, y, 50.)),
                 ..Default::default()
             },
-            texture_atlas: map_texture.0.clone(),
-            transform: Transform::from_translation(Vec3::new(x, y, 50.)),
-            ..Default::default()
-        });
+        ));
     }
 }
 
