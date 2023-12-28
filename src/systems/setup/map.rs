@@ -101,7 +101,7 @@ pub fn generate_world(
     mut commands: Commands,
     map_texture: Res<AsciiSpriteSheet>,
     map: Res<NoiseMapped>,
-    mut next_state: ResMut<NextState<AppState>>,
+    mut next_state: ResMut<NextState<MapState>>,
 ) {
     let (map_w, map_h) = map.size();
     info!("Map size: {map_w}x{map_h}");
@@ -135,5 +135,5 @@ pub fn generate_world(
         .id();
     commands.insert_resource(MapRootHandle(noise_map_root));
 
-    next_state.set(AppState::Setup);
+    next_state.set(MapState::Setup);
 }

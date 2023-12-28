@@ -2,8 +2,6 @@ use crate::prelude::*;
 use rand::{thread_rng, Rng};
 
 pub fn setup_enemies(mut cmds: Commands, asset_server: Res<AssetServer>) {
-    // ENEMY SPAWN
-    let hp = 50;
     let mut rng = thread_rng();
     let half_s = MAP_SIZE_PX / 2.;
 
@@ -13,7 +11,7 @@ pub fn setup_enemies(mut cmds: Commands, asset_server: Res<AssetServer>) {
         cmds.spawn(EnemyBundle {
             enemy: Enemy,
             enemy_type: Default::default(),
-            health: Health::init(hp, hp),
+            health: Health::init(ENEMY_HEALTH, ENEMY_HEALTH),
             sprite_bundle: SpriteBundle {
                 sprite: Sprite {
                     custom_size: Some(Vec2::from((ENEMY_SPRITE_WIDTH, ENEMY_SPRITE_WIDTH))),
@@ -36,7 +34,7 @@ pub fn setup_enemies(mut cmds: Commands, asset_server: Res<AssetServer>) {
 }
 pub fn setup_player(
     mut cmds: Commands,
-    mut next_state: ResMut<NextState<AppState>>,
+    mut next_state: ResMut<NextState<MapState>>,
     char_texture: Res<AsciiSpriteSheet>,
 ) {
     let mut sprite = TextureAtlasSprite::new(2);
@@ -54,5 +52,5 @@ pub fn setup_player(
         ..default()
     });
 
-    next_state.set(AppState::Ready)
+    next_state.set(MapState::Ready)
 }

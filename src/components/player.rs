@@ -18,17 +18,15 @@ pub struct PlayerBundle {
     pub health: Health,
     pub xp: Xp,
     pub spritesheet: SpriteSheetBundle,
-    // pub sprite_bundle: SpriteBundle,
     pub movement: Movement,
 }
 impl Default for PlayerBundle {
     fn default() -> Self {
         Self {
             player: Player::init("NoName"),
-            health: Health::init(100, 100),
+            health: Health::init(PLAYER_HEALTH, PLAYER_HEALTH),
             xp: Xp(0),
             spritesheet: Default::default(),
-            // sprite_bundle: Default::default(),
             movement: Movement { vel: Vec2::ZERO },
         }
     }
