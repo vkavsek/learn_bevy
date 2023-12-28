@@ -6,20 +6,21 @@ pub fn setup_enemies(mut cmds: Commands, char_texture: Res<AsciiSpriteSheet>) {
     let half_s = MAP_SIZE_PX / 2.;
 
     for _n in 0..NUM_ENEMIES {
-        let rng_xy = rng.gen_range((-half_s + ENEMY_SIZE + 1.)..(half_s - ENEMY_SIZE - 1.));
+        let rng_x = rng.gen_range((-half_s + ENEMY_SIZE + 1.)..(half_s - ENEMY_SIZE - 1.));
+        let rng_y = rng.gen_range((-half_s + ENEMY_SIZE + 1.)..(half_s - ENEMY_SIZE - 1.));
         cmds.spawn(EnemyBundle {
             enemy: Enemy,
             enemy_type: Default::default(),
             health: Health::init(ENEMY_HEALTH, ENEMY_HEALTH),
             spritesheet_bundle: SpriteSheetBundle {
                 sprite: TextureAtlasSprite {
-                    color: Color::RED,
+                    color: Color::WHITE,
                     index: 42,
                     custom_size: Some(Vec2::from((ENEMY_SIZE, ENEMY_SIZE))),
                     ..default()
                 },
-                texture_atlas: char_texture.0.clone(),
-                transform: Transform::from_xyz(rng_xy, rng_xy, 90.0),
+                texture_atlas: char_texture.clone(),
+                transform: Transform::from_xyz(rng_x, rng_y, 90.0),
                 ..default()
             },
             movement: Velocity(
@@ -46,7 +47,7 @@ pub fn setup_player(
         player: Player::init("TODO"),
         spritesheet: SpriteSheetBundle {
             sprite,
-            texture_atlas: char_texture.0.clone(),
+            texture_atlas: char_texture.clone(),
             transform: Transform::from_xyz(0., 0., 900.),
             ..default()
         },

@@ -59,6 +59,13 @@ pub fn create_map(mut commands: Commands) {
     commands.insert_resource(NoiseMapped(map));
 }
 
+pub fn build_outside_walls(mut commands: Commands, map_texture: Res<AsciiSpriteSheet>) {
+    commands.spawn(WallBundle::new(WallLocation::Right, map_texture.clone()));
+    commands.spawn(WallBundle::new(WallLocation::Left, map_texture.clone()));
+    commands.spawn(WallBundle::new(WallLocation::Top, map_texture.clone()));
+    commands.spawn(WallBundle::new(WallLocation::Bot, map_texture.clone()));
+}
+
 pub fn build_houses(
     mut commands: Commands,
     map: Res<NoiseMapped>,

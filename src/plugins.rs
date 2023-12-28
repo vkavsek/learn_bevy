@@ -5,7 +5,10 @@ pub struct MapPlugin;
 impl Plugin for MapPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(PreStartup, create_map)
-            .add_systems(OnEnter(MapState::Build), (generate_world, build_houses))
+            .add_systems(
+                OnEnter(MapState::Build),
+                (generate_world, build_houses, build_outside_walls),
+            )
             .add_systems(OnExit(MapState::Ready), map_world_cleanup);
     }
 }
@@ -26,7 +29,8 @@ impl Plugin for GamePlugin {
                     (
                         handle_input,
                         apply_velocity,
-                        (check_for_collisions_player, cam_movement).after(apply_velocity),
+                        (player_enemy_collision, enemy_static_collision, cam_movement)
+                            .after(apply_velocity),
                     )
                         .run_if(in_state(MapState::Ready)),
                 ),
