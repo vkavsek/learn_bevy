@@ -15,7 +15,7 @@ pub fn setup_enemies(mut cmds: Commands, char_texture: Res<AsciiSpriteSheet>) {
             spritesheet_bundle: SpriteSheetBundle {
                 sprite: TextureAtlasSprite {
                     color: Color::RED,
-                    index: 255,
+                    index: 42,
                     custom_size: Some(Vec2::from((ENEMY_SPRITE_WIDTH, ENEMY_SPRITE_WIDTH))),
                     ..default()
                 },
@@ -23,13 +23,13 @@ pub fn setup_enemies(mut cmds: Commands, char_texture: Res<AsciiSpriteSheet>) {
                 transform: Transform::from_xyz(rng_xy, rng_xy, 90.0),
                 ..default()
             },
-            movement: Movement {
-                vel: Vec2 {
+            movement: Velocity(
+                Vec2 {
                     x: rng.gen_range(-1.0..1.0),
                     y: rng.gen_range(-1.0..1.0),
                 }
                 .normalize(),
-            },
+            ),
             ..default()
         });
     }

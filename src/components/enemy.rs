@@ -6,7 +6,7 @@ pub struct EnemyBundle {
     pub enemy_type: EnemyType,
     pub health: Health,
     pub spritesheet_bundle: SpriteSheetBundle,
-    pub movement: Movement,
+    pub movement: Velocity,
     pub has_coll: HasCollision,
 }
 impl Default for EnemyBundle {
@@ -16,7 +16,7 @@ impl Default for EnemyBundle {
             enemy_type: EnemyType::default(),
             health: Health::init(50, 50),
             spritesheet_bundle: Default::default(),
-            movement: Movement { vel: Vec2::ZERO },
+            movement: Velocity(Vec2::ZERO),
             has_coll: HasCollision,
         }
     }

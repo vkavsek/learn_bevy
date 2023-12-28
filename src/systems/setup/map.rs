@@ -91,7 +91,7 @@ pub fn build_houses(
             HasCollision,
             SpriteSheetBundle {
                 sprite: TextureAtlasSprite {
-                    index: 10,
+                    index: 255,
                     color: Color::hex("#9b1c00").unwrap(),
                     custom_size: Some(Vec2::splat(size)),
                     ..Default::default()

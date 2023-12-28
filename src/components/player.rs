@@ -18,7 +18,7 @@ pub struct PlayerBundle {
     pub health: Health,
     pub xp: Xp,
     pub spritesheet: SpriteSheetBundle,
-    pub movement: Movement,
+    pub movement: Velocity,
     pub has_coll: HasCollision,
 }
 impl Default for PlayerBundle {
@@ -28,7 +28,7 @@ impl Default for PlayerBundle {
             health: Health::init(PLAYER_HEALTH, PLAYER_HEALTH),
             xp: Xp(0),
             spritesheet: Default::default(),
-            movement: Movement { vel: Vec2::ZERO },
+            movement: Velocity(Vec2::ZERO),
             has_coll: HasCollision,
         }
     }

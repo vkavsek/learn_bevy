@@ -1,5 +1,5 @@
 use bevy::{
-    diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
+    // diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
     window::PresentMode,
 };
 use drunk_game::prelude::*;
@@ -9,8 +9,8 @@ fn main() {
         .insert_resource(ClearColor(BG_COLOR))
         .add_state::<MapState>()
         .add_plugins((
-            LogDiagnosticsPlugin::default(),
-            FrameTimeDiagnosticsPlugin,
+            // LogDiagnosticsPlugin::default(),
+            // FrameTimeDiagnosticsPlugin,
             MapPlugin,
             GamePlugin,
             DefaultPlugins
@@ -19,7 +19,7 @@ fn main() {
                     primary_window: Some(Window {
                         title: TITLE.into(),
                         resolution: WINDOW_RES.into(),
-                        present_mode: PresentMode::Fifo,
+                        present_mode: PresentMode::AutoVsync,
                         ..Default::default()
                     }),
                     ..Default::default()

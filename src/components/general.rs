@@ -1,9 +1,7 @@
 use crate::prelude::*;
 
-#[derive(Component)]
-pub struct Movement {
-    pub vel: Vec2,
-}
+#[derive(Component, Deref, DerefMut)]
+pub struct Velocity(pub Vec2);
 
 #[derive(Component)]
 pub struct Health {
