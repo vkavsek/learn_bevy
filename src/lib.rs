@@ -27,7 +27,7 @@ pub mod prelude {
     pub const NUM_OF_HOUSES: usize = 5;
     pub const MAX_HOUSE_SIZE: f32 = 500.;
 
-    pub const PLAYER_SPEED: f32 = 300.0;
+    pub const PLAYER_SPEED: f32 = 500.0;
     pub const PLAYER_HEALTH: i32 = 100;
     pub const PLAYER_SIZE: f32 = 32.0;
     pub const PLAYER_COLOR: Color = Color::rgb(1., 0., 1.);

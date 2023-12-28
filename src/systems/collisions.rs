@@ -24,10 +24,7 @@ pub fn player_enemy_collision(
             match collision {
                 Collision::Left | Collision::Right => collider_vel.x *= -1.,
                 Collision::Top | Collision::Bottom => collider_vel.y *= -1.,
-                Collision::Inside => {
-                    collider_vel.x *= -1.;
-                    collider_vel.y *= -1.;
-                }
+                Collision::Inside => {}
             }
         }
     }
@@ -51,10 +48,7 @@ pub fn enemy_static_collision(
                 match collision {
                     Collision::Left | Collision::Right => vel.x *= -1.,
                     Collision::Top | Collision::Bottom => vel.y *= -1.,
-                    Collision::Inside => {
-                        vel.x *= -1.;
-                        vel.y *= -1.;
-                    }
+                    Collision::Inside => {}
                 }
             }
         }

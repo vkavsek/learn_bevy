@@ -48,7 +48,7 @@ fn get_index(val: f64) -> usize {
     match val.abs() {
         v if v < 0.20 => 60,
         v if v < 0.25 => 0,
-        v if v < 0.3 => 61,
+        v if v < 0.3 => 20,
         v if v <= 1.0 => 247,
         _ => panic!("unexpected value"),
     }
@@ -59,6 +59,7 @@ pub fn create_map(mut commands: Commands) {
     commands.insert_resource(NoiseMapped(map));
 }
 
+/// TODO: fix intersecting walls
 pub fn build_outside_walls(mut commands: Commands, map_texture: Res<AsciiSpriteSheet>) {
     commands.spawn(WallBundle::new(WallLocation::Right, map_texture.clone()));
     commands.spawn(WallBundle::new(WallLocation::Left, map_texture.clone()));
