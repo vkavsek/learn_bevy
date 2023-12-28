@@ -37,7 +37,7 @@ pub fn handle_input(
         if keycode_input.pressed(KeyCode::U) {
             projection.scale *= 1.05;
         }
-        projection.scale = projection.scale.clamp(0.5, 5.)
+        projection.scale = projection.scale.clamp(0.25, 5.)
     }
 }
 

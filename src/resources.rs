@@ -1,13 +1,15 @@
+use noise::utils::NoiseMap;
+
 use crate::prelude::*;
 
 #[derive(Resource, Deref)]
 pub struct Score(pub usize);
 
 #[derive(Resource, Deref)]
-pub struct CharSpriteSheet(pub Handle<TextureAtlas>);
+pub struct AsciiSpriteSheet(pub Handle<TextureAtlas>);
 
 #[derive(Resource, Deref)]
-pub struct MapSpriteSheet(pub Handle<TextureAtlas>);
+pub struct NoiseMapped(pub NoiseMap);
 
 #[derive(Resource, Deref)]
-pub struct NoiseMapRoot(pub Entity);
+pub struct MapRootHandle(pub Entity);

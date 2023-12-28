@@ -17,27 +17,24 @@ pub fn player_movement(
 ) {
     let (mut pos, movement) = player_query.single_mut();
 
-    // let half_width = PLAYER_SPRITE_WIDTH / 2.;
-    // let half_height = PLAYER_SPRITE_HEIGHT / 2.;
-
     pos.translation.x += movement.vel.x * PLAYER_SPEED * time.delta_seconds();
-    // .clamp(-HALF_WIDTH + half_width, HALF_WIDTH - half_width);
     pos.translation.y += movement.vel.y * PLAYER_SPEED * time.delta_seconds();
-    // .clamp(-HALF_HEIGHT + half_height, HALF_HEIGHT - half_height);
 }
 
 pub fn enemy_movement(
     time: Res<Time>,
     mut enemy_query: Query<(&mut Transform, &mut Movement), With<Enemy>>,
 ) {
+    let half_s = MAP_SIZE_PX / 2.;
+    let half_sprite_width = ENEMY_SPRITE_WIDTH / 2.;
+
     for (mut trans, mut movement) in &mut enemy_query {
-        let half_sprite_width = ENEMY_SPRITE_WIDTH / 2.;
         let x = trans.translation.x;
         let y = trans.translation.y;
-        if x <= -HALF_WIDTH + half_sprite_width || x >= HALF_WIDTH - half_sprite_width {
+        if x <= -half_s + half_sprite_width || x >= half_s - half_sprite_width {
             movement.vel.x *= -1.;
         }
-        if y <= -HALF_HEIGHT + half_sprite_width || y >= HALF_HEIGHT - half_sprite_width {
+        if y <= -half_s + half_sprite_width || y >= half_s - half_sprite_width {
             movement.vel.y *= -1.;
         }
 

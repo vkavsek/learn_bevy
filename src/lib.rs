@@ -2,20 +2,24 @@ pub mod prelude {
     pub use crate::*;
     pub use crate::{
         components::{common::*, enemy::*, player::*},
-        map::*,
         resources::*,
-        systems::{movement::*, setup::*, *},
+        systems::{
+            movement::*,
+            setup::{general::*, map::*, player_enemies::*},
+            *,
+        },
     };
     pub use bevy::prelude::*;
 
     pub const TITLE: &str = "Game";
-    pub const BG_COLOR: Color = Color::rgb(0.0, 0.4, 0.2);
+    pub const BG_COLOR: Color = Color::rgb(0., 0., 0.);
 
     pub const WINDOW_RES: (f32, f32) = (1280., 900.);
-    pub const HALF_WIDTH: f32 = WINDOW_RES.0 / 2.0;
-    pub const HALF_HEIGHT: f32 = WINDOW_RES.1 / 2.0;
+
     pub const MAP_SIZE: usize = 200;
     pub const TILE_SIZE: f32 = 32_f32;
+    pub const MAP_SIZE_PX: f32 = MAP_SIZE as f32 * TILE_SIZE;
+    pub const NUM_OF_HOUSES: usize = 5;
 
     pub const PLAYER_SPEED: f32 = 300.0;
     pub const PLAYER_SPRITE_WIDTH: f32 = 32.0;
@@ -25,7 +29,6 @@ pub mod prelude {
 }
 
 mod components;
-mod map;
 mod resources;
 mod systems;
 
@@ -43,8 +46,8 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(PreStartup, (load_character_texture, load_map_texture))
-            .add_systems(OnEnter(AppState::Build), generate_world)
+        app.add_systems(PreStartup, (load_spritesheet_texture, create_map))
+            .add_systems(OnEnter(AppState::Build), (generate_world, build_houses))
             .add_systems(
                 OnEnter(AppState::Setup),
                 (setup_player, setup_enemies, setup_camera),
@@ -61,6 +64,7 @@ impl Plugin for GamePlugin {
                     )
                         .run_if(in_state(AppState::Ready)),
                 ),
-            );
+            )
+            .add_systems(OnExit(AppState::Ready), map_world_cleanup);
     }
 }
