@@ -8,6 +8,8 @@ edition = "2021"
 # TODO: Remove 'dynamic_linking' before final release 
 [dependencies]
 bevy = { version = "0.12.1", features = ["dynamic_linking"] }
+bevy-inspector-egui = "0.22.0"
+bevy_rapier2d = { version = "0.23.0", features = ["simd-stable"] }
 noise = "0.8.2"
 rand = "0.8.5"
 
