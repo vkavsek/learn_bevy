@@ -1,12 +1,12 @@
 use crate::prelude::*;
 
-#[derive(Component, Deref, DerefMut)]
+#[derive(Component, Reflect, Deref, DerefMut)]
 pub struct Velocity(pub Vec2);
 
-#[derive(Component, Deref, DerefMut)]
+#[derive(Component, Reflect, Deref, DerefMut)]
 pub struct Speed(pub f32);
 
-#[derive(Component, Deref, DerefMut)]
+#[derive(Component, Reflect, Deref, DerefMut)]
 pub struct Size(pub Vec2);
 
 #[derive(Component)]
@@ -38,6 +38,7 @@ pub struct HouseBundle {
     pub coll: Collider,
     pub size: Size,
     pub spritesheet: SpriteSheetBundle,
+    pub name: Name,
 }
 impl Default for HouseBundle {
     fn default() -> Self {
@@ -46,6 +47,7 @@ impl Default for HouseBundle {
             coll: Collider,
             size: Size(Vec2::splat(MAX_HOUSE_SIZE)),
             spritesheet: Default::default(),
+            name: Name::new("House"),
         }
     }
 }
@@ -56,6 +58,7 @@ pub struct WallBundle {
     pub coll: Collider,
     pub size: Size,
     pub spritesheet: SpriteSheetBundle,
+    pub name: Name,
 }
 impl WallBundle {
     pub fn new(location: WallLocation, texture_atlas: Handle<TextureAtlas>) -> Self {
@@ -79,6 +82,7 @@ impl WallBundle {
                 texture_atlas,
                 ..default()
             },
+            name: Name::new("Wall"),
         }
     }
 }

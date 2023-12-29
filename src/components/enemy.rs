@@ -11,6 +11,7 @@ pub struct EnemyBundle {
     pub spritesheet_bundle: SpriteSheetBundle,
     pub movement: Velocity,
     pub has_coll: Collider,
+    pub name: Name,
 }
 impl Default for EnemyBundle {
     fn default() -> Self {
@@ -24,6 +25,7 @@ impl Default for EnemyBundle {
             spritesheet_bundle: Default::default(),
             movement: Velocity(Vec2::ZERO),
             has_coll: Collider,
+            name: Name::new("Enemy"),
         }
     }
 }

@@ -9,10 +9,6 @@ fn main() {
         .insert_resource(ClearColor(BG_COLOR))
         .add_state::<MapState>()
         .add_plugins((
-            // LogDiagnosticsPlugin::default(),
-            // FrameTimeDiagnosticsPlugin,
-            MapPlugin,
-            GamePlugin,
             DefaultPlugins
                 .set(ImagePlugin::default_nearest())
                 .set(WindowPlugin {
@@ -24,6 +20,11 @@ fn main() {
                     }),
                     ..Default::default()
                 }),
+            // LogDiagnosticsPlugin::default(),
+            // FrameTimeDiagnosticsPlugin,
+            MapPlugin,
+            GamePlugin,
+            DebugPlugin,
         ))
         .run();
 }

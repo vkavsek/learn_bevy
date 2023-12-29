@@ -2,12 +2,12 @@ use crate::prelude::*;
 
 #[derive(Component)]
 pub struct Player {
-    pub name: String,
+    pub player_name: String,
 }
 impl Player {
     pub fn init(name: &str) -> Self {
         Player {
-            name: name.to_string(),
+            player_name: name.to_string(),
         }
     }
 }
@@ -21,6 +21,7 @@ pub struct PlayerBundle {
     pub size: Size,
     pub spritesheet: SpriteSheetBundle,
     pub movement: Velocity,
+    pub name: Name,
 }
 impl Default for PlayerBundle {
     fn default() -> Self {
@@ -32,6 +33,7 @@ impl Default for PlayerBundle {
             xp: Xp(0),
             spritesheet: Default::default(),
             movement: Velocity(Vec2::ZERO),
+            name: Name::new("Player"),
         }
     }
 }

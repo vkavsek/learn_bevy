@@ -26,6 +26,10 @@ pub fn handle_input(
     if keycode_input.any_pressed([KeyCode::S, KeyCode::Down]) {
         vel.y -= 1.;
     }
+    if let Some(v) = vel.try_normalize() {
+        *vel = Velocity(v);
+    }
+
     if keycode_input.just_pressed(KeyCode::Space) {
         **speed = PLAYER_SPEED * 15.;
     } else {

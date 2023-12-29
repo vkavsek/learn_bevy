@@ -1,3 +1,6 @@
+use bevy::input::common_conditions::input_toggle_active;
+use bevy_inspector_egui::quick::WorldInspectorPlugin;
+
 use crate::prelude::*;
 
 pub struct MapPlugin;
@@ -37,5 +40,20 @@ impl Plugin for GamePlugin {
                         .run_if(in_state(MapState::Ready)),
                 ),
             );
+    }
+}
+
+pub struct DebugPlugin;
+
+impl Plugin for DebugPlugin {
+    fn build(&self, app: &mut App) {
+        if cfg!(debug_assertions) {
+            app.add_plugins(
+                WorldInspectorPlugin::new().run_if(input_toggle_active(true, KeyCode::P)),
+            )
+            .register_type::<Velocity>()
+            .register_type::<Size>()
+            .register_type::<Speed>();
+        }
     }
 }
