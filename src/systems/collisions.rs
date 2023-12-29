@@ -6,14 +6,16 @@ use crate::prelude::*;
 pub fn player_enemy_collision(
     mut query: Query<(&mut Velocity, &Transform, &Size), With<Player>>,
     mut collider_query: Query<
-        (&mut Velocity, &Transform, &Size),
+        (&mut Velocity, &Transform, &Size, &mut EnemyObjective),
         (With<Collider>, Without<Player>),
     >,
     // mut collision_events: EventWriter<CollisionEvent>,
 ) {
     let (mut _vel, pos, size) = query.single_mut();
 
-    for (mut collider_vel, collider_pos, coll_size) in collider_query.iter_mut() {
+    for (mut collider_vel, collider_pos, coll_size, mut enemy_objective) in
+        collider_query.iter_mut()
+    {
         let collision = collide(
             pos.translation,
             **size,
@@ -26,16 +28,17 @@ pub fn player_enemy_collision(
                 Collision::Top | Collision::Bottom => collider_vel.y *= -1.,
                 Collision::Inside => {}
             }
+            *enemy_objective = EnemyObjective::Bounce;
         }
     }
 }
 
 #[allow(clippy::type_complexity)]
 pub fn enemy_static_collision(
-    mut query: Query<(&mut Velocity, &Transform, &Size), With<Enemy>>,
+    mut query: Query<(&mut Velocity, &Transform, &Size, &mut EnemyObjective), With<Enemy>>,
     static_collider_query: Query<(&Transform, &Size), (With<Collider>, Without<Velocity>)>,
 ) {
-    for (mut vel, pos, size) in query.iter_mut() {
+    for (mut vel, pos, size, mut enemy_objective) in query.iter_mut() {
         for (static_pos, static_size) in static_collider_query.iter() {
             let collision = collide(
                 pos.translation,
@@ -50,6 +53,7 @@ pub fn enemy_static_collision(
                     Collision::Top | Collision::Bottom => vel.y *= -1.,
                     Collision::Inside => {}
                 }
+                *enemy_objective = EnemyObjective::FollowPlayer;
             }
         }
     }

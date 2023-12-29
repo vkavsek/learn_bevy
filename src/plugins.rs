@@ -29,6 +29,8 @@ impl Plugin for GamePlugin {
                     (
                         handle_input,
                         apply_velocity,
+                        enemy_follow_player,
+                        enemy_random_movement,
                         (player_enemy_collision, enemy_static_collision, cam_movement)
                             .after(apply_velocity),
                     )

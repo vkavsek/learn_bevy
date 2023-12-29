@@ -3,28 +3,33 @@ use crate::prelude::*;
 /// TODO: Improve input handling
 pub fn handle_input(
     keycode_input: Res<Input<KeyCode>>,
-    mut player_query: Query<&mut Velocity, With<Player>>,
+    mut player_query: Query<(&mut Velocity, &mut Speed), With<Player>>,
     mut cam_query: Query<&mut OrthographicProjection, With<Camera>>,
 ) {
-    let mut movement = player_query.single_mut();
+    let (mut vel, mut speed) = player_query.single_mut();
 
-    movement.x = 0.;
-    movement.y = 0.;
+    vel.x = 0.;
+    vel.y = 0.;
     // RIGHT
     if keycode_input.any_pressed([KeyCode::D, KeyCode::Right]) {
-        movement.x += 1.;
+        vel.x += 1.;
     }
     // LEFT
     if keycode_input.any_pressed([KeyCode::A, KeyCode::Left]) {
-        movement.x -= 1.;
+        vel.x -= 1.;
     }
     // UP
     if keycode_input.any_pressed([KeyCode::W, KeyCode::Up]) {
-        movement.y += 1.;
+        vel.y += 1.;
     }
     // DOWN
     if keycode_input.any_pressed([KeyCode::S, KeyCode::Down]) {
-        movement.y -= 1.;
+        vel.y -= 1.;
+    }
+    if keycode_input.just_pressed(KeyCode::Space) {
+        **speed = PLAYER_SPEED * 15.;
+    } else {
+        **speed = PLAYER_SPEED;
     }
 
     if let Ok(mut projection) = cam_query.get_single_mut() {
