@@ -1,13 +1,32 @@
 use crate::prelude::*;
 
-#[derive(Component, Reflect, Deref, DerefMut)]
-pub struct Velocity(pub Vec2);
+#[derive(Component)]
+pub struct Player {
+    pub player_name: String,
+}
+impl Player {
+    pub fn init(name: &str) -> Self {
+        Player {
+            player_name: name.to_string(),
+        }
+    }
+}
 
-#[derive(Component, Reflect, Deref, DerefMut)]
-pub struct Speed(pub f32);
+#[derive(Component, Default)]
+pub struct Enemy;
 
-#[derive(Component, Reflect, Deref, DerefMut)]
-pub struct Size(pub Vec2);
+#[derive(Component, Default, Clone, Copy)]
+pub enum EnemyType {
+    #[default]
+    Basic,
+}
+
+#[derive(Component, Default, Clone, Copy)]
+pub enum EnemyObjective {
+    #[default]
+    FollowPlayer,
+    Bounce,
+}
 
 #[derive(Component)]
 pub struct Health {
@@ -29,63 +48,10 @@ pub struct House;
 #[derive(Component)]
 pub struct Wall;
 
-#[derive(Component)]
-pub struct Collider;
-
-#[derive(Bundle)]
-pub struct HouseBundle {
-    pub house: House,
-    pub coll: Collider,
-    pub size: Size,
-    pub spritesheet: SpriteSheetBundle,
-    pub name: Name,
-}
-impl Default for HouseBundle {
-    fn default() -> Self {
-        Self {
-            house: House,
-            coll: Collider,
-            size: Size(Vec2::splat(MAX_HOUSE_SIZE)),
-            spritesheet: Default::default(),
-            name: Name::new("House"),
-        }
-    }
-}
-
-#[derive(Bundle)]
-pub struct WallBundle {
-    pub wall: Wall,
-    pub coll: Collider,
-    pub size: Size,
-    pub spritesheet: SpriteSheetBundle,
-    pub name: Name,
-}
-impl WallBundle {
-    pub fn new(location: WallLocation, texture_atlas: Handle<TextureAtlas>) -> Self {
-        let size = location.size();
-        WallBundle {
-            wall: Wall,
-            coll: Collider,
-            size: Size(size),
-            spritesheet: SpriteSheetBundle {
-                sprite: TextureAtlasSprite {
-                    color: Color::RED,
-                    custom_size: Some(size),
-                    index: 10,
-                    ..default()
-                },
-
-                transform: Transform {
-                    translation: location.position().extend(1.0),
-                    ..default()
-                },
-                texture_atlas,
-                ..default()
-            },
-            name: Name::new("Wall"),
-        }
-    }
-}
+// TODO: ?
+#[derive(Component, Reflect, Deref, DerefMut)]
+pub struct Size(pub Vec2);
+// TODO: ?
 
 #[derive(Component)]
 pub enum WallLocation {
@@ -96,7 +62,7 @@ pub enum WallLocation {
 }
 
 impl WallLocation {
-    fn position(&self) -> Vec2 {
+    pub fn position(&self) -> Vec2 {
         let start = -(MAP_SIZE as f32 * TILE_SIZE / 2.);
         let end = MAP_SIZE as f32 * TILE_SIZE / 2.;
         match self {
@@ -106,7 +72,7 @@ impl WallLocation {
             WallLocation::Top => Vec2::new(0., end),
         }
     }
-    fn size(&self) -> Vec2 {
+    pub fn size(&self) -> Vec2 {
         let length = MAP_SIZE as f32 * TILE_SIZE;
         match self {
             WallLocation::Left | WallLocation::Right => Vec2::new(OUTSIDE_WALL_THICK, length),

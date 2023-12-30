@@ -4,7 +4,6 @@ use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use crate::prelude::*;
 
 pub struct MapPlugin;
-
 impl Plugin for MapPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(PreStartup, create_map)
@@ -30,12 +29,14 @@ impl Plugin for GamePlugin {
                 (
                     bevy::window::close_on_esc,
                     (
+                        // TODO: change everything to physics
                         handle_input,
-                        apply_velocity,
-                        enemy_follow_player,
-                        enemy_random_movement,
-                        (player_enemy_collision, enemy_static_collision, cam_movement)
-                            .after(apply_velocity),
+                        cam_movement.after(handle_input),
+                        // enemy_follow_player,
+                        // apply_velocity,
+                        // enemy_random_movement,
+                        // (player_enemy_collision, enemy_static_collision, )
+                        //     .after(apply_velocity),
                     )
                         .run_if(in_state(MapState::Ready)),
                 ),
@@ -51,9 +52,22 @@ impl Plugin for DebugPlugin {
             app.add_plugins(
                 WorldInspectorPlugin::new().run_if(input_toggle_active(true, KeyCode::P)),
             )
-            .register_type::<Velocity>()
-            .register_type::<Size>()
-            .register_type::<Speed>();
+            .register_type::<Size>();
         }
+    }
+}
+
+pub struct PhysicsPlugin;
+
+impl Plugin for PhysicsPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_plugins((
+            RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(32.),
+            // RapierDebugRenderPlugin::default(),
+        ))
+        .insert_resource(RapierConfiguration {
+            gravity: Vec2::ZERO,
+            ..Default::default()
+        });
     }
 }

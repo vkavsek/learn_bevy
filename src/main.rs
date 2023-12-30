@@ -1,7 +1,4 @@
-use bevy::{
-    // diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
-    window::PresentMode,
-};
+use bevy::window::PresentMode;
 use drunk_game::prelude::*;
 
 fn main() {
@@ -24,6 +21,7 @@ fn main() {
             // FrameTimeDiagnosticsPlugin,
             MapPlugin,
             GamePlugin,
+            PhysicsPlugin,
             DebugPlugin,
         ))
         .run();

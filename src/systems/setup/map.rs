@@ -103,7 +103,7 @@ pub fn build_houses(
                     ..Default::default()
                 },
                 texture_atlas: map_texture.clone(),
-                transform: Transform::from_translation(Vec3::new(x, y, 50.)),
+                transform: Transform::from_translation(Vec3::new(x, y, 0.1)),
                 ..Default::default()
             },
             size: Size(Vec2::splat(size)),

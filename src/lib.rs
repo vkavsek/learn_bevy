@@ -1,11 +1,10 @@
 pub mod prelude {
     pub use crate::*;
     pub use crate::{
-        components::{enemy::*, general::*, player::*},
+        components::{bundles::*, general::*},
         plugins::*,
         resources::*,
         systems::{
-            collisions::*,
             input::*,
             movement::*,
             setup::{general::*, map::*, player_enemies::*},
@@ -13,6 +12,7 @@ pub mod prelude {
         },
     };
     pub use bevy::prelude::*;
+    pub use bevy_rapier2d::prelude::*;
 
     pub const TITLE: &str = "Game";
     pub const BG_COLOR: Color = Color::rgb(0., 0., 0.);
@@ -27,12 +27,12 @@ pub mod prelude {
     pub const NUM_OF_HOUSES: usize = 5;
     pub const MAX_HOUSE_SIZE: f32 = 500.;
 
-    pub const PLAYER_SPEED: f32 = 500.0;
+    pub const PLAYER_SPEED: f32 = 100.0;
     pub const PLAYER_HEALTH: i32 = 100;
     pub const PLAYER_SIZE: f32 = 32.0;
     pub const PLAYER_COLOR: Color = Color::rgb(1., 0., 1.);
 
-    pub const NUM_ENEMIES: usize = 50000;
+    pub const NUM_ENEMIES: usize = 5000;
     pub const ENEMY_SPEED: f32 = 300.0;
     pub const ENEMY_HEALTH: i32 = 10;
     pub const ENEMY_SIZE: f32 = 64.0;

@@ -20,16 +20,11 @@ pub fn setup_enemies(mut cmds: Commands, char_texture: Res<AsciiSpriteSheet>) {
                     ..default()
                 },
                 texture_atlas: char_texture.clone(),
-                transform: Transform::from_xyz(rng_x, rng_y, 90.0),
+                transform: Transform::from_xyz(rng_x, rng_y, 0.5),
                 ..default()
             },
-            movement: Velocity(
-                Vec2 {
-                    x: rng.gen_range(-1.0..1.0),
-                    y: rng.gen_range(-1.0..1.0),
-                }
-                .normalize(),
-            ),
+            // x: rng.gen_range(-1.0..1.0),
+            // y: rng.gen_range(-1.0..1.0),
             ..default()
         });
     }
@@ -48,7 +43,7 @@ pub fn setup_player(
         spritesheet: SpriteSheetBundle {
             sprite,
             texture_atlas: char_texture.clone(),
-            transform: Transform::from_xyz(0., 0., 900.),
+            transform: Transform::from_xyz(0., 0., 1.),
             ..default()
         },
         ..default()
