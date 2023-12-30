@@ -13,15 +13,6 @@ pub fn cam_movement(
     }
 }
 
-// pub fn apply_velocity(time: Res<Time>, mut query: Query<(&mut Transform, &Vel, &Speed)>) {
-//     for (mut pos, movement, speed) in query.iter_mut() {
-//         let speed = **speed;
-//
-//         pos.translation.x += movement.x * speed * time.delta_seconds();
-//         pos.translation.y += movement.y * speed * time.delta_seconds();
-//     }
-// }
-//
 // pub fn enemy_follow_player(
 //     mut enemy_query: Query<(&mut Vel, &EnemyObjective, &Transform), With<Enemy>>,
 //     player_query: Query<&Transform, (With<Player>, Without<Enemy>)>,

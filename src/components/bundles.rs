@@ -93,7 +93,9 @@ pub struct HouseBundle {
     pub size: Size,
     pub spritesheet: SpriteSheetBundle,
     pub name: Name,
+
     pub rbd: RigidBody,
+    pub collider: Collider,
 }
 impl Default for HouseBundle {
     fn default() -> Self {
@@ -103,6 +105,7 @@ impl Default for HouseBundle {
             spritesheet: Default::default(),
             name: Name::new("House"),
             rbd: RigidBody::Fixed,
+            collider: Collider::cuboid(MAX_HOUSE_SIZE / 2., MAX_HOUSE_SIZE / 2.),
         }
     }
 }
@@ -114,6 +117,7 @@ pub struct WallBundle {
     pub spritesheet: SpriteSheetBundle,
     pub name: Name,
     pub rbd: RigidBody,
+    pub collider: Collider,
 }
 impl WallBundle {
     pub fn new(location: WallLocation, texture_atlas: Handle<TextureAtlas>) -> Self {
@@ -138,6 +142,7 @@ impl WallBundle {
             },
             name: Name::new("Wall"),
             rbd: RigidBody::Fixed,
+            collider: Collider::cuboid(size.x / 2., size.y / 2.),
         }
     }
 }

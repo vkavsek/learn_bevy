@@ -107,6 +107,7 @@ pub fn build_houses(
                 ..Default::default()
             },
             size: Size(Vec2::splat(size)),
+            collider: Collider::cuboid(size / 2.0, size / 2.0),
             ..default()
         });
     }

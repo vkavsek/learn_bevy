@@ -32,7 +32,7 @@ pub mod prelude {
     pub const PLAYER_SIZE: f32 = 32.0;
     pub const PLAYER_COLOR: Color = Color::rgb(1., 0., 1.);
 
-    pub const NUM_ENEMIES: usize = 5000;
+    pub const NUM_ENEMIES: usize = 500;
     pub const ENEMY_SPEED: f32 = 300.0;
     pub const ENEMY_HEALTH: i32 = 10;
     pub const ENEMY_SIZE: f32 = 64.0;

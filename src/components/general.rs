@@ -48,10 +48,8 @@ pub struct House;
 #[derive(Component)]
 pub struct Wall;
 
-// TODO: ?
 #[derive(Component, Reflect, Deref, DerefMut)]
 pub struct Size(pub Vec2);
-// TODO: ?
 
 #[derive(Component)]
 pub enum WallLocation {
