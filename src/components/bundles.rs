@@ -17,6 +17,7 @@ pub struct PlayerBundle {
 
     pub collider: Collider,
     pub mass: ColliderMassProperties,
+    pub restitution: Restitution,
 }
 impl Default for PlayerBundle {
     fn default() -> Self {
@@ -40,6 +41,7 @@ impl Default for PlayerBundle {
             ccd: Ccd::enabled(),
             collider: Collider::ball(PLAYER_SIZE / 2.),
             mass: ColliderMassProperties::Density(3.0),
+            restitution: Restitution::coefficient(0.5),
         }
     }
 }
@@ -61,6 +63,7 @@ pub struct EnemyBundle {
 
     pub collider: Collider,
     pub mass: ColliderMassProperties,
+    pub restitution: Restitution,
 }
 impl Default for EnemyBundle {
     fn default() -> Self {
@@ -82,7 +85,8 @@ impl Default for EnemyBundle {
                 angular_damping: 1.0,
             },
             collider: Collider::ball(ENEMY_SIZE / 2.0),
-            mass: ColliderMassProperties::Density(0.2),
+            mass: ColliderMassProperties::Density(0.1),
+            restitution: Restitution::coefficient(0.75),
         }
     }
 }
@@ -129,7 +133,7 @@ impl WallBundle {
                 sprite: TextureAtlasSprite {
                     color: Color::RED,
                     custom_size: Some(size),
-                    index: 10,
+                    index: 254,
                     ..default()
                 },
 

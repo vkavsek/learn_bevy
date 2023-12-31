@@ -71,7 +71,7 @@ impl WallLocation {
         }
     }
     pub fn size(&self) -> Vec2 {
-        let length = MAP_SIZE as f32 * TILE_SIZE;
+        let length = MAP_SIZE as f32 * TILE_SIZE + TILE_SIZE;
         match self {
             WallLocation::Left | WallLocation::Right => Vec2::new(OUTSIDE_WALL_THICK, length),
             WallLocation::Bot | WallLocation::Top => Vec2::new(length, OUTSIDE_WALL_THICK),
