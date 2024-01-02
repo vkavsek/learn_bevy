@@ -29,6 +29,12 @@ pub enum EnemyObjective {
 }
 
 #[derive(Component)]
+pub struct MainCam;
+
+#[derive(Component)]
+pub struct MinimapCam;
+
+#[derive(Component)]
 pub struct Health {
     pub current: i32,
     pub max: i32,

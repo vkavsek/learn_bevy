@@ -4,10 +4,9 @@ pub mod player_enemies;
 pub mod general {
     use crate::prelude::*;
 
-    pub fn setup_camera(mut cmds: Commands) {
-        let mut camera = Camera2dBundle::default();
-        camera.projection.scale = 1.5;
-        cmds.spawn(camera);
+    pub fn setup_game_cameras(mut cmds: Commands) {
+        cmds.spawn(MainCamBundle::default());
+        cmds.spawn(MinimapCamBundle::default());
     }
 
     pub fn load_spritesheet_texture(

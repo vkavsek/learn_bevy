@@ -22,7 +22,7 @@ impl Plugin for GamePlugin {
         app.add_systems(PreStartup, load_spritesheet_texture)
             .add_systems(
                 OnEnter(MapState::Setup),
-                (setup_player, setup_enemies, setup_camera),
+                (setup_player, setup_enemies, setup_game_cameras),
             )
             .add_systems(
                 Update,

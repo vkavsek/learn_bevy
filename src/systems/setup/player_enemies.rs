@@ -43,7 +43,7 @@ pub fn setup_player(
         spritesheet: SpriteSheetBundle {
             sprite,
             texture_atlas: char_texture.clone(),
-            transform: Transform::from_xyz(0., 0., 1.),
+            transform: Transform::from_xyz(0., 0., 1.0),
             ..default()
         },
         ..default()

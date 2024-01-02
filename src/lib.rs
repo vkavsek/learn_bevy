@@ -19,7 +19,7 @@ pub mod prelude {
 
     pub const WINDOW_RES: (f32, f32) = (1280., 900.);
 
-    pub const MAP_SIZE: usize = 200;
+    pub const MAP_SIZE: usize = 500;
     pub const TILE_SIZE: f32 = 32_f32;
     pub const MAP_SIZE_PX: f32 = MAP_SIZE as f32 * TILE_SIZE;
     pub const OUTSIDE_WALL_THICK: f32 = 32_f32;
@@ -33,7 +33,7 @@ pub mod prelude {
     pub const PLAYER_SIZE: f32 = 32.0;
     pub const PLAYER_COLOR: Color = Color::rgb(1., 0., 1.);
 
-    pub const NUM_ENEMIES: usize = 500;
+    pub const NUM_ENEMIES: usize = 5;
     pub const ENEMY_SPEED: f32 = 300.0;
     pub const ENEMY_DAMPING: f32 = 2.;
     pub const ENEMY_HEALTH: i32 = 10;

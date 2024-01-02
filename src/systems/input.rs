@@ -4,7 +4,7 @@ use crate::prelude::*;
 pub fn handle_input(
     keycode_input: Res<Input<KeyCode>>,
     mut player_query: Query<&mut Velocity, With<Player>>,
-    mut cam_query: Query<&mut OrthographicProjection, With<Camera>>,
+    mut cam_query: Query<&mut OrthographicProjection, (With<MainCam>, Without<MinimapCam>)>,
 ) {
     let mut vel = player_query.single_mut();
 

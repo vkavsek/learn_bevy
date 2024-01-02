@@ -1,3 +1,5 @@
+use bevy::{core_pipeline::clear_color::ClearColorConfig, render::camera::Viewport};
+
 use crate::prelude::*;
 
 #[derive(Bundle)]
@@ -144,6 +146,71 @@ impl WallBundle {
             name: Name::new("Wall"),
             rbd: RigidBody::Fixed,
             collider: Collider::cuboid(size.x / 2., size.y / 2.),
+        }
+    }
+}
+
+#[derive(Bundle)]
+pub struct MainCamBundle {
+    pub camera_bundle: Camera2dBundle,
+    pub camera: MainCam,
+    pub name: Name,
+}
+
+impl Default for MainCamBundle {
+    fn default() -> Self {
+        Self {
+            camera_bundle: Camera2dBundle {
+                camera: Camera {
+                    order: 0,
+                    ..default()
+                },
+                projection: OrthographicProjection {
+                    near: -1.0,
+                    scale: 1.5,
+                    ..default()
+                },
+
+                ..default()
+            },
+            camera: MainCam,
+            name: "MainCam".into(),
+        }
+    }
+}
+
+#[derive(Bundle)]
+pub struct MinimapCamBundle {
+    pub camera_bundle: Camera2dBundle,
+    pub camera: MinimapCam,
+    pub name: Name,
+}
+
+impl Default for MinimapCamBundle {
+    fn default() -> Self {
+        Self {
+            camera_bundle: Camera2dBundle {
+                camera: Camera {
+                    viewport: Some(Viewport {
+                        physical_position: UVec2::new(0, 0),
+                        physical_size: UVec2::new(500, 200),
+                        depth: 0.0..0.1,
+                    }),
+                    order: 1,
+                    ..default()
+                },
+                projection: OrthographicProjection {
+                    near: -1.0,
+                    scale: 25.,
+                    ..default()
+                },
+                camera_2d: Camera2d {
+                    clear_color: ClearColorConfig::None,
+                },
+                ..default()
+            },
+            camera: MinimapCam,
+            name: "MinimapCam".into(),
         }
     }
 }

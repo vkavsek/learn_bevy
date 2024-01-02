@@ -7,7 +7,7 @@ pub fn cam_movement(
     player_q: Query<&Transform, With<Player>>,
 ) {
     if let Ok(player_pos) = player_q.get_single() {
-        if let Ok(mut camera_pos) = camera_q.get_single_mut() {
+        for mut camera_pos in camera_q.iter_mut() {
             camera_pos.translation = player_pos.translation;
         }
     }
