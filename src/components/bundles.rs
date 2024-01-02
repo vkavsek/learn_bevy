@@ -35,12 +35,12 @@ impl Default for PlayerBundle {
             },
             locked_axes: LockedAxes::ROTATION_LOCKED,
             damping: Damping {
-                linear_damping: PLAYER_SPEED / 10.,
-                angular_damping: PLAYER_SPEED / 10.,
+                linear_damping: PLAYER_DAMPING,
+                angular_damping: 10.,
             },
             ccd: Ccd::enabled(),
             collider: Collider::ball(PLAYER_SIZE / 2.),
-            mass: ColliderMassProperties::Density(3.0),
+            mass: ColliderMassProperties::Density(10.0),
             restitution: Restitution::coefficient(0.5),
         }
     }
@@ -81,7 +81,7 @@ impl Default for EnemyBundle {
                 angvel: 0.0,
             },
             damping: Damping {
-                linear_damping: 1.0,
+                linear_damping: ENEMY_DAMPING,
                 angular_damping: 1.0,
             },
             collider: Collider::ball(ENEMY_SIZE / 2.0),
@@ -118,30 +118,27 @@ impl Default for HouseBundle {
 pub struct WallBundle {
     pub wall: Wall,
     pub size: Size,
-    pub spritesheet: SpriteSheetBundle,
+    pub sprite: SpriteBundle,
     pub name: Name,
     pub rbd: RigidBody,
     pub collider: Collider,
 }
 impl WallBundle {
-    pub fn new(location: WallLocation, texture_atlas: Handle<TextureAtlas>) -> Self {
+    pub fn new(location: WallLocation) -> Self {
         let size = location.size();
         WallBundle {
             wall: Wall,
             size: Size(size),
-            spritesheet: SpriteSheetBundle {
-                sprite: TextureAtlasSprite {
+            sprite: SpriteBundle {
+                sprite: Sprite {
                     color: Color::RED,
-                    custom_size: Some(size),
-                    index: 254,
-                    ..default()
+                    custom_size: Some(Vec2::new(size.x, size.y)),
+                    ..Default::default()
                 },
-
                 transform: Transform {
                     translation: location.position().extend(1.0),
                     ..default()
                 },
-                texture_atlas,
                 ..default()
             },
             name: Name::new("Wall"),

@@ -13,6 +13,31 @@ pub fn cam_movement(
     }
 }
 
+pub fn dynamic_damping(
+    mut damp_query: Query<(&mut Damping, &Transform, Option<&Player>)>,
+    noise_map: Res<NoiseMapValues>,
+) {
+    for (mut damping, transform, maybe_player) in damp_query.iter_mut() {
+        let (x, y) = (
+            (((transform.translation.x + MAP_SIZE_PX / 2.0) / TILE_SIZE).floor() as usize),
+            (((transform.translation.y + MAP_SIZE_PX / 2.0) / TILE_SIZE).floor() as usize),
+        );
+        let val = noise_map.get_value(x, y).abs();
+        let base_damping = if maybe_player.is_some() {
+            PLAYER_DAMPING
+        } else {
+            ENEMY_DAMPING
+        };
+        if val < 0.2 {
+            damping.linear_damping = base_damping;
+        } else if val < 0.3 {
+            damping.linear_damping = base_damping * 2.;
+        } else if val < 1.0 {
+            damping.linear_damping = base_damping * 4.0;
+        }
+    }
+}
+
 // pub fn enemy_follow_player(
 //     mut enemy_query: Query<(&mut Vel, &EnemyObjective, &Transform), With<Enemy>>,
 //     player_query: Query<&Transform, (With<Player>, Without<Enemy>)>,
@@ -37,4 +62,5 @@ pub fn cam_movement(
 //             **vel = Vec2::new(x, y).normalize();
 //         }
 //     }
+//
 // }

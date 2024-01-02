@@ -31,6 +31,7 @@ impl Plugin for GamePlugin {
                     (
                         // TODO: change everything to physics
                         handle_input,
+                        dynamic_damping,
                         cam_movement.after(handle_input),
                     )
                         .run_if(in_state(MapState::Ready)),

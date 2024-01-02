@@ -9,7 +9,7 @@ use crate::prelude::*;
 pub struct AsciiSpriteSheet(pub Handle<TextureAtlas>);
 
 #[derive(Resource, Deref, DerefMut)]
-pub struct NoiseMapped(pub NoiseMap);
+pub struct NoiseMapValues(pub NoiseMap);
 
 #[derive(Resource, Deref, DerefMut)]
 pub struct MapRootHandle(pub Entity);

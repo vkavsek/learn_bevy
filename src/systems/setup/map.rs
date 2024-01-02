@@ -5,21 +5,6 @@ use noise::{
 };
 use rand::{thread_rng, Rng};
 
-pub fn map_world_cleanup(mut commands: Commands, noise_map: Res<MapRootHandle>) {
-    commands.entity(**noise_map).despawn_recursive();
-}
-
-pub fn load_spritesheet_texture(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    mut texture_atlas: ResMut<Assets<TextureAtlas>>,
-) {
-    let image = asset_server.load::<Image>("tileset-16x16.png");
-    let atlas = TextureAtlas::from_grid(image, Vec2::splat(16.0), 16, 16, None, None);
-    let atlas_handle = texture_atlas.add(atlas);
-    commands.insert_resource(AsciiSpriteSheet(atlas_handle));
-}
-
 fn generate_noise_map() -> NoiseMap {
     let mut rng = thread_rng();
     let seed: u32 = rng.gen();
@@ -56,20 +41,20 @@ fn get_index(val: f64) -> usize {
 
 pub fn create_map(mut commands: Commands) {
     let map = generate_noise_map();
-    commands.insert_resource(NoiseMapped(map));
+    commands.insert_resource(NoiseMapValues(map));
 }
 
 /// TODO: fix intersecting walls
-pub fn build_outside_walls(mut commands: Commands, map_texture: Res<AsciiSpriteSheet>) {
-    commands.spawn(WallBundle::new(WallLocation::Right, map_texture.clone()));
-    commands.spawn(WallBundle::new(WallLocation::Left, map_texture.clone()));
-    commands.spawn(WallBundle::new(WallLocation::Top, map_texture.clone()));
-    commands.spawn(WallBundle::new(WallLocation::Bot, map_texture.clone()));
+pub fn build_outside_walls(mut commands: Commands) {
+    commands.spawn(WallBundle::new(WallLocation::Right));
+    commands.spawn(WallBundle::new(WallLocation::Left));
+    commands.spawn(WallBundle::new(WallLocation::Top));
+    commands.spawn(WallBundle::new(WallLocation::Bot));
 }
 
 pub fn build_houses(
     mut commands: Commands,
-    map: Res<NoiseMapped>,
+    map: Res<NoiseMapValues>,
     map_texture: Res<AsciiSpriteSheet>,
 ) {
     let mut rng = thread_rng();
@@ -116,7 +101,7 @@ pub fn build_houses(
 pub fn generate_world(
     mut commands: Commands,
     map_texture: Res<AsciiSpriteSheet>,
-    map: Res<NoiseMapped>,
+    map: Res<NoiseMapValues>,
     mut next_state: ResMut<NextState<MapState>>,
 ) {
     let (map_w, map_h) = map.size();
