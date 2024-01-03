@@ -1,9 +1,16 @@
-pub mod bundles;
-
+use crate::prelude::*;
 use std::time::Duration;
 
-use crate::prelude::*;
+pub mod bundles;
 
+// —————> DEBUG COMPONENTS
+#[derive(Component)]
+pub struct FpsRoot;
+
+#[derive(Component)]
+pub struct FpsText;
+
+// —————> GAME COMPONENTS
 #[derive(Component)]
 pub struct Player {
     pub player_name: String,

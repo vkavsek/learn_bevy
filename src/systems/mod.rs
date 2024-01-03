@@ -1,4 +1,5 @@
 #![allow(clippy::type_complexity)]
+pub mod debug;
 pub mod enemy;
 pub mod input;
 pub mod map;

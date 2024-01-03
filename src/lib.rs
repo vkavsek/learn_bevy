@@ -7,7 +7,7 @@ pub mod prelude {
         plugins::*,
         resources::*,
         states::*,
-        systems::{enemy::*, input::*, map::*, movement::*, player::*, *},
+        systems::{debug::*, enemy::*, input::*, map::*, movement::*, player::*, *},
     };
     pub use bevy::prelude::*;
     pub use bevy_rapier2d::prelude::*;
@@ -56,7 +56,7 @@ impl Plugin for GamePlugin {
             .add_state::<SetupState>()
             .add_plugins((
                 //
-                // DebugPlugin,
+                DebugPlugin,
                 SetupPlugin,
                 MainLogicPlugin,
                 EnemyLogicPlugin,

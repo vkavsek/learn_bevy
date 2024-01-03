@@ -1,7 +1,28 @@
-use bevy::input::common_conditions::input_toggle_active;
+use bevy::diagnostic::FrameTimeDiagnosticsPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 use crate::prelude::*;
+
+pub struct DebugPlugin;
+impl Plugin for DebugPlugin {
+    fn build(&self, app: &mut App) {
+        if cfg!(debug_assertions) {
+            app.add_systems(Startup, setup_fps_counter)
+                .add_systems(Update, (handle_fps_update, fps_visibility))
+                .add_plugins((
+                    FrameTimeDiagnosticsPlugin,
+                    WorldInspectorPlugin::new(),
+                    RapierDebugRenderPlugin::default(),
+                ))
+                .register_type::<Size>()
+                .register_type::<EnemyObjective>()
+                .register_type::<ChangeStateTimer>()
+                .register_type::<FollowTimer>()
+                .register_type::<Health>()
+                .register_type::<Xp>();
+        }
+    }
+}
 
 pub struct SetupPlugin;
 impl Plugin for SetupPlugin {
@@ -51,27 +72,6 @@ impl Plugin for EnemyLogicPlugin {
             )
                 .run_if(in_state(SetupState::Ready)),
         );
-    }
-}
-
-pub struct DebugPlugin;
-impl Plugin for DebugPlugin {
-    fn build(&self, app: &mut App) {
-        if cfg!(debug_assertions) {
-            app.add_plugins((
-                WorldInspectorPlugin::new().run_if(input_toggle_active(true, KeyCode::P)),
-                RapierDebugRenderPlugin::default(),
-                // TODO: FPS
-                // LogDiagnosticsPlugin::default(),
-                // FrameTimeDiagnosticsPlugin,
-            ))
-            .register_type::<Size>()
-            .register_type::<EnemyObjective>()
-            .register_type::<ChangeStateTimer>()
-            .register_type::<FollowTimer>()
-            .register_type::<Health>()
-            .register_type::<Xp>();
-        }
     }
 }
 
