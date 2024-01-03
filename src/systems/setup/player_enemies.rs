@@ -14,13 +14,13 @@ pub fn setup_enemies(mut cmds: Commands, char_texture: Res<AsciiSpriteSheet>) {
             health: Health::init(ENEMY_HEALTH, ENEMY_HEALTH),
             spritesheet_bundle: SpriteSheetBundle {
                 sprite: TextureAtlasSprite {
-                    color: Color::WHITE,
+                    color: Color::BLACK,
                     index: 42,
                     custom_size: Some(Vec2::from((ENEMY_SIZE, ENEMY_SIZE))),
                     ..default()
                 },
                 texture_atlas: char_texture.clone(),
-                transform: Transform::from_xyz(rng_x, rng_y, 0.5),
+                transform: Transform::from_xyz(rng_x, rng_y, 0.2),
                 ..default()
             },
             // x: rng.gen_range(-1.0..1.0),
@@ -43,7 +43,7 @@ pub fn setup_player(
         spritesheet: SpriteSheetBundle {
             sprite,
             texture_atlas: char_texture.clone(),
-            transform: Transform::from_xyz(0., 0., 1.0),
+            transform: Transform::from_xyz(0., 0., 0.9),
             ..default()
         },
         ..default()

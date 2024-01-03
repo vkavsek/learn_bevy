@@ -94,29 +94,6 @@ impl Default for EnemyBundle {
 }
 
 #[derive(Bundle)]
-pub struct HouseBundle {
-    pub house: House,
-    pub size: Size,
-    pub spritesheet: SpriteSheetBundle,
-    pub name: Name,
-
-    pub rbd: RigidBody,
-    pub collider: Collider,
-}
-impl Default for HouseBundle {
-    fn default() -> Self {
-        Self {
-            house: House,
-            size: Size(Vec2::splat(MAX_HOUSE_SIZE)),
-            spritesheet: Default::default(),
-            name: Name::new("House"),
-            rbd: RigidBody::Fixed,
-            collider: Collider::cuboid(MAX_HOUSE_SIZE / 2., MAX_HOUSE_SIZE / 2.),
-        }
-    }
-}
-
-#[derive(Bundle)]
 pub struct WallBundle {
     pub wall: Wall,
     pub size: Size,
@@ -188,12 +165,13 @@ pub struct MinimapCamBundle {
 
 impl Default for MinimapCamBundle {
     fn default() -> Self {
+        let (size_x, size_y) = (300, 200);
         Self {
             camera_bundle: Camera2dBundle {
                 camera: Camera {
                     viewport: Some(Viewport {
-                        physical_position: UVec2::new(0, 0),
-                        physical_size: UVec2::new(500, 200),
+                        physical_position: UVec2::new(WINDOW_RES.x as u32 - 25, 0),
+                        physical_size: UVec2::new(size_x, size_y),
                         depth: 0.0..0.1,
                     }),
                     order: 1,
@@ -214,3 +192,26 @@ impl Default for MinimapCamBundle {
         }
     }
 }
+
+// #[derive(Bundle)]
+// pub struct HouseBundle {
+//     pub house: House,
+//     pub size: Size,
+//     pub spritesheet: SpriteSheetBundle,
+//     pub name: Name,
+//
+//     pub rbd: RigidBody,
+//     pub collider: Collider,
+// }
+// impl Default for HouseBundle {
+//     fn default() -> Self {
+//         Self {
+//             house: House,
+//             size: Size(Vec2::splat(MAX_HOUSE_SIZE)),
+//             spritesheet: Default::default(),
+//             name: Name::new("House"),
+//             rbd: RigidBody::Fixed,
+//             collider: Collider::cuboid(MAX_HOUSE_SIZE / 2., MAX_HOUSE_SIZE / 2.),
+//         }
+//     }
+// }

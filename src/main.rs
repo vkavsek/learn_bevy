@@ -3,8 +3,6 @@ use drunk_game::prelude::*;
 
 fn main() {
     App::new()
-        .insert_resource(ClearColor(BG_COLOR))
-        .add_state::<MapState>()
         .add_plugins((
             DefaultPlugins
                 .set(ImagePlugin::default_nearest())
@@ -17,12 +15,7 @@ fn main() {
                     }),
                     ..Default::default()
                 }),
-            // LogDiagnosticsPlugin::default(),
-            // FrameTimeDiagnosticsPlugin,
-            MapPlugin,
             GamePlugin,
-            PhysicsPlugin,
-            DebugPlugin,
         ))
         .run();
 }

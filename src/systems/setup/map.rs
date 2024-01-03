@@ -29,15 +29,6 @@ fn get_color(val: f64) -> Color {
     };
     color_result.expect("Getting color from HEX error")
 }
-fn get_index(val: f64) -> usize {
-    match val.abs() {
-        v if v < 0.20 => 60,
-        v if v < 0.25 => 0,
-        v if v < 0.3 => 20,
-        v if v <= 1.0 => 247,
-        _ => panic!("unexpected value"),
-    }
-}
 
 pub fn create_map(mut commands: Commands) {
     let map = generate_noise_map();
@@ -52,55 +43,54 @@ pub fn build_outside_walls(mut commands: Commands) {
     commands.spawn(WallBundle::new(WallLocation::Bot));
 }
 
-pub fn build_houses(
-    mut commands: Commands,
-    map: Res<NoiseMapValues>,
-    map_texture: Res<AsciiSpriteSheet>,
-) {
-    let mut rng = thread_rng();
-    let mut house_positions = Vec::with_capacity(NUM_OF_HOUSES);
-    let (map_w, map_h) = map.size();
-
-    let start_x = -(map_w as f32) * TILE_SIZE / 2.;
-    let start_y = -(map_h as f32) * TILE_SIZE / 2.;
-
-    let house_s = (MAX_HOUSE_SIZE / TILE_SIZE) as usize;
-    while house_positions.len() < NUM_OF_HOUSES {
-        let rand_x = rng.gen_range(house_s..map_w - house_s);
-        let rand_y = rng.gen_range(house_s..map_h - house_s);
-        let x = start_x + rand_x as f32 * TILE_SIZE;
-        let y = start_y + rand_y as f32 * TILE_SIZE;
-        let size = rng.gen_range(150_f32..MAX_HOUSE_SIZE);
-
-        let val = map.get_value(rand_x, rand_y);
-        if val.abs() < 0.1 {
-            house_positions.push((x, y, size));
-        }
-    }
-
-    for (x, y, size) in house_positions {
-        commands.spawn(HouseBundle {
-            spritesheet: SpriteSheetBundle {
-                sprite: TextureAtlasSprite {
-                    index: 255,
-                    color: Color::hex("#9b1c00").unwrap(),
-                    custom_size: Some(Vec2::splat(size)),
-                    ..Default::default()
-                },
-                texture_atlas: map_texture.clone(),
-                transform: Transform::from_translation(Vec3::new(x, y, 0.1)),
-                ..Default::default()
-            },
-            size: Size(Vec2::splat(size)),
-            collider: Collider::cuboid(size / 2.0, size / 2.0),
-            ..default()
-        });
-    }
-}
+// pub fn build_houses(
+//     mut commands: Commands,
+//     map: Res<NoiseMapValues>,
+//     map_texture: Res<AsciiSpriteSheet>,
+// ) {
+//     let mut rng = thread_rng();
+//     let mut house_positions = Vec::with_capacity(NUM_OF_HOUSES);
+//     let (map_w, map_h) = map.size();
+//
+//     let start_x = -(map_w as f32) * TILE_SIZE / 2.;
+//     let start_y = -(map_h as f32) * TILE_SIZE / 2.;
+//
+//     let house_s = (MAX_HOUSE_SIZE / TILE_SIZE) as usize;
+//     while house_positions.len() < NUM_OF_HOUSES {
+//         let rand_x = rng.gen_range(house_s..map_w - house_s);
+//         let rand_y = rng.gen_range(house_s..map_h - house_s);
+//         let x = start_x + rand_x as f32 * TILE_SIZE;
+//         let y = start_y + rand_y as f32 * TILE_SIZE;
+//         let size = rng.gen_range(150_f32..MAX_HOUSE_SIZE);
+//
+//         let val = map.get_value(rand_x, rand_y);
+//         if val.abs() < 0.1 {
+//             house_positions.push((x, y, size));
+//         }
+//     }
+//
+//     for (x, y, size) in house_positions {
+//         commands.spawn(HouseBundle {
+//             spritesheet: SpriteSheetBundle {
+//                 sprite: TextureAtlasSprite {
+//                     index: 255,
+//                     color: Color::hex("#9b1c00").unwrap(),
+//                     custom_size: Some(Vec2::splat(size)),
+//                     ..Default::default()
+//                 },
+//                 texture_atlas: map_texture.clone(),
+//                 transform: Transform::from_translation(Vec3::new(x, y, 0.1)),
+//                 ..Default::default()
+//             },
+//             size: Size(Vec2::splat(size)),
+//             collider: Collider::cuboid(size / 2.0, size / 2.0),
+//             ..default()
+//         });
+//     }
+// }
 
 pub fn generate_world(
     mut commands: Commands,
-    map_texture: Res<AsciiSpriteSheet>,
     map: Res<NoiseMapValues>,
     mut next_state: ResMut<NextState<MapState>>,
 ) {
@@ -111,7 +101,7 @@ pub fn generate_world(
     let start_y = -(map_h as f32) * TILE_SIZE / 2.;
 
     let noise_map_root = commands
-        .spawn(SpatialBundle::default())
+        .spawn((SpatialBundle::default(), Name::new("MapParent")))
         .with_children(|parent| {
             for x_pos in 0..map_w {
                 for y_pos in 0..map_h {
@@ -119,17 +109,18 @@ pub fn generate_world(
                     let x = start_x + x_pos as f32 * TILE_SIZE;
                     let y = start_y + y_pos as f32 * TILE_SIZE;
 
-                    parent.spawn(SpriteSheetBundle {
-                        sprite: TextureAtlasSprite {
-                            index: get_index(val),
-                            color: get_color(val),
-                            custom_size: Some(Vec2::splat(TILE_SIZE)),
+                    parent.spawn((
+                        SpriteBundle {
+                            sprite: Sprite {
+                                color: get_color(val),
+                                custom_size: Some(Vec2::splat(TILE_SIZE)),
+                                ..Default::default()
+                            },
+                            transform: Transform::from_translation(Vec3::new(x, y, 0.)),
                             ..Default::default()
                         },
-                        texture_atlas: map_texture.clone(),
-                        transform: Transform::from_translation(Vec3::new(x, y, 0.)),
-                        ..Default::default()
-                    });
+                        Name::new("MapChild"),
+                    ));
                 }
             }
         })

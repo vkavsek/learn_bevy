@@ -1,23 +1,26 @@
-use bevy::input::common_conditions::input_toggle_active;
+use bevy::{
+    diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
+    input::common_conditions::input_toggle_active,
+};
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 use crate::prelude::*;
 
-pub struct MapPlugin;
-impl Plugin for MapPlugin {
+pub struct MapBuildAndCleanupPlugin;
+impl Plugin for MapBuildAndCleanupPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(PreStartup, create_map)
             .add_systems(
                 OnEnter(MapState::Build),
-                (generate_world, build_houses, build_outside_walls),
+                (generate_world, build_outside_walls),
             )
             .add_systems(OnExit(MapState::Ready), map_world_cleanup);
     }
 }
 
-pub struct GamePlugin;
+pub struct MainLogicPlugin;
 
-impl Plugin for GamePlugin {
+impl Plugin for MainLogicPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(PreStartup, load_spritesheet_texture)
             .add_systems(
@@ -47,7 +50,9 @@ impl Plugin for DebugPlugin {
         if cfg!(debug_assertions) {
             app.add_plugins((
                 WorldInspectorPlugin::new().run_if(input_toggle_active(true, KeyCode::P)),
-                // RapierDebugRenderPlugin::default(),
+                RapierDebugRenderPlugin::default(),
+                LogDiagnosticsPlugin::default(),
+                FrameTimeDiagnosticsPlugin,
             ))
             .register_type::<Size>();
         }
