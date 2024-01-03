@@ -1,7 +1,4 @@
-use bevy::{
-    diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
-    input::common_conditions::input_toggle_active,
-};
+use bevy::input::common_conditions::input_toggle_active;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 use crate::prelude::*;
@@ -34,13 +31,25 @@ impl Plugin for MainLogicPlugin {
                     handle_kbd_inputs,
                     handle_mouse_input,
                     handle_player_enemy_collisions,
-                    tick_enemy_timers,
-                    handle_enemy_objective_timers,
-                    dynamic_damping,
-                    cam_movement.after(handle_kbd_inputs),
+                    (dynamic_damping, cam_movement).after(handle_kbd_inputs),
                 )
                     .run_if(in_state(SetupState::Ready)),
             ),
+        );
+    }
+}
+pub struct EnemyLogicPlugin;
+impl Plugin for EnemyLogicPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(
+            Update,
+            (
+                change_enemy_color,
+                tick_enemy_timers,
+                enemy_follow_player,
+                handle_enemy_objective_timers,
+            )
+                .run_if(in_state(SetupState::Ready)),
         );
     }
 }
@@ -52,10 +61,16 @@ impl Plugin for DebugPlugin {
             app.add_plugins((
                 WorldInspectorPlugin::new().run_if(input_toggle_active(true, KeyCode::P)),
                 RapierDebugRenderPlugin::default(),
-                LogDiagnosticsPlugin::default(),
-                FrameTimeDiagnosticsPlugin,
+                // TODO: FPS
+                // LogDiagnosticsPlugin::default(),
+                // FrameTimeDiagnosticsPlugin,
             ))
-            .register_type::<Size>();
+            .register_type::<Size>()
+            .register_type::<EnemyObjective>()
+            .register_type::<ChangeStateTimer>()
+            .register_type::<FollowTimer>()
+            .register_type::<Health>()
+            .register_type::<Xp>();
         }
     }
 }
