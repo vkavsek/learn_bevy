@@ -20,6 +20,7 @@ pub struct PlayerBundle {
     pub collider: Collider,
     pub mass: ColliderMassProperties,
     pub restitution: Restitution,
+    pub enable_events: ActiveEvents,
 }
 impl Default for PlayerBundle {
     fn default() -> Self {
@@ -44,6 +45,7 @@ impl Default for PlayerBundle {
             collider: Collider::ball(PLAYER_SIZE / 2.),
             mass: ColliderMassProperties::Density(10.0),
             restitution: Restitution::coefficient(0.5),
+            enable_events: ActiveEvents::COLLISION_EVENTS,
         }
     }
 }
@@ -53,6 +55,8 @@ pub struct EnemyBundle {
     pub enemy: Enemy,
     pub enemy_type: EnemyType,
     pub objective: EnemyObjective,
+    pub change_state_timer: ChangeStateTimer,
+    pub follow_timer: FollowTimer,
 
     pub health: Health,
     pub size: Size,
@@ -73,6 +77,8 @@ impl Default for EnemyBundle {
             enemy: Enemy,
             enemy_type: EnemyType::default(),
             objective: EnemyObjective::default(),
+            change_state_timer: ChangeStateTimer::default(),
+            follow_timer: FollowTimer::default(),
             health: Health::init(50, 50),
             size: Size(Vec2::splat(ENEMY_SIZE)),
             spritesheet_bundle: Default::default(),

@@ -33,6 +33,9 @@ impl Plugin for MainLogicPlugin {
                     // TODO: change everything to physics
                     handle_kbd_inputs,
                     handle_mouse_input,
+                    handle_player_enemy_collisions,
+                    tick_enemy_timers,
+                    handle_enemy_objective_timers,
                     dynamic_damping,
                     cam_movement.after(handle_kbd_inputs),
                 )

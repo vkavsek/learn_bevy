@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use crate::prelude::*;
 
 #[derive(Component)]
@@ -21,11 +23,41 @@ pub enum EnemyType {
     Basic,
 }
 
-#[derive(Component, Default, Clone, Copy)]
+#[derive(Component, Default, Clone, Copy, Debug)]
 pub enum EnemyObjective {
-    #[default]
     FollowPlayer,
+    #[default]
     Bounce,
+}
+impl EnemyObjective {
+    pub fn switch(&mut self) {
+        *self = match self {
+            EnemyObjective::Bounce => EnemyObjective::FollowPlayer,
+            _ => EnemyObjective::Bounce,
+        }
+    }
+}
+
+#[derive(Component, Deref, DerefMut, Default)]
+pub struct FollowTimer(pub Option<Timer>);
+impl FollowTimer {
+    pub fn new(len: Duration) -> Self {
+        Self(Some(Timer::new(len, TimerMode::Once)))
+    }
+}
+
+#[derive(Component, Deref, DerefMut, Default)]
+pub struct ChangeStateTimer(pub Option<Timer>);
+impl ChangeStateTimer {
+    pub fn new(len: Duration) -> Self {
+        Self(Some(Timer::new(len, TimerMode::Once)))
+    }
+    pub fn change_state(&mut self, len: Duration) {
+        *self = match **self {
+            Some(_) => ChangeStateTimer::default(),
+            None => ChangeStateTimer::new(len),
+        };
+    }
 }
 
 #[derive(Component)]
@@ -34,7 +66,7 @@ pub struct MainCam;
 #[derive(Component)]
 pub struct MinimapCam;
 
-#[derive(Component)]
+#[derive(Component, Debug)]
 pub struct Health {
     pub current: i32,
     pub max: i32,

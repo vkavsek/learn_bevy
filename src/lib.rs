@@ -1,4 +1,6 @@
 pub mod prelude {
+    use std::time::Duration;
+
     pub use crate::*;
     pub use crate::{
         components::{bundles::*, general::*},
@@ -34,9 +36,11 @@ pub mod prelude {
     pub const PLAYER_COLOR: Color = Color::rgb(1., 0., 1.);
 
     pub const NUM_ENEMIES: usize = 1000;
+    pub const ENEMY_CHANGE_DELAY: Duration = Duration::from_secs(1);
+    pub const ENEMY_FOLLOW_TIME: Duration = Duration::from_secs(5);
     pub const ENEMY_SPEED: f32 = 300.0;
-    pub const ENEMY_DAMPING: f32 = 2.;
-    pub const ENEMY_HEALTH: i32 = 10;
+    pub const ENEMY_DAMPING: f32 = 5.;
+    pub const ENEMY_HEALTH: i32 = 1;
     pub const ENEMY_SIZE: f32 = 80.0;
 }
 
