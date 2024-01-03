@@ -52,22 +52,14 @@ pub struct GamePlugin;
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(ClearColor(BG_COLOR))
-            .add_state::<MapState>()
+            .add_state::<SetupState>()
             .add_plugins((
                 // DebugPlugin,
-                MapBuildAndCleanupPlugin,
+                SetupPlugin,
                 MainLogicPlugin,
                 PhysicsPlugin,
             ));
     }
-}
-
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, States)]
-pub enum MapState {
-    #[default]
-    Build,
-    Setup,
-    Ready,
 }
 
 // #[derive(Event, Default)]

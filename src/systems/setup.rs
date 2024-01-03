@@ -4,6 +4,14 @@ pub mod player_enemies;
 pub mod general {
     use crate::prelude::*;
 
+    #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, States)]
+    pub enum SetupState {
+        #[default]
+        Build,
+        Setup,
+        Ready,
+    }
+
     pub fn setup_game_cameras(mut cmds: Commands) {
         cmds.spawn(MainCamBundle::default());
         cmds.spawn(MinimapCamBundle::default());

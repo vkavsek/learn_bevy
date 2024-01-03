@@ -31,7 +31,7 @@ pub fn setup_enemies(mut cmds: Commands, char_texture: Res<AsciiSpriteSheet>) {
 }
 pub fn setup_player(
     mut cmds: Commands,
-    mut next_state: ResMut<NextState<MapState>>,
+    mut next_state: ResMut<NextState<SetupState>>,
     char_texture: Res<AsciiSpriteSheet>,
 ) {
     let mut sprite = TextureAtlasSprite::new(2);
@@ -49,5 +49,5 @@ pub fn setup_player(
         ..default()
     });
 
-    next_state.set(MapState::Ready)
+    next_state.set(SetupState::Ready)
 }

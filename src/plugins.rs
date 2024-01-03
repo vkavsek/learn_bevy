@@ -6,45 +6,43 @@ use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 use crate::prelude::*;
 
-pub struct MapBuildAndCleanupPlugin;
-impl Plugin for MapBuildAndCleanupPlugin {
+pub struct SetupPlugin;
+impl Plugin for SetupPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(PreStartup, create_map)
+        app.add_systems(PreStartup, (create_map, load_spritesheet_texture))
             .add_systems(
-                OnEnter(MapState::Build),
+                OnEnter(SetupState::Setup),
+                (setup_player, setup_enemies, setup_game_cameras),
+            )
+            .add_systems(
+                OnEnter(SetupState::Build),
                 (generate_world, build_outside_walls),
             )
-            .add_systems(OnExit(MapState::Ready), map_world_cleanup);
+            .add_systems(OnExit(SetupState::Ready), map_world_cleanup);
     }
 }
 
 pub struct MainLogicPlugin;
-
 impl Plugin for MainLogicPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(PreStartup, load_spritesheet_texture)
-            .add_systems(
-                OnEnter(MapState::Setup),
-                (setup_player, setup_enemies, setup_game_cameras),
-            )
-            .add_systems(
-                Update,
+        app.add_systems(
+            Update,
+            (
+                bevy::window::close_on_esc,
                 (
-                    bevy::window::close_on_esc,
-                    (
-                        // TODO: change everything to physics
-                        handle_input,
-                        dynamic_damping,
-                        cam_movement.after(handle_input),
-                    )
-                        .run_if(in_state(MapState::Ready)),
-                ),
-            );
+                    // TODO: change everything to physics
+                    handle_kbd_inputs,
+                    handle_mouse_input,
+                    dynamic_damping,
+                    cam_movement.after(handle_kbd_inputs),
+                )
+                    .run_if(in_state(SetupState::Ready)),
+            ),
+        );
     }
 }
 
 pub struct DebugPlugin;
-
 impl Plugin for DebugPlugin {
     fn build(&self, app: &mut App) {
         if cfg!(debug_assertions) {
@@ -60,7 +58,6 @@ impl Plugin for DebugPlugin {
 }
 
 pub struct PhysicsPlugin;
-
 impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins((RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(32.),))

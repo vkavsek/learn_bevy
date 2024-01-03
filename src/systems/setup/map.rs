@@ -43,6 +43,47 @@ pub fn build_outside_walls(mut commands: Commands) {
     commands.spawn(WallBundle::new(WallLocation::Bot));
 }
 
+pub fn generate_world(
+    mut commands: Commands,
+    map: Res<NoiseMapValues>,
+    mut next_state: ResMut<NextState<SetupState>>,
+) {
+    let (map_w, map_h) = map.size();
+    info!("Map size: {map_w}x{map_h}");
+
+    let start_x = -(map_w as f32) * TILE_SIZE / 2.;
+    let start_y = -(map_h as f32) * TILE_SIZE / 2.;
+
+    let noise_map_root = commands
+        .spawn((SpatialBundle::default(), Name::new("MapParent")))
+        .with_children(|parent| {
+            for x_pos in 0..map_w {
+                for y_pos in 0..map_h {
+                    let val = map.get_value(x_pos, y_pos);
+                    let x = start_x + x_pos as f32 * TILE_SIZE;
+                    let y = start_y + y_pos as f32 * TILE_SIZE;
+
+                    parent.spawn((
+                        SpriteBundle {
+                            sprite: Sprite {
+                                color: get_color(val),
+                                custom_size: Some(Vec2::splat(TILE_SIZE)),
+                                ..Default::default()
+                            },
+                            transform: Transform::from_translation(Vec3::new(x, y, 0.)),
+                            ..Default::default()
+                        },
+                        Name::new("MapChild"),
+                    ));
+                }
+            }
+        })
+        .id();
+    commands.insert_resource(MapRootHandle(noise_map_root));
+
+    next_state.set(SetupState::Setup);
+}
+
 // pub fn build_houses(
 //     mut commands: Commands,
 //     map: Res<NoiseMapValues>,
@@ -88,44 +129,3 @@ pub fn build_outside_walls(mut commands: Commands) {
 //         });
 //     }
 // }
-
-pub fn generate_world(
-    mut commands: Commands,
-    map: Res<NoiseMapValues>,
-    mut next_state: ResMut<NextState<MapState>>,
-) {
-    let (map_w, map_h) = map.size();
-    info!("Map size: {map_w}x{map_h}");
-
-    let start_x = -(map_w as f32) * TILE_SIZE / 2.;
-    let start_y = -(map_h as f32) * TILE_SIZE / 2.;
-
-    let noise_map_root = commands
-        .spawn((SpatialBundle::default(), Name::new("MapParent")))
-        .with_children(|parent| {
-            for x_pos in 0..map_w {
-                for y_pos in 0..map_h {
-                    let val = map.get_value(x_pos, y_pos);
-                    let x = start_x + x_pos as f32 * TILE_SIZE;
-                    let y = start_y + y_pos as f32 * TILE_SIZE;
-
-                    parent.spawn((
-                        SpriteBundle {
-                            sprite: Sprite {
-                                color: get_color(val),
-                                custom_size: Some(Vec2::splat(TILE_SIZE)),
-                                ..Default::default()
-                            },
-                            transform: Transform::from_translation(Vec3::new(x, y, 0.)),
-                            ..Default::default()
-                        },
-                        Name::new("MapChild"),
-                    ));
-                }
-            }
-        })
-        .id();
-    commands.insert_resource(MapRootHandle(noise_map_root));
-
-    next_state.set(MapState::Setup);
-}

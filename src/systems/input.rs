@@ -1,7 +1,9 @@
+use bevy::window::PrimaryWindow;
+
 use crate::prelude::*;
 
 /// TODO: Improve input handling
-pub fn handle_input(
+pub fn handle_kbd_inputs(
     keycode_input: Res<Input<KeyCode>>,
     mut player_query: Query<&mut Velocity, With<Player>>,
     mut cam_query: Query<&mut OrthographicProjection, (With<MainCam>, Without<MinimapCam>)>,
@@ -38,5 +40,16 @@ pub fn handle_input(
             projection.scale *= 1.05;
         }
         projection.scale = projection.scale.clamp(0.25, 10.)
+    }
+}
+
+pub fn handle_mouse_input(
+    window_q: Query<&Window, With<PrimaryWindow>>,
+    mouse_button: Res<Input<MouseButton>>,
+) {
+    if let Some(pos) = window_q.single().cursor_position() {
+        if mouse_button.just_pressed(MouseButton::Left) {
+            println!("Clicked at {pos}");
+        }
     }
 }
