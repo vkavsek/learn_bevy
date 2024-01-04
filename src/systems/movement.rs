@@ -13,24 +13,37 @@ pub fn cam_movement(
 
 pub fn dynamic_damping(
     mut damp_query: Query<(&mut Damping, &Transform, Option<&Player>)>,
-    noise_map: Res<NoiseMapValues>,
+    tile_query: Query<(Entity, &GameMapTile)>,
+    tilemap_q: Query<&TileStorage>,
 ) {
+    let tile_storage = tilemap_q
+        .get_single()
+        .expect("There is more than one TILEMAP present in the World!");
+
     for (mut damping, transform, maybe_player) in damp_query.iter_mut() {
         let (x, y) = (
-            (((transform.translation.x + MAP_SIZE_PX / 2.0) / TILE_SIZE).floor() as usize),
-            (((transform.translation.y + MAP_SIZE_PX / 2.0) / TILE_SIZE).floor() as usize),
+            (((transform.translation.x + MAP_SIZE_PX.x / 2.0) / TILE_SIZE.x).floor() as u32),
+            (((transform.translation.y + MAP_SIZE_PX.y / 2.0) / TILE_SIZE.y).floor() as u32),
         );
-        let val = noise_map.get_value(x, y).abs();
+        let tile_at_pos = tile_storage
+            .get(&TilePos::new(x, y))
+            .expect("Entity is at invalid position!");
+
+        let (_, noise_val) = tile_query
+            .iter()
+            .find(|(ent, _)| ent == &tile_at_pos)
+            .unwrap();
+
         let base_damping = if maybe_player.is_some() {
             PLAYER_DAMPING
         } else {
             ENEMY_DAMPING
         };
-        if val < 0.2 {
+        if **noise_val < 0.2 {
             damping.linear_damping = base_damping;
-        } else if val < 0.3 {
+        } else if **noise_val < 0.3 {
             damping.linear_damping = base_damping * 2.;
-        } else if val < 1.0 {
+        } else if **noise_val < 1.0 {
             damping.linear_damping = base_damping * 4.0;
         }
     }

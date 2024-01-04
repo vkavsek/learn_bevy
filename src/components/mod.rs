@@ -95,6 +95,19 @@ pub struct House;
 #[derive(Component)]
 pub struct Wall;
 
+#[derive(Component)]
+pub struct GameMap;
+
+#[derive(Component, Reflect, Deref, DerefMut)]
+pub struct GameMapTile {
+    pub noise_val: f32,
+}
+impl GameMapTile {
+    pub fn new(noise_val: f32) -> Self {
+        GameMapTile { noise_val }
+    }
+}
+
 #[derive(Component, Reflect, Deref, DerefMut)]
 pub struct Size(pub Vec2);
 
@@ -108,8 +121,8 @@ pub enum WallLocation {
 
 impl WallLocation {
     pub fn position(&self) -> Vec2 {
-        let start = -(MAP_SIZE as f32 * TILE_SIZE / 2.);
-        let end = MAP_SIZE as f32 * TILE_SIZE / 2.;
+        let start = -(MAP_SIZE.x as f32 * TILE_SIZE.x / 2.);
+        let end = MAP_SIZE.x as f32 * TILE_SIZE.x / 2.;
         match self {
             WallLocation::Left => Vec2::new(start, 0.),
             WallLocation::Right => Vec2::new(end, 0.),
@@ -118,7 +131,7 @@ impl WallLocation {
         }
     }
     pub fn size(&self) -> Vec2 {
-        let length = MAP_SIZE as f32 * TILE_SIZE + TILE_SIZE;
+        let length = MAP_SIZE.x as f32 * TILE_SIZE.x + TILE_SIZE.x;
         match self {
             WallLocation::Left | WallLocation::Right => Vec2::new(OUTSIDE_WALL_THICK, length),
             WallLocation::Bot | WallLocation::Top => Vec2::new(length, OUTSIDE_WALL_THICK),

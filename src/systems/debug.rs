@@ -3,6 +3,7 @@ use bevy::diagnostic::{DiagnosticsStore, FrameTimeDiagnosticsPlugin};
 use crate::prelude::*;
 
 pub fn setup_fps_counter(mut cmds: Commands) {
+    println!("fps update");
     // Create a <div> to hold the text
     let root = cmds
         .spawn((

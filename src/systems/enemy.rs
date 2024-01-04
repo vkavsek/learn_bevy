@@ -6,8 +6,8 @@ pub fn setup_enemies(mut cmds: Commands, char_texture: Res<AsciiSpriteSheet>) {
     let half_s = MAP_SIZE_PX / 2.;
 
     for _n in 0..NUM_ENEMIES {
-        let rng_x = rng.gen_range((-half_s + ENEMY_SIZE + 1.)..(half_s - ENEMY_SIZE - 1.));
-        let rng_y = rng.gen_range((-half_s + ENEMY_SIZE + 1.)..(half_s - ENEMY_SIZE - 1.));
+        let rng_x = rng.gen_range((-half_s.x + ENEMY_SIZE + 1.)..(half_s.x - ENEMY_SIZE - 1.));
+        let rng_y = rng.gen_range((-half_s.y + ENEMY_SIZE + 1.)..(half_s.y - ENEMY_SIZE - 1.));
         cmds.spawn(EnemyBundle {
             enemy: Enemy,
             enemy_type: Default::default(),

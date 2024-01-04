@@ -10,7 +10,7 @@ use crate::prelude::*;
 
 pub fn setup_game_cameras(mut cmds: Commands) {
     cmds.spawn(MainCamBundle::default());
-    cmds.spawn(MinimapCamBundle::default());
+    // cmds.spawn(MinimapCamBundle::default());
 }
 
 pub fn load_spritesheet_texture(
@@ -22,10 +22,6 @@ pub fn load_spritesheet_texture(
     let atlas = TextureAtlas::from_grid(image, Vec2::splat(16.0), 16, 16, None, None);
     let atlas_handle = texture_atlas.add(atlas);
     commands.insert_resource(AsciiSpriteSheet(atlas_handle));
-}
-
-pub fn map_world_cleanup(mut commands: Commands, noise_map: Res<MapRootHandle>) {
-    commands.entity(**noise_map).despawn_recursive();
 }
 
 pub fn handle_player_enemy_collisions(

@@ -1,4 +1,4 @@
-use bevy::diagnostic::FrameTimeDiagnosticsPlugin;
+use bevy::{diagnostic::FrameTimeDiagnosticsPlugin, input::common_conditions::input_toggle_active};
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 use crate::prelude::*;
@@ -7,19 +7,16 @@ pub struct DebugPlugin;
 impl Plugin for DebugPlugin {
     fn build(&self, app: &mut App) {
         if cfg!(debug_assertions) {
-            app.add_systems(Startup, setup_fps_counter)
-                .add_systems(Update, (handle_fps_update, fps_visibility))
-                .add_plugins((
-                    FrameTimeDiagnosticsPlugin,
-                    WorldInspectorPlugin::new(),
-                    RapierDebugRenderPlugin::default(),
-                ))
-                .register_type::<Size>()
-                .register_type::<EnemyObjective>()
-                .register_type::<ChangeStateTimer>()
-                .register_type::<FollowTimer>()
-                .register_type::<Health>()
-                .register_type::<Xp>();
+            app.add_plugins((
+                WorldInspectorPlugin::new().run_if(input_toggle_active(true, KeyCode::F1)),
+                RapierDebugRenderPlugin::default(),
+            ))
+            .register_type::<Size>()
+            .register_type::<EnemyObjective>()
+            .register_type::<ChangeStateTimer>()
+            .register_type::<FollowTimer>()
+            .register_type::<Health>()
+            .register_type::<Xp>();
         }
     }
 }
@@ -27,23 +24,23 @@ impl Plugin for DebugPlugin {
 pub struct SetupPlugin;
 impl Plugin for SetupPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(PreStartup, (create_map, load_spritesheet_texture))
+        app.add_systems(PreStartup, load_spritesheet_texture)
             .add_systems(
                 OnEnter(SetupState::Setup),
-                (setup_player, setup_enemies, setup_game_cameras),
-            )
-            .add_systems(
-                OnEnter(SetupState::Build),
-                (generate_world, build_outside_walls),
-            )
-            .add_systems(OnExit(SetupState::Ready), map_world_cleanup);
+                (
+                    setup_player,
+                    setup_enemies,
+                    setup_fps_counter,
+                    setup_game_cameras,
+                ),
+            );
     }
 }
 
 pub struct MainLogicPlugin;
 impl Plugin for MainLogicPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
+        app.add_plugins(FrameTimeDiagnosticsPlugin).add_systems(
             Update,
             (
                 bevy::window::close_on_esc,
@@ -52,6 +49,8 @@ impl Plugin for MainLogicPlugin {
                     handle_kbd_inputs,
                     handle_mouse_input,
                     handle_player_enemy_collisions,
+                    handle_fps_update,
+                    fps_visibility,
                     (dynamic_damping, cam_movement).after(handle_kbd_inputs),
                 )
                     .run_if(in_state(SetupState::Ready)),
@@ -83,5 +82,15 @@ impl Plugin for PhysicsPlugin {
                 gravity: Vec2::ZERO,
                 ..Default::default()
             });
+    }
+}
+
+pub struct MapPlugin;
+impl Plugin for MapPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_plugins(TilemapPlugin).add_systems(
+            OnEnter(SetupState::Build),
+            (generate_tilemap, build_outside_walls),
+        );
     }
 }

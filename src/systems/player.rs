@@ -7,7 +7,7 @@ pub fn setup_player(
 ) {
     let mut sprite = TextureAtlasSprite::new(2);
     sprite.color = PLAYER_COLOR;
-    sprite.custom_size = Some(Vec2::splat(TILE_SIZE));
+    sprite.custom_size = Some(Vec2::splat(PLAYER_SIZE));
 
     cmds.spawn(PlayerBundle {
         player: Player::init("TODO"),
