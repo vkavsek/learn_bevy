@@ -4,6 +4,7 @@
 on the [official webpage.](www.bevyengine.org)
 - Install lld, mold and clang: 
       ```sudo dnf install lld mold clang```
+- Clone 'bevy_ecs_tilemap' from [official repository.](https://github.com/StarArawn/bevy_ecs_tilemap) Place it in "./dependencies/". This is neccessary until crates.io version gets updated to 0.12.
 - Run
 
 
@@ -11,6 +12,7 @@ on the [official webpage.](www.bevyengine.org)
 - Add health visualizer for player and enemies.
 - Despawn enemies if health reaches 0.
 - Handle player death.
-- Add menu.
+- Map with ECS tilemap ?
 - Add projectiles / guns ... 
+- Add menu.
 
