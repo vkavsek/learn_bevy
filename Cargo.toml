@@ -7,9 +7,10 @@ edition = "2021"
 
 # TODO: Remove 'dynamic_linking' before final release 
 [dependencies]
-bevy = { version = "0.12.1", features = ["dynamic_linking"] }
-bevy-inspector-egui = "0.22.0"
-bevy_rapier2d = { version = "0.23.0", features = [
+bevy_ecs_tilemap = { path = "./dependencies/bevy_ecs_tilemap" }
+bevy = { version = "0.12", features = ["dynamic_linking"] }
+bevy-inspector-egui = "0.22"
+bevy_rapier2d = { version = "0.23", features = [
   "simd-stable",
   "debug-render-2d",
 ] }
