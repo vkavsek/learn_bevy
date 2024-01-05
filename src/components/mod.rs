@@ -10,6 +10,12 @@ pub struct FpsRoot;
 #[derive(Component)]
 pub struct FpsText;
 
+#[derive(Component)]
+pub struct DebugRoot;
+
+#[derive(Component)]
+pub struct DebugText;
+
 // —————> GAME COMPONENTS
 #[derive(Component)]
 pub struct Player {
@@ -50,6 +56,14 @@ impl EnemyObjective {
 #[derive(Component, Deref, Reflect, DerefMut, Default)]
 pub struct FollowTimer(pub Option<Timer>);
 impl FollowTimer {
+    pub fn new(len: Duration) -> Self {
+        Self(Some(Timer::new(len, TimerMode::Once)))
+    }
+}
+
+#[derive(Component, Deref, Reflect, DerefMut, Default)]
+pub struct UnchangableTimer(pub Option<Timer>);
+impl UnchangableTimer {
     pub fn new(len: Duration) -> Self {
         Self(Some(Timer::new(len, TimerMode::Once)))
     }
@@ -121,8 +135,8 @@ pub enum WallLocation {
 
 impl WallLocation {
     pub fn position(&self) -> Vec2 {
-        let start = -(MAP_SIZE.x as f32 * TILE_SIZE.x / 2.);
-        let end = MAP_SIZE.x as f32 * TILE_SIZE.x / 2.;
+        let start = -(MAP_SIZE.x as f32 * GRID_SIZE.x / 2.);
+        let end = MAP_SIZE.x as f32 * GRID_SIZE.x / 2.;
         match self {
             WallLocation::Left => Vec2::new(start, 0.),
             WallLocation::Right => Vec2::new(end, 0.),
@@ -131,7 +145,7 @@ impl WallLocation {
         }
     }
     pub fn size(&self) -> Vec2 {
-        let length = MAP_SIZE.x as f32 * TILE_SIZE.x + TILE_SIZE.x;
+        let length = MAP_SIZE.x as f32 * GRID_SIZE.x + GRID_SIZE.x;
         match self {
             WallLocation::Left | WallLocation::Right => Vec2::new(OUTSIDE_WALL_THICK, length),
             WallLocation::Bot | WallLocation::Top => Vec2::new(length, OUTSIDE_WALL_THICK),

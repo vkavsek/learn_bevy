@@ -30,27 +30,31 @@ pub fn setup_enemies(mut cmds: Commands, char_texture: Res<AsciiSpriteSheet>) {
     }
 }
 
-pub fn tick_enemy_timers(
-    mut enemy_q: Query<(&mut ChangeStateTimer, &mut FollowTimer), With<Enemy>>,
+pub fn handle_enemy_timers(
+    mut enemy_q: Query<
+        (
+            &mut EnemyObjective,
+            &mut ChangeStateTimer,
+            &mut UnchangableTimer,
+            &mut FollowTimer,
+        ),
+        With<Enemy>,
+    >,
     time: Res<Time>,
 ) {
-    for (mut change_timer, mut follow_timer) in enemy_q.iter_mut() {
+    for (mut enemy_obj, mut change_timer, mut unchangeble_timer, mut follow_timer) in
+        enemy_q.iter_mut()
+    {
         (*change_timer)
+            .as_mut()
+            .map(|timer| timer.tick(time.delta()));
+        (*unchangeble_timer)
             .as_mut()
             .map(|timer| timer.tick(time.delta()));
         (*follow_timer)
             .as_mut()
             .map(|timer| timer.tick(time.delta()));
-    }
-}
 
-pub fn handle_enemy_objective_timers(
-    mut enemy_query: Query<
-        (&mut EnemyObjective, &mut ChangeStateTimer, &mut FollowTimer),
-        With<Enemy>,
-    >,
-) {
-    for (mut enemy_obj, mut change_timer, mut follow_timer) in enemy_query.iter_mut() {
         match *enemy_obj {
             EnemyObjective::FollowPlayer => {
                 if let Some(f_timer) = (**follow_timer).as_ref() {

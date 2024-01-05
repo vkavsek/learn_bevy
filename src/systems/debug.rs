@@ -2,12 +2,11 @@ use bevy::diagnostic::{DiagnosticsStore, FrameTimeDiagnosticsPlugin};
 
 use crate::prelude::*;
 
-pub fn setup_fps_counter(mut cmds: Commands) {
-    println!("fps update");
+pub fn setup_debug_text(mut cmds: Commands) {
     // Create a <div> to hold the text
     let root = cmds
         .spawn((
-            FpsRoot,
+            DebugRoot,
             NodeBundle {
                 background_color: BackgroundColor(Color::BLUE.with_a(0.5)),
                 // Max Z-index to render on top of everything
@@ -15,10 +14,11 @@ pub fn setup_fps_counter(mut cmds: Commands) {
                 style: Style {
                     position_type: PositionType::Absolute,
                     right: Val::Percent(1.),
-                    top: Val::Percent(1.),
+                    bottom: Val::Percent(1.),
+                    top: Val::Auto,
                     left: Val::Auto,
-                    bottom: Val::Auto,
                     padding: UiRect::all(Val::Px(4.0)),
+                    border: UiRect::all(Val::Px(1.)),
                     ..Default::default()
                 },
                 border_color: BorderColor(Color::WHITE.with_a(0.5)),
@@ -26,13 +26,13 @@ pub fn setup_fps_counter(mut cmds: Commands) {
             },
         ))
         .id();
-    let text_fps = cmds
+    let debug_text = cmds
         .spawn((
-            FpsText,
+            DebugText,
             TextBundle {
                 text: Text::from_sections([
                     TextSection {
-                        value: "FPS: ".into(),
+                        value: "Player position: ".into(),
                         style: TextStyle {
                             font_size: 16.0,
                             color: Color::WHITE,
@@ -53,7 +53,61 @@ pub fn setup_fps_counter(mut cmds: Commands) {
         ))
         .id();
 
-    cmds.entity(root).push_children(&[text_fps]);
+    cmds.entity(root).add_child(debug_text);
+}
+
+pub fn setup_fps_counter(mut cmds: Commands) {
+    // Create a <div> to hold the text
+    let root = cmds
+        .spawn((
+            FpsRoot,
+            NodeBundle {
+                background_color: BackgroundColor(Color::BLUE.with_a(0.75)),
+                // Max Z-index to render on top of everything
+                z_index: ZIndex::Global(i32::MAX),
+                style: Style {
+                    position_type: PositionType::Absolute,
+                    right: Val::Percent(1.),
+                    top: Val::Percent(1.),
+                    left: Val::Auto,
+                    bottom: Val::Auto,
+                    padding: UiRect::all(Val::Px(4.0)),
+                    border: UiRect::all(Val::Px(3.)),
+                    ..Default::default()
+                },
+                border_color: BorderColor(Color::BLACK),
+                ..Default::default()
+            },
+        ))
+        .id();
+    let text_fps = cmds
+        .spawn((
+            FpsText,
+            TextBundle {
+                text: Text::from_sections([
+                    TextSection {
+                        value: "FPS: ".into(),
+                        style: TextStyle {
+                            font_size: 24.0,
+                            color: Color::WHITE,
+                            ..default()
+                        },
+                    },
+                    TextSection {
+                        value: " N/A".into(),
+                        style: TextStyle {
+                            font_size: 24.0,
+                            color: Color::WHITE,
+                            ..default()
+                        },
+                    },
+                ]),
+                ..Default::default()
+            },
+        ))
+        .id();
+
+    cmds.entity(root).add_child(text_fps);
 }
 
 pub fn handle_fps_update(
@@ -92,6 +146,21 @@ pub fn handle_fps_update(
             text.sections[1].value = " N/A".into();
             text.sections[1].style.color = Color::WHITE;
         }
+    }
+}
+
+pub fn handle_debug_text(
+    mut text_q: Query<&mut Text, With<DebugText>>,
+    player_q: Query<&Transform, With<Player>>,
+) {
+    let player_pos = player_q.single().translation;
+    for mut text in text_q.iter_mut() {
+        text.sections[1].value = format!(
+            "{:10.2}, {:10.2}, {:10.2}",
+            player_pos.x, player_pos.y, player_pos.z
+        );
+
+        text.sections[1].style.color = Color::RED;
     }
 }
 

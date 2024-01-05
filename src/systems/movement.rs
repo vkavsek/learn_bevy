@@ -11,6 +11,7 @@ pub fn cam_movement(
     }
 }
 
+///  NOTE: If this is suspected to be slow you could access the noise value directly from NoiseMap
 pub fn dynamic_damping(
     mut damp_query: Query<(&mut Damping, &Transform, Option<&Player>)>,
     tile_query: Query<(Entity, &GameMapTile)>,
@@ -22,16 +23,14 @@ pub fn dynamic_damping(
 
     for (mut damping, transform, maybe_player) in damp_query.iter_mut() {
         let (x, y) = (
-            (((transform.translation.x + MAP_SIZE_PX.x / 2.0) / TILE_SIZE.x).floor() as u32),
-            (((transform.translation.y + MAP_SIZE_PX.y / 2.0) / TILE_SIZE.y).floor() as u32),
+            (((transform.translation.x + MAP_SIZE_PX.x / 2.0) / GRID_SIZE.x).floor() as u32),
+            (((transform.translation.y + MAP_SIZE_PX.y / 2.0) / GRID_SIZE.y).floor() as u32),
         );
         let tile_at_pos = tile_storage
             .get(&TilePos::new(x, y))
             .expect("Entity is at invalid position!");
-
-        let (_, noise_val) = tile_query
-            .iter()
-            .find(|(ent, _)| ent == &tile_at_pos)
+        let noise_val = tile_query
+            .get_component::<GameMapTile>(tile_at_pos)
             .unwrap();
 
         let base_damping = if maybe_player.is_some() {

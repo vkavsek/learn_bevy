@@ -54,7 +54,7 @@ pub fn generate_tilemap(
 
     let texture_handle = asset_server.load("tiles.png");
     let tile_size = TILE_SIZE;
-    let grid_size = tile_size.into();
+    let grid_size = GRID_SIZE;
     let map_type = TilemapType::default();
 
     commands.entity(tilemap_ent).insert(TilemapBundle {

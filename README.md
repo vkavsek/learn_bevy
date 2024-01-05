@@ -12,7 +12,6 @@ on the [official webpage.](www.bevyengine.org)
 - Add health visualizer for player and enemies.
 - Despawn enemies if health reaches 0.
 - Handle player death.
-- Map with ECS tilemap ?
 - Add projectiles / guns ... 
 - Add menu.
 

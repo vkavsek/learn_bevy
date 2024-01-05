@@ -8,12 +8,22 @@ impl Plugin for DebugPlugin {
     fn build(&self, app: &mut App) {
         if cfg!(debug_assertions) {
             app.add_plugins((
-                WorldInspectorPlugin::new().run_if(input_toggle_active(true, KeyCode::F1)),
+                FrameTimeDiagnosticsPlugin,
+                WorldInspectorPlugin::new().run_if(input_toggle_active(false, KeyCode::F1)),
                 RapierDebugRenderPlugin::default(),
             ))
+            .add_systems(
+                OnEnter(SetupState::Setup),
+                (setup_fps_counter, setup_debug_text),
+            )
+            .add_systems(
+                Update,
+                (handle_fps_update, handle_debug_text, fps_visibility),
+            )
             .register_type::<Size>()
             .register_type::<EnemyObjective>()
             .register_type::<ChangeStateTimer>()
+            .register_type::<UnchangableTimer>()
             .register_type::<FollowTimer>()
             .register_type::<Health>()
             .register_type::<Xp>();
@@ -27,12 +37,7 @@ impl Plugin for SetupPlugin {
         app.add_systems(PreStartup, load_spritesheet_texture)
             .add_systems(
                 OnEnter(SetupState::Setup),
-                (
-                    setup_player,
-                    setup_enemies,
-                    setup_fps_counter,
-                    setup_game_cameras,
-                ),
+                (setup_player, setup_enemies, setup_game_cameras),
             );
     }
 }
@@ -40,7 +45,7 @@ impl Plugin for SetupPlugin {
 pub struct MainLogicPlugin;
 impl Plugin for MainLogicPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(FrameTimeDiagnosticsPlugin).add_systems(
+        app.add_systems(
             Update,
             (
                 bevy::window::close_on_esc,
@@ -48,9 +53,6 @@ impl Plugin for MainLogicPlugin {
                     // TODO: change everything to physics
                     handle_kbd_inputs,
                     handle_mouse_input,
-                    handle_player_enemy_collisions,
-                    handle_fps_update,
-                    fps_visibility,
                     (dynamic_damping, cam_movement).after(handle_kbd_inputs),
                 )
                     .run_if(in_state(SetupState::Ready)),
@@ -65,9 +67,9 @@ impl Plugin for EnemyLogicPlugin {
             Update,
             (
                 change_enemy_color,
-                tick_enemy_timers,
+                handle_enemy_timers,
                 enemy_follow_player,
-                handle_enemy_objective_timers,
+                handle_player_enemy_collisions.after(handle_enemy_timers),
             )
                 .run_if(in_state(SetupState::Ready)),
         );
