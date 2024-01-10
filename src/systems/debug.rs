@@ -125,6 +125,22 @@ pub fn setup_debug_text(mut cmds: Commands) {
                             ..default()
                         },
                     },
+                    TextSection {
+                        value: "\nSpeed: ".into(),
+                        style: TextStyle {
+                            font_size: 20.0,
+                            color: Color::WHITE,
+                            ..default()
+                        },
+                    },
+                    TextSection {
+                        value: " N/A".into(),
+                        style: TextStyle {
+                            font_size: 20.0,
+                            color: Color::WHITE,
+                            ..default()
+                        },
+                    },
                 ]),
                 ..Default::default()
             },
@@ -231,12 +247,10 @@ pub fn handle_fps_update(
 
 pub fn update_debug_text(
     mut text_q: Query<&mut Text, With<DebugText>>,
-    player_q: Query<(&Transform, &Damping, &PlayerNoiseDebug), With<Player>>,
+    player_q: Query<(&Transform, &Damping, &PlayerNoiseDebug, &Velocity), With<Player>>,
 ) {
-    let player = player_q.single();
-    let player_pos = player.0.translation;
-    let damping = player.1;
-    let noise_debug = player.2;
+    let (player_trans, damping, noise_debug, vel) = player_q.single();
+    let player_pos = player_trans.translation;
 
     let (x, y) = (
         (((player_pos.x + MAP_SIZE_PX.x / 2.0) / GRID_SIZE.x).floor() as u32),
@@ -264,5 +278,7 @@ pub fn update_debug_text(
         .unwrap();
 
         text.sections[7].value = format!("{:30.1}", damping.linear_damping);
+
+        text.sections[9].value = format!("{:35.3}", vel.linvel.length());
     }
 }

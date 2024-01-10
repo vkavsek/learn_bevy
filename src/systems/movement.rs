@@ -61,12 +61,10 @@ pub fn dynamic_damping(
             .expect("Each tile should have a GameMapTile component!");
 
         let base_damping = ENEMY_DAMPING;
-        if noise_val.abs() < 0.2 {
+        if noise_val.abs() < 0.3 {
             damping.linear_damping = base_damping;
-        } else if noise_val.abs() < 0.3 {
-            damping.linear_damping = base_damping * 10.;
         } else if noise_val.abs() < 1.0 {
-            damping.linear_damping = base_damping * 35.0;
+            damping.linear_damping = base_damping * 2.;
         }
     }
 }

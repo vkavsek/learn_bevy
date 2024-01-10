@@ -10,8 +10,11 @@ pub fn handle_healthbars(
                 / parent_health.max as f32;
             let width = healthbar.init_width - piece;
 
-            sprite.custom_size.as_mut().map(|size| size.x = width);
-            transform.translation.x -= piece;
+            sprite
+                .custom_size
+                .as_mut()
+                .map(|size| size.x = width.clamp(0., 100000.));
+            transform.translation.x = -piece / 2.;
         }
     }
 }

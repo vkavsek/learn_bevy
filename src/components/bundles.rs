@@ -4,8 +4,8 @@ use crate::prelude::*;
 
 #[derive(Bundle)]
 pub struct PlayerBundle {
-    pub spritesheet: SpriteSheetBundle,
     pub player: Player,
+    pub spritesheet: SpriteSheetBundle,
     pub health: Health,
     pub xp: Xp,
     pub size: Size,
@@ -56,8 +56,54 @@ impl Default for PlayerBundle {
 }
 
 #[derive(Bundle)]
+pub struct BulletBundle {
+    pub _b: Bullet,
+    pub sprite: SpriteBundle,
+    pub name: Name,
+
+    pub rbd: RigidBody,
+    pub vel: Velocity,
+    pub damping: Damping,
+    pub ccd: Ccd,
+
+    pub collider: Collider,
+    pub mass: ColliderMassProperties,
+    pub restitution: Restitution,
+    pub enable_events: ActiveEvents,
+}
+impl BulletBundle {
+    // TODO: write a constructor function
+    fn new(_size: Vec2) -> Self {
+        Self { ..default() }
+    }
+}
+impl Default for BulletBundle {
+    fn default() -> Self {
+        Self {
+            sprite: Default::default(),
+            _b: Bullet,
+            name: Name::new("Bullet"),
+            rbd: RigidBody::Dynamic,
+            vel: Velocity {
+                linvel: Vec2::ZERO,
+                angvel: 0.0,
+            },
+            damping: Damping {
+                linear_damping: 5.0,
+                angular_damping: 10.,
+            },
+            ccd: Ccd::enabled(),
+            collider: Collider::capsule(Vec2::new(0., -5.), Vec2::new(0., 5.), 30.),
+            mass: ColliderMassProperties::Density(10.0),
+            restitution: Restitution::coefficient(0.5),
+            enable_events: ActiveEvents::COLLISION_EVENTS,
+        }
+    }
+}
+
+#[derive(Bundle)]
 pub struct EnemyBundle {
-    pub enemy: Enemy,
+    pub _e: Enemy,
     pub enemy_type: EnemyType,
     pub objective: EnemyObjective,
     pub change_state_timer: ChangeStateTimer,
@@ -80,13 +126,13 @@ pub struct EnemyBundle {
 impl Default for EnemyBundle {
     fn default() -> Self {
         Self {
-            enemy: Enemy,
+            _e: Enemy,
             enemy_type: EnemyType::default(),
             objective: EnemyObjective::default(),
             change_state_timer: ChangeStateTimer::default(),
             unchangable_timer: UnchangableTimer::default(),
             follow_timer: FollowTimer::default(),
-            health: Health::init(50, 50),
+            health: Health::init(ENEMY_HEALTH, ENEMY_HEALTH),
             size: Size(Vec2::splat(ENEMY_SIZE)),
             spritesheet_bundle: Default::default(),
             name: Name::new("Enemy"),
@@ -108,7 +154,7 @@ impl Default for EnemyBundle {
 
 #[derive(Bundle)]
 pub struct WallBundle {
-    pub wall: Wall,
+    pub _w: Wall,
     pub size: Size,
     pub sprite: SpriteBundle,
     pub name: Name,
@@ -119,7 +165,7 @@ impl WallBundle {
     pub fn new(location: WallLocation) -> Self {
         let size = location.size();
         WallBundle {
-            wall: Wall,
+            _w: Wall,
             size: Size(size),
             sprite: SpriteBundle {
                 sprite: Sprite {
@@ -143,7 +189,7 @@ impl WallBundle {
 #[derive(Bundle)]
 pub struct MainCamBundle {
     pub camera_bundle: Camera2dBundle,
-    pub camera: MainCam,
+    pub _c: MainCam,
     pub name: Name,
 }
 
@@ -163,7 +209,7 @@ impl Default for MainCamBundle {
 
                 ..default()
             },
-            camera: MainCam,
+            _c: MainCam,
             name: "MainCam".into(),
         }
     }
@@ -172,7 +218,7 @@ impl Default for MainCamBundle {
 #[derive(Bundle)]
 pub struct MinimapCamBundle {
     pub camera_bundle: Camera2dBundle,
-    pub camera: MinimapCam,
+    pub _c: MinimapCam,
     pub name: Name,
 }
 
@@ -200,7 +246,7 @@ impl Default for MinimapCamBundle {
                 },
                 ..default()
             },
-            camera: MinimapCam,
+            _c: MinimapCam,
             name: "MinimapCam".into(),
         }
     }
@@ -209,7 +255,7 @@ impl Default for MinimapCamBundle {
 #[derive(Bundle)]
 pub struct HealthBarBundle {
     health_sprite: SpriteBundle,
-    marker: HealthBar,
+    _hb: HealthBar,
 }
 impl HealthBarBundle {
     pub fn new(color: Color, size: Vec2) -> Self {
@@ -223,7 +269,7 @@ impl HealthBarBundle {
                 transform: Transform::from_xyz(0., 17.5, 1.),
                 ..default()
             },
-            marker: HealthBar { init_width: size.x },
+            _hb: HealthBar { init_width: size.x },
         }
     }
 }

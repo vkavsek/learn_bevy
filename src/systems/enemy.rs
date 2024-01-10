@@ -9,14 +9,15 @@ pub fn setup_enemies(mut cmds: Commands, char_texture: Res<AsciiSpriteSheet>) {
     for _n in 0..NUM_ENEMIES {
         let rng_x = rng.gen_range((-half_s.x + ENEMY_SIZE + 1.)..(half_s.x - ENEMY_SIZE - 1.));
         let rng_y = rng.gen_range((-half_s.y + ENEMY_SIZE + 1.)..(half_s.y - ENEMY_SIZE - 1.));
+        let rng_health = rng.gen_range(2..ENEMY_HEALTH);
         let healthbar = cmds
             .spawn(HealthBarBundle::new(Color::RED, Vec2::new(50., 7.5)))
             .id();
 
         cmds.spawn(EnemyBundle {
-            enemy: Enemy,
+            _e: Enemy,
             enemy_type: Default::default(),
-            health: Health::init(ENEMY_HEALTH, ENEMY_HEALTH),
+            health: Health::init(rng_health, rng_health),
             spritesheet_bundle: SpriteSheetBundle {
                 sprite: TextureAtlasSprite {
                     color: Color::BLACK,

@@ -10,26 +10,32 @@ pub fn handle_kbd_inputs(
 ) {
     let mut vel = player_query.single_mut();
 
-    let linvel = &mut vel.linvel;
-    let mut add_to_vel = PLAYER_SPEED;
-    if keycode_input.just_pressed(KeyCode::Space) {
-        add_to_vel *= 10f32;
-    }
+    let add_to_vel = PLAYER_SPEED;
+
+    let mut adding_vec = Vec2::ZERO;
+
     // RIGHT
     if keycode_input.any_pressed([KeyCode::D, KeyCode::Right]) {
-        linvel.x += add_to_vel;
+        adding_vec.x += 1.0;
     }
     // LEFT
     if keycode_input.any_pressed([KeyCode::A, KeyCode::Left]) {
-        linvel.x -= add_to_vel;
+        adding_vec.x -= 1.0;
     }
     // UP
     if keycode_input.any_pressed([KeyCode::W, KeyCode::Up]) {
-        linvel.y += add_to_vel;
+        adding_vec.y += 1.0;
     }
     // DOWN
     if keycode_input.any_pressed([KeyCode::S, KeyCode::Down]) {
-        linvel.y -= add_to_vel;
+        adding_vec.y -= 1.0;
+    }
+
+    vel.linvel += adding_vec.normalize_or_zero() * PLAYER_SPEED;
+
+    // FIX: IF you mash SPACE everything goes to shit
+    if keycode_input.just_pressed(KeyCode::Space) {
+        vel.linvel *= 2.5;
     }
 
     if let Ok(mut projection) = cam_query.get_single_mut() {

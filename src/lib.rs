@@ -33,14 +33,14 @@ pub mod prelude {
     pub const PLAYER_NAME: &str = "Markane";
     pub const PLAYER_SPEED: f32 = 50.0;
     pub const PLAYER_DAMPING: f32 = 5.;
-    pub const PLAYER_HEALTH: i32 = 100;
+    pub const PLAYER_HEALTH: i32 = 20;
     pub const PLAYER_SIZE: f32 = 16.0;
     pub const PLAYER_COLOR: Color = Color::rgb(1., 0., 1.);
 
-    pub const NUM_ENEMIES: usize = 1;
+    pub const NUM_ENEMIES: usize = 1000;
     pub const ENEMY_CHANGE_TIME: Duration = Duration::from_secs(1);
-    pub const ENEMY_FOLLOW_TIME: Duration = Duration::from_secs(50);
-    pub const ENEMY_SPEED: f32 = 1000.0;
+    pub const ENEMY_FOLLOW_TIME: Duration = Duration::from_secs(10);
+    pub const ENEMY_SPEED: f32 = 500.0;
     pub const ENEMY_DAMPING: f32 = 5.;
     pub const ENEMY_HEALTH: i32 = 5;
     pub const ENEMY_SIZE: f32 = 32.0;

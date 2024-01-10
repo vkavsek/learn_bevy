@@ -90,7 +90,6 @@ fn get_color(val: f64) -> Color {
     color_result.expect("Getting color from HEX error")
 }
 
-/// TODO: fix intersecting walls
 pub fn build_outside_walls(mut commands: Commands) {
     commands.spawn(WallBundle::new(WallLocation::Right));
     commands.spawn(WallBundle::new(WallLocation::Left));
