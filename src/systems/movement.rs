@@ -13,7 +13,11 @@ pub fn cam_movement(
 
 ///  NOTE: If this is suspected to be slow you could access the noise value directly from NoiseMap
 pub fn dynamic_damping(
-    mut damp_query: Query<(&mut Damping, &Transform, Option<&Player>)>,
+    mut player_query: Query<
+        (&mut Damping, &Transform, &mut PlayerNoiseDebug),
+        (With<Player>, Without<Enemy>),
+    >,
+    mut enemy_query: Query<(&mut Damping, &Transform), (With<Enemy>, Without<Player>)>,
     tile_query: Query<(Entity, &GameMapTile)>,
     tilemap_q: Query<&TileStorage>,
 ) {
@@ -21,7 +25,7 @@ pub fn dynamic_damping(
         .get_single()
         .expect("There is more than one TILEMAP present in the World!");
 
-    for (mut damping, transform, maybe_player) in damp_query.iter_mut() {
+    for (mut damping, transform, mut player_noise_debug) in player_query.iter_mut() {
         let (x, y) = (
             (((transform.translation.x + MAP_SIZE_PX.x / 2.0) / GRID_SIZE.x).floor() as u32),
             (((transform.translation.y + MAP_SIZE_PX.y / 2.0) / GRID_SIZE.y).floor() as u32),
@@ -33,17 +37,36 @@ pub fn dynamic_damping(
             .get_component::<GameMapTile>(tile_at_pos)
             .unwrap();
 
-        let base_damping = if maybe_player.is_some() {
-            PLAYER_DAMPING
-        } else {
-            ENEMY_DAMPING
-        };
-        if **noise_val < 0.2 {
+        **player_noise_debug = Some(**noise_val);
+
+        let base_damping = PLAYER_DAMPING;
+        if noise_val.abs() < 0.2 {
             damping.linear_damping = base_damping;
-        } else if **noise_val < 0.3 {
+        } else if noise_val.abs() < 0.3 {
             damping.linear_damping = base_damping * 2.;
-        } else if **noise_val < 1.0 {
+        } else if noise_val.abs() < 1.0 {
             damping.linear_damping = base_damping * 4.0;
+        }
+    }
+    for (mut damping, transform) in enemy_query.iter_mut() {
+        let (x, y) = (
+            (((transform.translation.x + MAP_SIZE_PX.x / 2.0) / GRID_SIZE.x).floor() as u32),
+            (((transform.translation.y + MAP_SIZE_PX.y / 2.0) / GRID_SIZE.y).floor() as u32),
+        );
+        let tile_at_pos = tile_storage
+            .get(&TilePos::new(x, y))
+            .expect("Entity is at invalid position!");
+        let noise_val = tile_query
+            .get_component::<GameMapTile>(tile_at_pos)
+            .expect("Each tile should have a GameMapTile component!");
+
+        let base_damping = ENEMY_DAMPING;
+        if noise_val.abs() < 0.2 {
+            damping.linear_damping = base_damping;
+        } else if noise_val.abs() < 0.3 {
+            damping.linear_damping = base_damping * 10.;
+        } else if noise_val.abs() < 1.0 {
+            damping.linear_damping = base_damping * 35.0;
         }
     }
 }

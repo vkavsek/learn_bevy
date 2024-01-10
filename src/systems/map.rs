@@ -31,6 +31,7 @@ pub fn generate_tilemap(
 
     let tilemap_ent = commands.spawn_empty().id();
 
+    let mut collected_tiles = Vec::with_capacity((map_size.x * map_size.y).try_into().unwrap());
     for x in 0..map_size.x {
         for y in 0..map_size.y {
             let tile_pos = TilePos::new(x, y);
@@ -47,8 +48,8 @@ pub fn generate_tilemap(
                     GameMapTile::new(noise_val as f32),
                 ))
                 .id();
-            // commands.entity(tilemap_ent).add_child(tile_ent);
             tile_storage.set(&tile_pos, tile_ent);
+            collected_tiles.push(tile_ent);
         }
     }
 
@@ -57,16 +58,22 @@ pub fn generate_tilemap(
     let grid_size = GRID_SIZE;
     let map_type = TilemapType::default();
 
-    commands.entity(tilemap_ent).insert(TilemapBundle {
-        grid_size,
-        map_type,
-        size: map_size,
-        storage: tile_storage,
-        texture: TilemapTexture::Single(texture_handle),
-        tile_size,
-        transform: get_tilemap_center_transform(&map_size, &grid_size, &map_type, 0.0),
-        ..Default::default()
-    });
+    commands
+        .entity(tilemap_ent)
+        .insert((
+            TilemapBundle {
+                grid_size,
+                map_type,
+                size: map_size,
+                storage: tile_storage,
+                texture: TilemapTexture::Single(texture_handle),
+                tile_size,
+                transform: get_tilemap_center_transform(&map_size, &grid_size, &map_type, 0.0),
+                ..Default::default()
+            },
+            Name::new("TilemapPARENT"),
+        ))
+        .push_children(&collected_tiles);
 
     next_state.set(SetupState::Setup)
 }

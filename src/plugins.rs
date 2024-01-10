@@ -18,11 +18,12 @@ impl Plugin for DebugPlugin {
             )
             .add_systems(
                 Update,
-                (handle_fps_update, handle_debug_text, fps_visibility),
+                (handle_fps_update, update_debug_text, debug_info_visibility),
             )
             .register_type::<Size>()
             .register_type::<EnemyObjective>()
             .register_type::<ChangeStateTimer>()
+            .register_type::<PlayerNoiseDebug>()
             .register_type::<UnchangableTimer>()
             .register_type::<FollowTimer>()
             .register_type::<Health>()
@@ -46,14 +47,19 @@ pub struct MainLogicPlugin;
 impl Plugin for MainLogicPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
+            FixedUpdate,
+            (handle_kbd_inputs).run_if(in_state(SetupState::Ready)),
+        )
+        .add_systems(
             Update,
             (
                 bevy::window::close_on_esc,
                 (
-                    // TODO: change everything to physics
-                    handle_kbd_inputs,
                     handle_mouse_input,
-                    (dynamic_damping, cam_movement).after(handle_kbd_inputs),
+                    dynamic_damping,
+                    handle_healthbars,
+                    toggle_healthbar_vis,
+                    cam_movement.after(handle_kbd_inputs),
                 )
                     .run_if(in_state(SetupState::Ready)),
             ),
@@ -66,10 +72,14 @@ impl Plugin for EnemyLogicPlugin {
         app.add_systems(
             Update,
             (
-                change_enemy_color,
+                despawn_enemy,
                 handle_enemy_timers,
-                enemy_follow_player,
-                handle_player_enemy_collisions.after(handle_enemy_timers),
+                (
+                    change_enemy_color,
+                    enemy_follow_player,
+                    handle_enemy_player_coll,
+                )
+                    .after(handle_enemy_timers),
             )
                 .run_if(in_state(SetupState::Ready)),
         );

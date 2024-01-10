@@ -11,6 +11,8 @@ pub struct PlayerBundle {
     pub size: Size,
     pub name: Name,
 
+    pub noise_debug: PlayerNoiseDebug,
+
     pub rbd: RigidBody,
     pub vel: Velocity,
     pub locked_axes: LockedAxes,
@@ -31,6 +33,9 @@ impl Default for PlayerBundle {
             xp: Xp(0),
             spritesheet: Default::default(),
             name: Name::new("Player"),
+
+            noise_debug: PlayerNoiseDebug(None),
+
             rbd: RigidBody::Dynamic,
             vel: Velocity {
                 linvel: Vec2::ZERO,
@@ -152,7 +157,7 @@ impl Default for MainCamBundle {
                 },
                 projection: OrthographicProjection {
                     near: -1.0,
-                    scale: 1.5,
+                    scale: 1.,
                     ..default()
                 },
 
@@ -178,7 +183,7 @@ impl Default for MinimapCamBundle {
             camera_bundle: Camera2dBundle {
                 camera: Camera {
                     viewport: Some(Viewport {
-                        physical_position: UVec2::new(WINDOW_RES.x as u32 - 25, 0),
+                        physical_position: UVec2::new(25, WINDOW_RES.y as u32 - 15),
                         physical_size: UVec2::new(size_x, size_y),
                         depth: 0.0..0.1,
                     }),
@@ -197,6 +202,28 @@ impl Default for MinimapCamBundle {
             },
             camera: MinimapCam,
             name: "MinimapCam".into(),
+        }
+    }
+}
+
+#[derive(Bundle)]
+pub struct HealthBarBundle {
+    health_sprite: SpriteBundle,
+    marker: HealthBar,
+}
+impl HealthBarBundle {
+    pub fn new(color: Color, size: Vec2) -> Self {
+        HealthBarBundle {
+            health_sprite: SpriteBundle {
+                sprite: Sprite {
+                    color,
+                    custom_size: Some(size),
+                    ..default()
+                },
+                transform: Transform::from_xyz(0., 17.5, 1.),
+                ..default()
+            },
+            marker: HealthBar,
         }
     }
 }

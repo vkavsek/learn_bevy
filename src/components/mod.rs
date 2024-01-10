@@ -16,6 +16,9 @@ pub struct DebugRoot;
 #[derive(Component)]
 pub struct DebugText;
 
+#[derive(Component, Reflect, Deref, DerefMut)]
+pub struct PlayerNoiseDebug(pub Option<f32>);
+
 // —————> GAME COMPONENTS
 #[derive(Component)]
 pub struct Player {
@@ -121,6 +124,9 @@ impl GameMapTile {
         GameMapTile { noise_val }
     }
 }
+
+#[derive(Component)]
+pub struct HealthBar;
 
 #[derive(Component, Reflect, Deref, DerefMut)]
 pub struct Size(pub Vec2);

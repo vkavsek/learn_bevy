@@ -8,7 +8,7 @@ pub fn setup_debug_text(mut cmds: Commands) {
         .spawn((
             DebugRoot,
             NodeBundle {
-                background_color: BackgroundColor(Color::BLUE.with_a(0.5)),
+                background_color: BackgroundColor(Color::BLUE.with_a(0.9)),
                 // Max Z-index to render on top of everything
                 z_index: ZIndex::Global(i32::MAX),
                 style: Style {
@@ -34,7 +34,7 @@ pub fn setup_debug_text(mut cmds: Commands) {
                     TextSection {
                         value: "Player position: ".into(),
                         style: TextStyle {
-                            font_size: 16.0,
+                            font_size: 20.0,
                             color: Color::WHITE,
                             ..default()
                         },
@@ -42,7 +42,55 @@ pub fn setup_debug_text(mut cmds: Commands) {
                     TextSection {
                         value: " N/A".into(),
                         style: TextStyle {
-                            font_size: 16.0,
+                            font_size: 20.0,
+                            color: Color::WHITE,
+                            ..default()
+                        },
+                    },
+                    TextSection {
+                        value: "\nTilePos: ".into(),
+                        style: TextStyle {
+                            font_size: 20.0,
+                            color: Color::WHITE,
+                            ..default()
+                        },
+                    },
+                    TextSection {
+                        value: " N/A".into(),
+                        style: TextStyle {
+                            font_size: 20.0,
+                            color: Color::WHITE,
+                            ..default()
+                        },
+                    },
+                    TextSection {
+                        value: "\nNoiseVal: ".into(),
+                        style: TextStyle {
+                            font_size: 20.0,
+                            color: Color::WHITE,
+                            ..default()
+                        },
+                    },
+                    TextSection {
+                        value: " N/A".into(),
+                        style: TextStyle {
+                            font_size: 20.0,
+                            color: Color::WHITE,
+                            ..default()
+                        },
+                    },
+                    TextSection {
+                        value: "\nDamping: ".into(),
+                        style: TextStyle {
+                            font_size: 20.0,
+                            color: Color::WHITE,
+                            ..default()
+                        },
+                    },
+                    TextSection {
+                        value: " N/A".into(),
+                        style: TextStyle {
+                            font_size: 20.0,
                             color: Color::WHITE,
                             ..default()
                         },
@@ -149,25 +197,57 @@ pub fn handle_fps_update(
     }
 }
 
-pub fn handle_debug_text(
+pub fn update_debug_text(
     mut text_q: Query<&mut Text, With<DebugText>>,
-    player_q: Query<&Transform, With<Player>>,
+    player_q: Query<(&Transform, &Damping, &PlayerNoiseDebug), With<Player>>,
 ) {
-    let player_pos = player_q.single().translation;
+    let player = player_q.single();
+    let player_pos = player.0.translation;
+    let damping = player.1;
+    let noise_debug = player.2;
+
+    let (x, y) = (
+        (((player_pos.x + MAP_SIZE_PX.x / 2.0) / GRID_SIZE.x).floor() as u32),
+        (((player_pos.y + MAP_SIZE_PX.y / 2.0) / GRID_SIZE.y).floor() as u32),
+    );
     for mut text in text_q.iter_mut() {
         text.sections[1].value = format!(
             "{:10.2}, {:10.2}, {:10.2}",
             player_pos.x, player_pos.y, player_pos.z
         );
+        text.sections[1].style.color = Color::ORANGE;
 
-        text.sections[1].style.color = Color::RED;
+        text.sections[3].value = format!("{x:20}, {y:20}");
+        text.sections[3].style.color = Color::ORANGE;
+
+        text.sections[5].value = format!("{:30.4}", noise_debug.unwrap_or(999.).abs());
+        text.sections[5].style.color = match noise_debug.unwrap_or(999.).abs() {
+            v if v < 0.1 => Color::hex("#00ff00"),
+            v if v < 0.2 => Color::hex("#3ff03f"),
+            v if v < 0.25 => Color::hex("b35900"),
+            v if v < 0.3 => Color::hex("#ffff1a"),
+            v if v <= 1.0 => Color::hex("#8080ff"),
+            _ => Color::hex("#FF0000"),
+        }
+        .unwrap();
+
+        text.sections[7].value = format!("{:30.1}", damping.linear_damping);
     }
 }
 
-pub fn fps_visibility(mut vis_q: Query<&mut Visibility, With<FpsRoot>>, kbd: Res<Input<KeyCode>>) {
+pub fn debug_info_visibility(
+    mut fps_vis_q: Query<&mut Visibility, (With<FpsRoot>, Without<DebugRoot>)>,
+    mut debug_vis_q: Query<&mut Visibility, (With<DebugRoot>, Without<FpsRoot>)>,
+    kbd: Res<Input<KeyCode>>,
+) {
     if kbd.just_pressed(KeyCode::F12) {
-        let mut vis = vis_q.single_mut();
+        let mut vis = fps_vis_q.single_mut();
+        let mut d_vis = debug_vis_q.single_mut();
         *vis = match *vis {
+            Visibility::Hidden => Visibility::Visible,
+            _ => Visibility::Hidden,
+        };
+        *d_vis = match *d_vis {
             Visibility::Hidden => Visibility::Visible,
             _ => Visibility::Hidden,
         };
