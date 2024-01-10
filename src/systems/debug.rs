@@ -2,6 +2,34 @@ use bevy::diagnostic::{DiagnosticsStore, FrameTimeDiagnosticsPlugin};
 
 use crate::prelude::*;
 
+pub fn toggle_rapier_debug_render(
+    mut render_cntx: ResMut<DebugRenderContext>,
+    kbd: Res<Input<KeyCode>>,
+) {
+    if kbd.just_pressed(KeyCode::F10) {
+        render_cntx.enabled = !render_cntx.enabled;
+    }
+}
+
+pub fn toggle_debug_info_vis(
+    mut fps_vis_q: Query<&mut Visibility, (With<FpsRoot>, Without<DebugRoot>)>,
+    mut debug_vis_q: Query<&mut Visibility, (With<DebugRoot>, Without<FpsRoot>)>,
+    kbd: Res<Input<KeyCode>>,
+) {
+    if kbd.just_pressed(KeyCode::F12) {
+        let mut vis = fps_vis_q.single_mut();
+        let mut d_vis = debug_vis_q.single_mut();
+        *vis = match *vis {
+            Visibility::Hidden => Visibility::Visible,
+            _ => Visibility::Hidden,
+        };
+        *d_vis = match *d_vis {
+            Visibility::Hidden => Visibility::Visible,
+            _ => Visibility::Hidden,
+        };
+    }
+}
+
 pub fn setup_debug_text(mut cmds: Commands) {
     // Create a <div> to hold the text
     let root = cmds
@@ -22,8 +50,10 @@ pub fn setup_debug_text(mut cmds: Commands) {
                     ..Default::default()
                 },
                 border_color: BorderColor(Color::WHITE.with_a(0.5)),
+                visibility: Visibility::Hidden,
                 ..Default::default()
             },
+            Name::new("DebugRoot"),
         ))
         .id();
     let debug_text = cmds
@@ -124,8 +154,10 @@ pub fn setup_fps_counter(mut cmds: Commands) {
                     ..Default::default()
                 },
                 border_color: BorderColor(Color::BLACK),
+                visibility: Visibility::Hidden,
                 ..Default::default()
             },
+            Name::new("FpsRoot"),
         ))
         .id();
     let text_fps = cmds
@@ -232,24 +264,5 @@ pub fn update_debug_text(
         .unwrap();
 
         text.sections[7].value = format!("{:30.1}", damping.linear_damping);
-    }
-}
-
-pub fn debug_info_visibility(
-    mut fps_vis_q: Query<&mut Visibility, (With<FpsRoot>, Without<DebugRoot>)>,
-    mut debug_vis_q: Query<&mut Visibility, (With<DebugRoot>, Without<FpsRoot>)>,
-    kbd: Res<Input<KeyCode>>,
-) {
-    if kbd.just_pressed(KeyCode::F12) {
-        let mut vis = fps_vis_q.single_mut();
-        let mut d_vis = debug_vis_q.single_mut();
-        *vis = match *vis {
-            Visibility::Hidden => Visibility::Visible,
-            _ => Visibility::Hidden,
-        };
-        *d_vis = match *d_vis {
-            Visibility::Hidden => Visibility::Visible,
-            _ => Visibility::Hidden,
-        };
     }
 }
