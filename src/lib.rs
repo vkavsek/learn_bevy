@@ -18,7 +18,7 @@ pub mod prelude {
 
     pub const WINDOW_RES: Vec2 = Vec2::new(1000., 800.);
 
-    pub const MAP_SIZE: TilemapSize = TilemapSize { x: 40, y: 40 };
+    pub const MAP_SIZE: TilemapSize = TilemapSize { x: 400, y: 400 };
     pub const GRID_SIZE: TilemapGridSize = TilemapGridSize { x: 16., y: 16. };
     pub const TILE_SIZE: TilemapTileSize = TilemapTileSize { x: 16., y: 16. };
     pub const MAP_SIZE_PX: Vec2 = Vec2::new(
@@ -63,11 +63,9 @@ impl Plugin for GamePlugin {
             .add_plugins((
                 //
                 DebugPlugin,
-                SetupPlugin,
-                MainLogicPlugin,
-                EnemyLogicPlugin,
                 PhysicsPlugin,
-                MapPlugin,
+                EnemyLogicPlugin,
+                MainLogicPlugin,
             ));
     }
 }

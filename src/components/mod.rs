@@ -130,8 +130,6 @@ pub struct HealthBar {
     pub init_width: f32,
 }
 
-// #[derive(Component)]
-
 #[derive(Component, Reflect, Deref, DerefMut)]
 pub struct Size(pub Vec2);
 
