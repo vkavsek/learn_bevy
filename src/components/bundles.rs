@@ -223,7 +223,7 @@ impl HealthBarBundle {
                 transform: Transform::from_xyz(0., 17.5, 1.),
                 ..default()
             },
-            marker: HealthBar,
+            marker: HealthBar { init_width: size.x },
         }
     }
 }

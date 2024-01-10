@@ -141,7 +141,7 @@ pub fn handle_enemy_player_coll(
                     objective.switch();
                     // Reset follow timer if started.
                     follow_timer.take();
-                    *unchangable_timer = UnchangableTimer::new(Duration::from_millis(500));
+                    *unchangable_timer = UnchangableTimer::new(Duration::from_millis(50));
                 }
             }
         }
