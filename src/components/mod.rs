@@ -119,6 +119,9 @@ pub struct GameMap;
 pub struct Bullet;
 
 #[derive(Component, Reflect, Deref, DerefMut)]
+pub struct BulletTarget(pub Vec2);
+
+#[derive(Component, Reflect, Deref, DerefMut)]
 pub struct GameMapTile {
     pub noise_val: f32,
 }

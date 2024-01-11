@@ -49,17 +49,18 @@ impl Plugin for MainLogicPlugin {
             )
             .add_systems(
                 FixedUpdate,
-                (handle_kbd_inputs).run_if(in_state(SetupState::Ready)),
+                handle_kbd_inputs.run_if(in_state(SetupState::Ready)),
             )
             .add_systems(
                 Update,
                 (
                     bevy::window::close_on_esc,
                     (
-                        handle_mouse_input,
+                        // TODO:
                         dynamic_damping,
                         handle_healthbars,
                         toggle_healthbar_vis,
+                        spawn_bullet,
                         cam_movement.after(handle_kbd_inputs),
                     )
                         .run_if(in_state(SetupState::Ready)),

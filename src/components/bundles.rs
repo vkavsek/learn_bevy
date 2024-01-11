@@ -58,8 +58,9 @@ impl Default for PlayerBundle {
 #[derive(Bundle)]
 pub struct BulletBundle {
     pub _b: Bullet,
-    pub sprite: SpriteBundle,
+    pub sprite: SpriteSheetBundle,
     pub name: Name,
+    pub target: BulletTarget,
 
     pub rbd: RigidBody,
     pub vel: Velocity,
@@ -72,30 +73,72 @@ pub struct BulletBundle {
     pub enable_events: ActiveEvents,
 }
 impl BulletBundle {
-    // TODO: write a constructor function
-    fn new(_size: Vec2) -> Self {
-        Self { ..default() }
+    pub fn new(
+        size: Vec2,
+        char_texture: Res<AsciiSpriteSheet>,
+        translation: Vec2,
+        rotation: Quat,
+        target: Vec2,
+        bullet_speed: f32,
+    ) -> Self {
+        let half_x = size.x / 2.;
+        let half_y = size.y / 2.;
+
+        let v = target * bullet_speed;
+
+        Self {
+            sprite: SpriteSheetBundle {
+                sprite: TextureAtlasSprite {
+                    color: Color::WHITE,
+                    index: 30,
+                    custom_size: Some(size),
+                    ..default()
+                },
+                texture_atlas: char_texture.clone(),
+                transform: Transform::from_xyz(translation.x, translation.y, 1.)
+                    .with_rotation(rotation),
+                ..default()
+            },
+            target: BulletTarget(target),
+            vel: Velocity {
+                linvel: v,
+                angvel: 0.,
+            },
+            collider: Collider::convex_hull(&[
+                Vec2::new(-half_x, -half_y),
+                Vec2::new(half_x, -half_y),
+                Vec2::new(0., half_y),
+            ])
+            .expect("Error computing convex hull for Bullets"),
+            ..default()
+        }
     }
 }
 impl Default for BulletBundle {
     fn default() -> Self {
         Self {
-            sprite: Default::default(),
+            sprite: SpriteSheetBundle { ..default() },
             _b: Bullet,
             name: Name::new("Bullet"),
             rbd: RigidBody::Dynamic,
+            target: BulletTarget(Vec2::ZERO),
             vel: Velocity {
                 linvel: Vec2::ZERO,
                 angvel: 0.0,
             },
             damping: Damping {
-                linear_damping: 5.0,
+                linear_damping: 1.0,
                 angular_damping: 10.,
             },
             ccd: Ccd::enabled(),
-            collider: Collider::capsule(Vec2::new(0., -5.), Vec2::new(0., 5.), 30.),
-            mass: ColliderMassProperties::Density(10.0),
-            restitution: Restitution::coefficient(0.5),
+            collider: Collider::convex_hull(&[
+                Vec2::new(-10., -10.),
+                Vec2::new(10., -10.),
+                Vec2::new(0., 10.),
+            ])
+            .expect("Error computing convex hull for Bullets"),
+            mass: ColliderMassProperties::Density(1.0),
+            restitution: Restitution::coefficient(0.8),
             enable_events: ActiveEvents::COLLISION_EVENTS,
         }
     }

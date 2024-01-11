@@ -7,7 +7,10 @@ pub mod prelude {
         plugins::*,
         resources::*,
         states::*,
-        systems::{debug::*, enemy::*, healthbar::*, input::*, map::*, movement::*, player::*, *},
+        systems::{
+            bullets::*, debug::*, enemy::*, healthbar::*, input::*, map::*, movement::*, player::*,
+            *,
+        },
     };
     pub use bevy::prelude::*;
     pub use bevy_ecs_tilemap::prelude::*;
