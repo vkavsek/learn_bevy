@@ -16,7 +16,7 @@ pub mod prelude {
     pub use bevy_ecs_tilemap::prelude::*;
     pub use bevy_rapier2d::prelude::*;
 
-    pub const TITLE: &str = "Game";
+    pub const TITLE: &str = "MARKANE UBIJA ZLOBNE GRDINE";
     pub const BG_COLOR: Color = Color::rgb(0., 0., 0.);
 
     pub const WINDOW_RES: Vec2 = Vec2::new(1000., 800.);

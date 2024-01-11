@@ -22,6 +22,7 @@ pub fn spawn_bullet(
             // Reamap from window space to a vector around the player.
             let mut mouse_pos = mouse_pos - window_size / 2.;
             mouse_pos.y = -mouse_pos.y;
+            // FIX:
             // Compute the angle for sprite rotation
             let delta = mouse_pos.y.atan2(mouse_pos.x);
             mouse_pos = mouse_pos.normalize_or_zero();
