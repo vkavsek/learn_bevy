@@ -17,20 +17,16 @@ impl Plugin for PhysicsPlugin {
 pub struct EnemyLogicPlugin;
 impl Plugin for EnemyLogicPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
-            Update,
-            (
-                despawn_enemy,
-                handle_enemy_timers,
+        app.add_systems(FixedUpdate, enemy_follow_player)
+            .add_systems(
+                Update,
                 (
-                    change_enemy_color,
-                    enemy_follow_player,
-                    handle_enemy_player_coll,
+                    despawn_enemy,
+                    handle_enemy_timers,
+                    (change_enemy_color, handle_enemy_player_coll).after(handle_enemy_timers),
                 )
-                    .after(handle_enemy_timers),
-            )
-                .run_if(in_state(SetupState::Ready)),
-        );
+                    .run_if(in_state(SetupState::Ready)),
+            );
     }
 }
 
@@ -39,6 +35,7 @@ impl Plugin for MainLogicPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(TilemapPlugin)
             .insert_resource(BulletSpawnTimer::new())
+            .add_event::<DespawnEventRecursive>()
             .add_systems(PreStartup, load_spritesheet_texture)
             .add_systems(
                 OnEnter(SetupState::Build),
@@ -57,12 +54,18 @@ impl Plugin for MainLogicPlugin {
                 (
                     bevy::window::close_on_esc,
                     (
-                        // TODO:
-                        dynamic_damping,
-                        handle_healthbars,
-                        toggle_healthbar_vis,
-                        spawn_bullet,
-                        cam_movement.after(handle_kbd_inputs),
+                        handle_despawn_event_recursive,
+                        // HEALTHBARS
+                        (handle_healthbars, toggle_healthbar_vis),
+                        // BULLETS
+                        (
+                            spawn_bullet,
+                            despawn_bullet,
+                            handle_bullet_timers,
+                            handle_enemy_bullet_coll,
+                        ),
+                        // MOVEMENT
+                        (dynamic_damping, cam_movement).after(handle_kbd_inputs),
                     )
                         .run_if(in_state(SetupState::Ready)),
                 ),
