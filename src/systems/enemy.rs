@@ -126,6 +126,7 @@ pub fn handle_enemy_player_coll(
                 _,
             )) = find_enemy
             {
+                enemy_hp.current -= 1;
                 if unchangable_timer.is_none() {
                     match *objective {
                         EnemyObjective::FollowPlayer => {
@@ -138,7 +139,6 @@ pub fn handle_enemy_player_coll(
                             *change_timer = ChangeStateTimer::new(ENEMY_CHANGE_TIME);
                         }
                     }
-                    enemy_hp.current -= 1;
                     objective.switch();
                     // Reset follow timer if started.
                     follow_timer.take();
@@ -168,7 +168,8 @@ pub fn enemy_follow_player(
     for (mut vel, pos, f_timer, damping) in enemy_query.iter_mut() {
         if f_timer.is_some() {
             let new_vel = player_pos.translation - pos.translation;
-            vel.linvel = new_vel.truncate().normalize() * (ENEMY_SPEED - damping.linear_damping);
+            vel.linvel =
+                new_vel.truncate().normalize_or_zero() * (ENEMY_SPEED - damping.linear_damping);
         }
     }
 }
