@@ -9,7 +9,7 @@ fn main() {
                 .set(WindowPlugin {
                     primary_window: Some(Window {
                         title: TITLE.into(),
-                        // resolution: WINDOW_RES.into(),
+                        resolution: WINDOW_RES.into(),
                         present_mode: PresentMode::AutoVsync,
                         ..Default::default()
                     }),

@@ -19,7 +19,7 @@ pub mod prelude {
     pub const TITLE: &str = "MARKANE UBIJA ZLOBNE GRDINE";
     pub const BG_COLOR: Color = Color::rgb(0., 0., 0.);
 
-    pub const WINDOW_RES: Vec2 = Vec2::new(1000., 800.);
+    pub const WINDOW_RES: Vec2 = Vec2::new(1920., 1080.);
 
     pub const MAP_SIZE: TilemapSize = TilemapSize { x: 400, y: 400 };
     pub const GRID_SIZE: TilemapGridSize = TilemapGridSize { x: 16., y: 16. };
@@ -30,8 +30,7 @@ pub mod prelude {
     );
     pub const OUTSIDE_WALL_THICK: f32 = 16_f32;
 
-    pub const NUM_OF_HOUSES: usize = 5;
-    pub const MAX_HOUSE_SIZE: f32 = 500.;
+    pub const BULLET_SPAWN_INTERVAL: Duration = Duration::from_millis(300);
 
     pub const PLAYER_NAME: &str = "Markane";
     pub const PLAYER_SPEED: f32 = 50.0;
