@@ -79,12 +79,13 @@ pub fn generate_tilemap(
 }
 
 fn get_color(val: f64) -> Color {
+    let saturation = 0.5;
     let color_result = match val.abs() {
-        v if v < 0.1 => Color::hex("#00ff00"),
-        v if v < 0.2 => Color::hex("#3ff03f"),
-        v if v < 0.25 => Color::hex("b35900"),
-        v if v < 0.3 => Color::hex("#ffff1a"),
-        v if v <= 1.0 => Color::hex("#8080ff"),
+        v if v < 0.1 => Color::hex("#00ff00").map(|col| col.with_s(saturation)),
+        v if v < 0.2 => Color::hex("#3ff03f").map(|col| col.with_s(saturation)),
+        v if v < 0.25 => Color::hex("b35900").map(|col| col.with_s(saturation)),
+        v if v < 0.3 => Color::hex("#ffff1a").map(|col| col.with_s(saturation)),
+        v if v <= 1.0 => Color::hex("#8080ff").map(|col| col.with_s(saturation)),
         _ => panic!("unexpected value"),
     };
     color_result.expect("Getting color from HEX error")
