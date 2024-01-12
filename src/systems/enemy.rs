@@ -44,13 +44,19 @@ pub fn handle_enemy_timers(
             &mut ChangeStateTimer,
             &mut UnchangableTimer,
             &mut FollowTimer,
+            &mut EnemyShotTimer,
         ),
         With<Enemy>,
     >,
     time: Res<Time>,
 ) {
-    for (mut enemy_obj, mut change_timer, mut unchangeble_timer, mut follow_timer) in
-        enemy_q.iter_mut()
+    for (
+        mut enemy_obj,
+        mut change_timer,
+        mut unchangeble_timer,
+        mut follow_timer,
+        mut shot_timer,
+    ) in enemy_q.iter_mut()
     {
         (*change_timer)
             .as_mut()
@@ -62,10 +68,16 @@ pub fn handle_enemy_timers(
         (*unchangeble_timer)
             .as_mut()
             .map(|timer| timer.tick(time.delta()));
-
         if let Some(unch_timer) = (**unchangeble_timer).as_ref() {
             if unch_timer.finished() {
                 unchangeble_timer.take();
+            }
+        }
+
+        (*shot_timer).as_mut().map(|timer| timer.tick(time.delta()));
+        if let Some(sh_timer) = (**shot_timer).as_ref() {
+            if sh_timer.finished() {
+                shot_timer.take();
             }
         }
 
@@ -99,7 +111,6 @@ pub fn handle_enemy_player_coll(
             &mut ChangeStateTimer,
             &mut UnchangableTimer,
             &mut FollowTimer,
-            Entity,
         ),
         With<Enemy>,
     >,
@@ -123,7 +134,6 @@ pub fn handle_enemy_player_coll(
                 mut change_timer,
                 mut unchangable_timer,
                 mut follow_timer,
-                _,
             )) = find_enemy
             {
                 enemy_hp.current -= 1;
@@ -161,12 +171,21 @@ pub fn change_enemy_color(
 }
 
 pub fn enemy_follow_player(
-    mut enemy_query: Query<(&mut Velocity, &Transform, &FollowTimer, &Damping), With<Enemy>>,
+    mut enemy_query: Query<
+        (
+            &mut Velocity,
+            &Transform,
+            &FollowTimer,
+            &Damping,
+            &EnemyShotTimer,
+        ),
+        With<Enemy>,
+    >,
     player_query: Query<&Transform, (With<Player>, Without<Enemy>)>,
 ) {
     let player_pos = player_query.single();
-    for (mut vel, pos, f_timer, damping) in enemy_query.iter_mut() {
-        if f_timer.is_some() {
+    for (mut vel, pos, f_timer, damping, shot_timer) in enemy_query.iter_mut() {
+        if f_timer.is_some() && shot_timer.is_none() {
             let new_vel = player_pos.translation - pos.translation;
             vel.linvel =
                 new_vel.truncate().normalize_or_zero() * (ENEMY_SPEED - damping.linear_damping);
@@ -175,12 +194,12 @@ pub fn enemy_follow_player(
 }
 
 pub fn despawn_enemy(
-    mut cmds: Commands,
     enemy_q: Query<(Entity, &Health), (With<Enemy>, Changed<Health>)>,
+    mut despawn_event: EventWriter<DespawnEventRecursive>,
 ) {
     for (ent, health) in enemy_q.iter() {
         if health.current <= 0 {
-            cmds.entity(ent).despawn_recursive();
+            despawn_event.send(DespawnEventRecursive(ent));
         }
     }
 }

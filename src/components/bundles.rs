@@ -61,6 +61,7 @@ pub struct BulletBundle {
     pub sprite: SpriteSheetBundle,
     pub name: Name,
     pub target: BulletTarget,
+    pub bullet_life: BulletLifeTimer,
 
     pub rbd: RigidBody,
     pub vel: Velocity,
@@ -119,6 +120,7 @@ impl Default for BulletBundle {
         Self {
             sprite: SpriteSheetBundle { ..default() },
             _b: Bullet,
+            bullet_life: BulletLifeTimer::new(BULLET_LIFE),
             name: Name::new("Bullet"),
             rbd: RigidBody::Dynamic,
             target: BulletTarget(Vec2::ZERO),
@@ -152,6 +154,7 @@ pub struct EnemyBundle {
     pub change_state_timer: ChangeStateTimer,
     pub unchangable_timer: UnchangableTimer,
     pub follow_timer: FollowTimer,
+    pub shot_timer: EnemyShotTimer,
 
     pub health: Health,
     pub size: Size,
@@ -175,6 +178,7 @@ impl Default for EnemyBundle {
             change_state_timer: ChangeStateTimer::default(),
             unchangable_timer: UnchangableTimer::default(),
             follow_timer: FollowTimer::default(),
+            shot_timer: EnemyShotTimer::default(),
             health: Health::init(ENEMY_HEALTH, ENEMY_HEALTH),
             size: Size(Vec2::splat(ENEMY_SIZE)),
             spritesheet_bundle: Default::default(),
@@ -186,7 +190,7 @@ impl Default for EnemyBundle {
             },
             damping: Damping {
                 linear_damping: ENEMY_DAMPING,
-                angular_damping: 1.0,
+                angular_damping: 10.0,
             },
             collider: Collider::ball(ENEMY_SIZE / 2.0),
             mass: ColliderMassProperties::Density(0.1),

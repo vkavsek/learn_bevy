@@ -86,6 +86,14 @@ impl ChangeStateTimer {
     }
 }
 
+#[derive(Component, Deref, Reflect, DerefMut, Default)]
+pub struct EnemyShotTimer(pub Option<Timer>);
+impl EnemyShotTimer {
+    pub fn new(len: Duration) -> Self {
+        Self(Some(Timer::new(len, TimerMode::Once)))
+    }
+}
+
 #[derive(Component)]
 pub struct MainCam;
 
@@ -120,6 +128,14 @@ pub struct Bullet;
 
 #[derive(Component, Reflect, Deref, DerefMut)]
 pub struct BulletTarget(pub Vec2);
+
+#[derive(Component, Deref, DerefMut)]
+pub struct BulletLifeTimer(pub Timer);
+impl BulletLifeTimer {
+    pub fn new(len: Duration) -> Self {
+        Self(Timer::new(len, TimerMode::Once))
+    }
+}
 
 #[derive(Component, Reflect, Deref, DerefMut)]
 pub struct GameMapTile {
