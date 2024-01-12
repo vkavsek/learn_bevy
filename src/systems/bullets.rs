@@ -32,8 +32,8 @@ pub fn spawn_bullet(
                 let delta = mouse_pos.y.atan2(mouse_pos.x) - f32::consts::FRAC_PI_2;
                 mouse_pos = mouse_pos.normalize_or_zero();
 
-                let size = Vec2::new(10., 10.);
-                let translation = player_pos + mouse_pos * 30.;
+                let size = Vec2::new(7.5, 10.);
+                let translation = player_pos + mouse_pos * (PLAYER_SIZE / 2. + 1.);
                 let orient = Quat::from_rotation_z(delta);
                 let rotation = Quat::IDENTITY * orient;
                 let target = mouse_pos;

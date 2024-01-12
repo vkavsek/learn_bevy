@@ -89,7 +89,7 @@ impl BulletBundle {
         Self {
             sprite: SpriteSheetBundle {
                 sprite: TextureAtlasSprite {
-                    color: Color::WHITE,
+                    color: Color::BLACK,
                     index: 30,
                     custom_size: Some(size),
                     ..default()

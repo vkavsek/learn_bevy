@@ -38,6 +38,7 @@ pub struct MainLogicPlugin;
 impl Plugin for MainLogicPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(TilemapPlugin)
+            .insert_resource(BulletSpawnTimer::new())
             .add_systems(PreStartup, load_spritesheet_texture)
             .add_systems(
                 OnEnter(SetupState::Build),
@@ -97,6 +98,7 @@ impl Plugin for DebugPlugin {
         .register_type::<PlayerNoiseDebug>()
         .register_type::<UnchangableTimer>()
         .register_type::<FollowTimer>()
+        .register_type::<BulletSpawnTimer>()
         .register_type::<HealthBar>()
         .register_type::<Health>()
         .register_type::<Xp>();

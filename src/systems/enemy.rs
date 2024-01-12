@@ -20,7 +20,7 @@ pub fn setup_enemies(mut cmds: Commands, char_texture: Res<AsciiSpriteSheet>) {
             health: Health::init(rng_health, rng_health),
             spritesheet_bundle: SpriteSheetBundle {
                 sprite: TextureAtlasSprite {
-                    color: Color::BLACK,
+                    color: Color::WHITE,
                     index: 42,
                     custom_size: Some(Vec2::from((ENEMY_SIZE, ENEMY_SIZE))),
                     ..default()
@@ -155,7 +155,7 @@ pub fn change_enemy_color(
     for (objective, mut texture_atlas) in enemy_query.iter_mut() {
         match objective {
             EnemyObjective::FollowPlayer => texture_atlas.color = Color::RED,
-            EnemyObjective::Bounce => texture_atlas.color = Color::BLACK,
+            EnemyObjective::Bounce => texture_atlas.color = Color::WHITE,
         }
     }
 }
