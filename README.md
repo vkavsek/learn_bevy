@@ -9,10 +9,11 @@
 
 # CURRENT PLAN:
 
-- Add projectiles / guns ...
+- Despawn bullets and damage enemies
+- Particles on bullet hit?
 - Handle player death.
 - Add menu.
-- Proper minimap
+- Proper mini-map
 - Enter something (house, cave, etc.)
 - Create new space upon entering.
 - Procedural map generation?
