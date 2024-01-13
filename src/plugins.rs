@@ -62,7 +62,7 @@ impl Plugin for MainLogicPlugin {
                             spawn_bullet,
                             despawn_bullet,
                             handle_bullet_timers,
-                            handle_enemy_bullet_coll,
+                            handle_bullet_coll,
                         ),
                         // MOVEMENT
                         (dynamic_damping, cam_movement).after(handle_kbd_inputs),

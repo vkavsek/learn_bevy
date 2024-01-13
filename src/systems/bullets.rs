@@ -74,7 +74,7 @@ pub fn spawn_bullet(
     }
 }
 
-pub fn handle_enemy_bullet_coll(
+pub fn handle_bullet_coll(
     mut collision_events: EventReader<CollisionEvent>,
     bullet_q: Query<(&Transform, Entity), (With<Bullet>, Without<Enemy>)>,
     mut enemy_q: Query<
@@ -100,10 +100,11 @@ pub fn handle_enemy_bullet_coll(
             }) else {
                 return;
             };
+            let (bullet_pos, bullet_ent) = find_bullet;
+
             let Ok(find_enemy) = enemy_q.get_mut(*other_ent) else {
                 return;
             };
-            let (bullet_pos, bullet_ent) = find_bullet;
             let (
                 mut enemy_hp,
                 mut objective,
@@ -125,11 +126,10 @@ pub fn handle_enemy_bullet_coll(
                         follow_timer.take();
                         *unchangable_timer = UnchangableTimer::new(Duration::from_millis(50));
                     }
-                    EnemyObjective::FollowPlayer => {
-                        // vel.linvel = bullet_vel.linvel.normalize_or_zero() * ENEMY_SPEED * 10.;
-                    }
+                    EnemyObjective::FollowPlayer => {}
                 }
             }
+            // send despawn event for the bullet if it was found
             despawn_event.send(DespawnEventRecursive(bullet_ent));
         }
     }
