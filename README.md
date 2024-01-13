@@ -9,13 +9,15 @@
 
 # CURRENT PLAN:
 
-- Despawn bullets and damage enemies
+- Different gun & bullet types
 - Particles on bullet hit?
+- Proper app exit event.
 - Handle player death.
 - Add menu.
-- Proper mini-map
+- Pick-up guns/powerups.
 - Enter something (house, cave, etc.)
 - Create new space upon entering.
 - Procedural map generation?
+- Proper mini-map
 - Save game
 - UI
