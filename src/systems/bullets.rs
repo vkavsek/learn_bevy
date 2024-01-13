@@ -32,7 +32,6 @@ pub fn spawn_bullet(
     mouse_button: Res<Input<MouseButton>>,
     char_texture: Res<AsciiSpriteSheet>,
     mut bullet_timer: ResMut<BulletSpawnTimer>,
-    time: Res<Time>,
 ) {
     let (player_pos, gun_type) = player_q.single();
     let player_pos = player_pos.translation.truncate();

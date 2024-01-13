@@ -11,6 +11,8 @@
 
 - Different gun & bullet types
 - Particles on bullet hit?
+- Score
+- Xp?
 - Proper app exit event.
 - Handle player death.
 - Add menu.
