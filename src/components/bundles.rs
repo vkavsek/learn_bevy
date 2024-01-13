@@ -10,6 +10,7 @@ pub struct PlayerBundle {
     pub xp: Xp,
     pub size: Size,
     pub name: Name,
+    pub current_gun_type: GunType,
 
     pub noise_debug: PlayerNoiseDebug,
 
@@ -33,6 +34,7 @@ impl Default for PlayerBundle {
             xp: Xp(0),
             spritesheet: Default::default(),
             name: Name::new("Player"),
+            current_gun_type: GunType::default(),
 
             noise_debug: PlayerNoiseDebug(None),
 

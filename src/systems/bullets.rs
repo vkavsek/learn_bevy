@@ -5,8 +5,10 @@ use crate::prelude::*;
 
 pub fn handle_bullet_timers(
     mut bullet_q: Query<&mut BulletLifeTimer, With<Bullet>>,
+    mut bullet_timer: ResMut<BulletSpawnTimer>,
     time: Res<Time>,
 ) {
+    bullet_timer.tick(time.delta());
     for mut bull_timer in bullet_q.iter_mut() {
         bull_timer.tick(time.delta());
     }
@@ -26,17 +28,15 @@ pub fn despawn_bullet(
 pub fn spawn_bullet(
     mut cmds: Commands,
     window_q: Query<&Window, With<PrimaryWindow>>,
-    player_q: Query<&Transform, With<Player>>,
+    player_q: Query<(&Transform, &GunType), With<Player>>,
     mouse_button: Res<Input<MouseButton>>,
     char_texture: Res<AsciiSpriteSheet>,
     mut bullet_timer: ResMut<BulletSpawnTimer>,
     time: Res<Time>,
 ) {
-    bullet_timer.tick(time.delta());
-
+    let (player_pos, gun_type) = player_q.single();
+    let player_pos = player_pos.translation.truncate();
     if bullet_timer.finished() {
-        let player_pos = player_q.single().translation.truncate();
-
         let window = window_q.single();
         let window_size = Vec2::new(
             window.physical_width() as f32,

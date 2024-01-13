@@ -28,3 +28,12 @@ pub fn setup_player(
 
     next_state.set(SetupState::Ready)
 }
+
+pub fn handle_player_gun_type(
+    mut cmds: Commands,
+    player_q: Query<&GunType, (Changed<GunType>, With<Player>)>,
+) {
+    if let Ok(gun_type) = player_q.get_single() {
+        cmds.insert_resource(BulletSpawnTimer::new(gun_type));
+    }
+}

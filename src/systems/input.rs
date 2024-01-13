@@ -3,11 +3,23 @@ use crate::prelude::*;
 /// TODO: Improve input handling
 pub fn handle_kbd_inputs(
     keycode_input: Res<Input<KeyCode>>,
-    mut player_query: Query<&mut Velocity, With<Player>>,
+    mut player_query: Query<(&mut Velocity, &mut GunType), With<Player>>,
     mut cam_query: Query<&mut OrthographicProjection, (With<MainCam>, Without<MinimapCam>)>,
 ) {
-    let mut vel = player_query.single_mut();
+    let (mut vel, mut gun_type) = player_query.single_mut();
 
+    // ——————> GUN TYPE
+    if keycode_input.just_pressed(KeyCode::Key1) {
+        *gun_type = GunType::Pistol;
+    }
+    if keycode_input.just_pressed(KeyCode::Key2) {
+        *gun_type = GunType::Shotgun;
+    }
+    if keycode_input.just_pressed(KeyCode::Key3) {
+        *gun_type = GunType::Ar;
+    }
+
+    // ——————> MOVEMENT
     let mut adding_vec = Vec2::ZERO;
 
     // RIGHT

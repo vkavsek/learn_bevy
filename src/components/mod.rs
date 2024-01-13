@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use std::time::Duration;
+use std::{default, time::Duration};
 
 pub mod bundles;
 
@@ -108,6 +108,23 @@ pub struct Health {
 impl Health {
     pub fn init(current: i32, max: i32) -> Self {
         Health { current, max }
+    }
+}
+
+#[derive(Component, Reflect, Default)]
+pub enum GunType {
+    #[default]
+    Pistol,
+    Shotgun,
+    Ar,
+}
+impl GunType {
+    pub fn type_to_interval(&self) -> Duration {
+        match self {
+            GunType::Pistol => Duration::from_millis(500),
+            GunType::Shotgun => Duration::from_millis(1000),
+            GunType::Ar => Duration::from_millis(250),
+        }
     }
 }
 

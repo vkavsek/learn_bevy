@@ -34,7 +34,7 @@ pub struct MainLogicPlugin;
 impl Plugin for MainLogicPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(TilemapPlugin)
-            .insert_resource(BulletSpawnTimer::new())
+            .insert_resource(BulletSpawnTimer::default())
             .add_event::<DespawnEventRecursive>()
             .add_systems(PreStartup, load_spritesheet_texture)
             .add_systems(
@@ -55,6 +55,7 @@ impl Plugin for MainLogicPlugin {
                     bevy::window::close_on_esc,
                     (
                         handle_despawn_event_recursive,
+                        handle_player_gun_type,
                         // HEALTHBARS
                         (handle_healthbars, toggle_healthbar_vis),
                         // BULLETS
