@@ -43,9 +43,10 @@ pub enum EnemyType {
 
 #[derive(Component, Default, Clone, Reflect, Copy, Debug)]
 pub enum EnemyObjective {
-    FollowPlayer,
     #[default]
     Bounce,
+    FollowPlayer,
+    Attack,
 }
 impl EnemyObjective {
     pub fn switch(&mut self) {
@@ -67,6 +68,7 @@ impl UnchangableTimer {
 
 /// A timer to detect if enemy just changed state.
 /// Basically a delay from the time an enemy is hit to the time it starts chasing the player.
+/// Or from the start of the attack to following player again.
 #[derive(Component, Reflect, Deref, DerefMut, Default)]
 pub struct ChangeStateTimer(pub Option<Timer>);
 impl ChangeStateTimer {

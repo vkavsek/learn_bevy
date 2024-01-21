@@ -40,7 +40,6 @@ pub fn setup_enemies(mut cmds: Commands, char_texture: Res<AsciiSpriteSheet>) {
 pub fn handle_enemy_timers(
     mut enemy_q: Query<
         (
-            &mut EnemyObjective,
             &mut ChangeStateTimer,
             &mut UnchangableTimer,
             &mut EnemyShotTimer,
@@ -49,9 +48,7 @@ pub fn handle_enemy_timers(
     >,
     time: Res<Time>,
 ) {
-    for (mut enemy_obj, mut change_timer, mut unchangeble_timer, mut shot_timer) in
-        enemy_q.iter_mut()
-    {
+    for (mut change_timer, mut unchangeble_timer, mut shot_timer) in enemy_q.iter_mut() {
         (*change_timer)
             .as_mut()
             .map(|timer| timer.tick(time.delta()));
@@ -72,15 +69,10 @@ pub fn handle_enemy_timers(
             }
         }
 
-        match *enemy_obj {
-            EnemyObjective::FollowPlayer => {
-                if let Some(ch_timer) = (**change_timer).as_ref() {
-                    if ch_timer.just_finished() {
-                        (*change_timer).take();
-                    }
-                }
+        if let Some(ch_timer) = (**change_timer).as_ref() {
+            if ch_timer.just_finished() {
+                (*change_timer).take();
             }
-            EnemyObjective::Bounce => {}
         }
     }
 }
@@ -114,17 +106,21 @@ pub fn handle_enemy_player_coll(
             if let Ok((mut enemy_hp, mut objective, mut change_timer, mut unchangable_timer)) =
                 find_enemy
             {
-                enemy_hp.current -= 1;
                 if unchangable_timer.is_none() {
                     match *objective {
                         EnemyObjective::FollowPlayer => {
                             player_hp.current -= 1;
+                            enemy_hp.current -= 1;
                         }
                         EnemyObjective::Bounce => {
+                            enemy_hp.current -= 1;
                             // Start timer since we will switch the objective next.
                             *change_timer = ChangeStateTimer::new(ENEMY_CHANGE_TIME);
-                            objective.switch();
+                            *objective = EnemyObjective::Attack;
                             *unchangable_timer = UnchangableTimer::new(Duration::from_millis(50));
+                        }
+                        EnemyObjective::Attack => {
+                            player_hp.current -= 1;
                         }
                     }
                 }
@@ -138,19 +134,20 @@ pub fn change_enemy_color(
 ) {
     for (objective, mut texture_atlas) in enemy_query.iter_mut() {
         match objective {
-            EnemyObjective::FollowPlayer => texture_atlas.color = Color::RED,
+            EnemyObjective::FollowPlayer => texture_atlas.color = Color::CYAN,
             EnemyObjective::Bounce => texture_atlas.color = Color::WHITE,
+            EnemyObjective::Attack => texture_atlas.color = Color::RED,
         }
     }
 }
 
-pub fn enemy_follow_player(
+pub fn enemy_follow_attack_player(
     mut enemy_query: Query<
         (
             &mut Velocity,
+            &mut EnemyObjective,
+            &mut ChangeStateTimer,
             &Transform,
-            &EnemyObjective,
-            &ChangeStateTimer,
             &Damping,
             &EnemyShotTimer,
         ),
@@ -159,14 +156,29 @@ pub fn enemy_follow_player(
     player_query: Query<&Transform, (With<Player>, Without<Enemy>)>,
 ) {
     let player_pos = player_query.single();
-    for (mut vel, pos, e_obj, ch_timer, damping, shot_timer) in enemy_query.iter_mut() {
-        if matches!(e_obj, &EnemyObjective::FollowPlayer)
+    for (mut vel, mut e_obj, mut ch_timer, pos, damping, shot_timer) in enemy_query.iter_mut() {
+        if matches!(*e_obj, EnemyObjective::FollowPlayer)
             && ch_timer.is_none()
             && shot_timer.is_none()
         {
             let new_vel = player_pos.translation - pos.translation;
+            if new_vel.length() < ENEMY_ATTACK_RANGE {
+                *e_obj = EnemyObjective::Attack;
+                vel.linvel = Vec2::ZERO;
+            }
             vel.linvel =
                 new_vel.truncate().normalize_or_zero() * (ENEMY_SPEED - damping.linear_damping);
+        }
+
+        if matches!(*e_obj, EnemyObjective::Attack) {
+            let new_vel = player_pos.translation - pos.translation;
+            if new_vel.length() > ENEMY_ATTACK_RANGE {
+                *e_obj = EnemyObjective::FollowPlayer;
+            }
+            if ch_timer.is_none() {
+                vel.linvel = new_vel.truncate().normalize_or_zero() * 2400.;
+                *ch_timer = ChangeStateTimer::new(ENEMY_ATTACK_FREQUENCY)
+            }
         }
     }
 }

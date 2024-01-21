@@ -46,10 +46,12 @@ pub mod prelude {
     pub const ENEMY_CHANGE_TIME: Duration = Duration::from_secs(1);
     pub const ENEMY_FOLLOW_TIME: Duration = Duration::from_secs(10);
     pub const ENEMY_STAGGER_TIME: Duration = Duration::from_millis(300);
-    pub const ENEMY_SPEED: f32 = 200.0;
+    pub const ENEMY_SPEED: f32 = 300.0;
     pub const ENEMY_DAMPING: f32 = 5.;
     pub const ENEMY_HEALTH: i32 = 10;
     pub const ENEMY_SIZE: f32 = 32.0;
+    pub const ENEMY_ATTACK_RANGE: f32 = 320.0;
+    pub const ENEMY_ATTACK_FREQUENCY: Duration = Duration::from_secs(1);
 }
 
 mod components;

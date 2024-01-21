@@ -118,10 +118,11 @@ pub fn handle_bullet_coll(
                     EnemyObjective::Bounce => {
                         // Start timer since we will switch the objective below.
                         *change_timer = ChangeStateTimer::new(ENEMY_CHANGE_TIME);
-                        objective.switch();
+                        *objective = EnemyObjective::FollowPlayer;
                         *unchangable_timer = UnchangableTimer::new(Duration::from_millis(50));
                     }
                     EnemyObjective::FollowPlayer => {}
+                    EnemyObjective::Attack => {}
                 }
             }
             // send despawn event for the bullet if it was found

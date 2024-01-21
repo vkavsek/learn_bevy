@@ -17,7 +17,7 @@ impl Plugin for PhysicsPlugin {
 pub struct EnemyLogicPlugin;
 impl Plugin for EnemyLogicPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(FixedUpdate, enemy_follow_player)
+        app.add_systems(FixedUpdate, enemy_follow_attack_player)
             .add_systems(
                 Update,
                 (

@@ -11,6 +11,7 @@
 
 - Different gun & bullet types
 - Particles on bullet hit?
+- Enemy attacks
 - Score
 - Xp?
 - Proper app exit event.
