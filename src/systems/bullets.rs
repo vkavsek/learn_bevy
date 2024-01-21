@@ -82,7 +82,6 @@ pub fn handle_bullet_coll(
             &mut EnemyObjective,
             &mut ChangeStateTimer,
             &mut UnchangableTimer,
-            &mut FollowTimer,
             &mut EnemyShotTimer,
         ),
         With<Enemy>,
@@ -109,7 +108,6 @@ pub fn handle_bullet_coll(
                 mut objective,
                 mut change_timer,
                 mut unchangable_timer,
-                mut follow_timer,
                 mut shot_timer,
             ) = find_enemy;
 
@@ -121,8 +119,6 @@ pub fn handle_bullet_coll(
                         // Start timer since we will switch the objective below.
                         *change_timer = ChangeStateTimer::new(ENEMY_CHANGE_TIME);
                         objective.switch();
-                        // Reset follow timer if started.
-                        follow_timer.take();
                         *unchangable_timer = UnchangableTimer::new(Duration::from_millis(50));
                     }
                     EnemyObjective::FollowPlayer => {}

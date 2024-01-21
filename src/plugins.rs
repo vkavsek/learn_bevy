@@ -101,7 +101,6 @@ impl Plugin for DebugPlugin {
         .register_type::<ChangeStateTimer>()
         .register_type::<PlayerNoiseDebug>()
         .register_type::<UnchangableTimer>()
-        .register_type::<FollowTimer>()
         .register_type::<BulletSpawnTimer>()
         .register_type::<HealthBar>()
         .register_type::<Health>()

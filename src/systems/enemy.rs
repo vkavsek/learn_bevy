@@ -43,25 +43,16 @@ pub fn handle_enemy_timers(
             &mut EnemyObjective,
             &mut ChangeStateTimer,
             &mut UnchangableTimer,
-            &mut FollowTimer,
             &mut EnemyShotTimer,
         ),
         With<Enemy>,
     >,
     time: Res<Time>,
 ) {
-    for (
-        mut enemy_obj,
-        mut change_timer,
-        mut unchangeble_timer,
-        mut follow_timer,
-        mut shot_timer,
-    ) in enemy_q.iter_mut()
+    for (mut enemy_obj, mut change_timer, mut unchangeble_timer, mut shot_timer) in
+        enemy_q.iter_mut()
     {
         (*change_timer)
-            .as_mut()
-            .map(|timer| timer.tick(time.delta()));
-        (*follow_timer)
             .as_mut()
             .map(|timer| timer.tick(time.delta()));
 
@@ -83,15 +74,8 @@ pub fn handle_enemy_timers(
 
         match *enemy_obj {
             EnemyObjective::FollowPlayer => {
-                if let Some(f_timer) = (**follow_timer).as_ref() {
-                    if f_timer.just_finished() {
-                        *enemy_obj = EnemyObjective::Bounce;
-                        (*follow_timer).take();
-                    }
-                }
                 if let Some(ch_timer) = (**change_timer).as_ref() {
                     if ch_timer.just_finished() {
-                        *follow_timer = FollowTimer::new(ENEMY_FOLLOW_TIME);
                         (*change_timer).take();
                     }
                 }
@@ -110,7 +94,6 @@ pub fn handle_enemy_player_coll(
             &mut EnemyObjective,
             &mut ChangeStateTimer,
             &mut UnchangableTimer,
-            &mut FollowTimer,
         ),
         With<Enemy>,
     >,
@@ -128,31 +111,22 @@ pub fn handle_enemy_player_coll(
 
             let find_enemy = enemy_q.get_mut(*other_entity);
 
-            if let Ok((
-                mut enemy_hp,
-                mut objective,
-                mut change_timer,
-                mut unchangable_timer,
-                mut follow_timer,
-            )) = find_enemy
+            if let Ok((mut enemy_hp, mut objective, mut change_timer, mut unchangable_timer)) =
+                find_enemy
             {
                 enemy_hp.current -= 1;
                 if unchangable_timer.is_none() {
                     match *objective {
                         EnemyObjective::FollowPlayer => {
                             player_hp.current -= 1;
-                            // Take from timer if enemy will get deactivated
-                            change_timer.take();
                         }
                         EnemyObjective::Bounce => {
-                            // Start timer since we will switch the objective below.
+                            // Start timer since we will switch the objective next.
                             *change_timer = ChangeStateTimer::new(ENEMY_CHANGE_TIME);
+                            objective.switch();
+                            *unchangable_timer = UnchangableTimer::new(Duration::from_millis(50));
                         }
                     }
-                    objective.switch();
-                    // Reset follow timer if started.
-                    follow_timer.take();
-                    *unchangable_timer = UnchangableTimer::new(Duration::from_millis(50));
                 }
             }
         }
@@ -175,7 +149,8 @@ pub fn enemy_follow_player(
         (
             &mut Velocity,
             &Transform,
-            &FollowTimer,
+            &EnemyObjective,
+            &ChangeStateTimer,
             &Damping,
             &EnemyShotTimer,
         ),
@@ -184,8 +159,11 @@ pub fn enemy_follow_player(
     player_query: Query<&Transform, (With<Player>, Without<Enemy>)>,
 ) {
     let player_pos = player_query.single();
-    for (mut vel, pos, f_timer, damping, shot_timer) in enemy_query.iter_mut() {
-        if f_timer.is_some() && shot_timer.is_none() {
+    for (mut vel, pos, e_obj, ch_timer, damping, shot_timer) in enemy_query.iter_mut() {
+        if matches!(e_obj, &EnemyObjective::FollowPlayer)
+            && ch_timer.is_none()
+            && shot_timer.is_none()
+        {
             let new_vel = player_pos.translation - pos.translation;
             vel.linvel =
                 new_vel.truncate().normalize_or_zero() * (ENEMY_SPEED - damping.linear_damping);

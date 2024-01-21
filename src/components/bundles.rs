@@ -155,7 +155,6 @@ pub struct EnemyBundle {
     pub objective: EnemyObjective,
     pub change_state_timer: ChangeStateTimer,
     pub unchangable_timer: UnchangableTimer,
-    pub follow_timer: FollowTimer,
     pub shot_timer: EnemyShotTimer,
 
     pub health: Health,
@@ -179,7 +178,6 @@ impl Default for EnemyBundle {
             objective: EnemyObjective::default(),
             change_state_timer: ChangeStateTimer::default(),
             unchangable_timer: UnchangableTimer::default(),
-            follow_timer: FollowTimer::default(),
             shot_timer: EnemyShotTimer::default(),
             health: Health::init(ENEMY_HEALTH, ENEMY_HEALTH),
             size: Size(Vec2::splat(ENEMY_SIZE)),

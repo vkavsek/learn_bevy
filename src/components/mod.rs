@@ -56,14 +56,7 @@ impl EnemyObjective {
     }
 }
 
-#[derive(Component, Deref, Reflect, DerefMut, Default)]
-pub struct FollowTimer(pub Option<Timer>);
-impl FollowTimer {
-    pub fn new(len: Duration) -> Self {
-        Self(Some(Timer::new(len, TimerMode::Once)))
-    }
-}
-
+/// A timer during which the enemy can't change state.
 #[derive(Component, Deref, Reflect, DerefMut, Default)]
 pub struct UnchangableTimer(pub Option<Timer>);
 impl UnchangableTimer {
@@ -72,20 +65,17 @@ impl UnchangableTimer {
     }
 }
 
+/// A timer to detect if enemy just changed state.
+/// Basically a delay from the time an enemy is hit to the time it starts chasing the player.
 #[derive(Component, Reflect, Deref, DerefMut, Default)]
 pub struct ChangeStateTimer(pub Option<Timer>);
 impl ChangeStateTimer {
     pub fn new(len: Duration) -> Self {
         Self(Some(Timer::new(len, TimerMode::Once)))
     }
-    pub fn change_state(&mut self, len: Duration) {
-        *self = match **self {
-            Some(_) => ChangeStateTimer::default(),
-            None => ChangeStateTimer::new(len),
-        };
-    }
 }
 
+/// A timer to detect if an enemy was just shot, for staggering.
 #[derive(Component, Deref, Reflect, DerefMut, Default)]
 pub struct EnemyShotTimer(pub Option<Timer>);
 impl EnemyShotTimer {
