@@ -9,9 +9,9 @@
 
 # CURRENT PLAN:
 
-- Different gun & bullet types
+- Different gun & bullet types - DONE
+- Enemy attacks - DONE
 - Particles on bullet hit?
-- Enemy attacks
 - Score
 - Xp?
 - Proper app exit event.

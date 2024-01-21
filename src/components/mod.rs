@@ -113,9 +113,9 @@ pub enum GunType {
 impl GunType {
     pub fn type_to_interval(&self) -> Duration {
         match self {
-            GunType::Pistol => Duration::from_millis(500),
-            GunType::Shotgun => Duration::from_millis(1000),
-            GunType::Ar => Duration::from_millis(250),
+            GunType::Pistol => Duration::from_millis(600),
+            GunType::Shotgun => Duration::from_millis(750),
+            GunType::Ar => Duration::from_millis(100),
         }
     }
 }

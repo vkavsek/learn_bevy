@@ -78,7 +78,7 @@ pub struct BulletBundle {
 impl BulletBundle {
     pub fn new(
         size: Vec2,
-        char_texture: Res<AsciiSpriteSheet>,
+        char_texture: Handle<TextureAtlas>,
         translation: Vec2,
         rotation: Quat,
         target: Vec2,
@@ -97,7 +97,7 @@ impl BulletBundle {
                     custom_size: Some(size),
                     ..default()
                 },
-                texture_atlas: char_texture.clone(),
+                texture_atlas: char_texture,
                 transform: Transform::from_xyz(translation.x, translation.y, 1.)
                     .with_rotation(rotation),
                 ..default()

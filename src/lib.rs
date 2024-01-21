@@ -42,7 +42,7 @@ pub mod prelude {
     pub const PLAYER_SIZE: f32 = 16.0;
     pub const PLAYER_COLOR: Color = Color::rgb(1., 0., 1.);
 
-    pub const NUM_ENEMIES: usize = 700;
+    pub const NUM_ENEMIES: usize = 70;
     pub const ENEMY_CHANGE_TIME: Duration = Duration::from_secs(1);
     pub const ENEMY_FOLLOW_TIME: Duration = Duration::from_secs(10);
     pub const ENEMY_STAGGER_TIME: Duration = Duration::from_millis(300);
