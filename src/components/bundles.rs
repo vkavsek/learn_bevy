@@ -321,6 +321,33 @@ impl HealthBarBundle {
     }
 }
 
+#[derive(Bundle)]
+pub struct GameCursorBundle {
+    _gc: GameCursor,
+    image_b: ImageBundle,
+    name: Name,
+}
+impl GameCursorBundle {
+    pub fn new(texture: Handle<Image>) -> Self {
+        GameCursorBundle {
+            _gc: GameCursor,
+            image_b: ImageBundle {
+                style: Style {
+                    position_type: PositionType::Absolute,
+                    ..default()
+                },
+                image: UiImage {
+                    texture,
+                    ..default()
+                },
+                transform: Transform::from_translation(Vec3::ZERO),
+                z_index: ZIndex::Global(15),
+                ..default()
+            },
+            name: "GameCursor".into(),
+        }
+    }
+}
 // #[derive(Bundle)]
 // pub struct HouseBundle {
 //     pub house: House,

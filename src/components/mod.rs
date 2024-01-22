@@ -191,3 +191,6 @@ impl WallLocation {
         }
     }
 }
+
+#[derive(Component)]
+pub struct GameCursor;

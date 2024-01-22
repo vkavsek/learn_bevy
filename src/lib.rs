@@ -9,8 +9,8 @@ pub mod prelude {
         resources::*,
         states::*,
         systems::{
-            bullets::*, debug::*, enemy::*, healthbar::*, input::*, map::*, movement::*, player::*,
-            *,
+            bullets::*, cursor::*, debug::*, enemy::*, healthbar::*, input::*, map::*, movement::*,
+            player::*, *,
         },
     };
     pub use bevy::prelude::*;
