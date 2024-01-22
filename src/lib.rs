@@ -33,7 +33,7 @@ pub mod prelude {
 
     pub const BULLET_SPAWN_INTERVAL: Duration = Duration::from_millis(300);
     pub const BULLET_LIFE: Duration = Duration::from_millis(750);
-    pub const BULLET_SPEED: f32 = 1500.;
+    pub const BULLET_SPEED: f32 = 1200.;
 
     pub const PLAYER_NAME: &str = "Markane";
     pub const PLAYER_SPEED: f32 = 30.0;
@@ -50,7 +50,7 @@ pub mod prelude {
     pub const ENEMY_DAMPING: f32 = 5.;
     pub const ENEMY_HEALTH: i32 = 10;
     pub const ENEMY_SIZE: f32 = 16.0;
-    pub const ENEMY_ATTACK_RANGE: f32 = 240.0;
+    pub const ENEMY_ATTACK_RANGE: f32 = 160.0;
     pub const ENEMY_ATTACK_FREQUENCY: Duration = Duration::from_secs(1);
 }
 

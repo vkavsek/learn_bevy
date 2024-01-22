@@ -21,6 +21,7 @@ pub struct PlayerBundle {
     pub ccd: Ccd,
 
     pub collider: Collider,
+    pub coll_groups: CollisionGroups,
     pub mass: ColliderMassProperties,
     pub restitution: Restitution,
     pub enable_events: ActiveEvents,
@@ -50,6 +51,10 @@ impl Default for PlayerBundle {
             },
             ccd: Ccd::enabled(),
             collider: Collider::ball(PLAYER_SIZE / 2.),
+            coll_groups: CollisionGroups::new(
+                Group::from_bits(0b1110).unwrap(),
+                Group::from_bits(0b1111).unwrap(),
+            ),
             mass: ColliderMassProperties::Density(10.0),
             restitution: Restitution::coefficient(0.5),
             enable_events: ActiveEvents::COLLISION_EVENTS,
@@ -71,6 +76,7 @@ pub struct BulletBundle {
     pub ccd: Ccd,
 
     pub collider: Collider,
+    pub coll_groups: CollisionGroups,
     pub mass: ColliderMassProperties,
     pub restitution: Restitution,
     pub enable_events: ActiveEvents,
@@ -92,7 +98,7 @@ impl BulletBundle {
         Self {
             sprite: SpriteSheetBundle {
                 sprite: TextureAtlasSprite {
-                    color: Color::BLACK,
+                    color: Color::WHITE,
                     index: 30,
                     custom_size: Some(size),
                     ..default()
@@ -141,6 +147,10 @@ impl Default for BulletBundle {
                 Vec2::new(0., 10.),
             ])
             .expect("Error computing convex hull for Bullets"),
+            coll_groups: CollisionGroups::new(
+                Group::from_bits(0b0001).unwrap(),
+                Group::from_bits(0b1110).unwrap(),
+            ),
             mass: ColliderMassProperties::Density(1.0),
             restitution: Restitution::coefficient(0.8),
             enable_events: ActiveEvents::COLLISION_EVENTS,
@@ -167,6 +177,7 @@ pub struct EnemyBundle {
     pub damping: Damping,
 
     pub collider: Collider,
+    pub coll_groups: CollisionGroups,
     pub mass: ColliderMassProperties,
     pub restitution: Restitution,
 }
@@ -193,6 +204,10 @@ impl Default for EnemyBundle {
                 angular_damping: 10.0,
             },
             collider: Collider::ball(ENEMY_SIZE / 2.0),
+            coll_groups: CollisionGroups::new(
+                Group::from_bits(0b1110).unwrap(),
+                Group::from_bits(0b1111).unwrap(),
+            ),
             mass: ColliderMassProperties::Density(0.1),
             restitution: Restitution::coefficient(0.75),
         }
@@ -207,6 +222,7 @@ pub struct WallBundle {
     pub name: Name,
     pub rbd: RigidBody,
     pub collider: Collider,
+    pub coll_groups: CollisionGroups,
 }
 impl WallBundle {
     pub fn new(location: WallLocation) -> Self {
@@ -229,6 +245,10 @@ impl WallBundle {
             name: Name::new("Wall"),
             rbd: RigidBody::Fixed,
             collider: Collider::cuboid(size.x / 2., size.y / 2.),
+            coll_groups: CollisionGroups::new(
+                Group::from_bits(0b1110).unwrap(),
+                Group::from_bits(0b1111).unwrap(),
+            ),
         }
     }
 }

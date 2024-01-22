@@ -1,5 +1,4 @@
 use bevy::window::PrimaryWindow;
-use rand::{thread_rng, Rng};
 use std::{f32, time::Duration};
 
 use crate::prelude::*;
@@ -75,7 +74,7 @@ fn spawn_bullet_type(
     delta: f32,
 ) {
     let target = mouse_pos;
-    let size = Vec2::new(10., 20.);
+    let size = Vec2::new(8., 8.);
     let translation = player_pos + mouse_pos * (PLAYER_SIZE / 2. + 10.);
     let rotation = Quat::IDENTITY * Quat::from_rotation_z(delta);
 
@@ -101,16 +100,15 @@ fn spawn_bullet_type(
             ));
         }
         GunType::Shotgun => {
-            let size = Vec2::new(10., 10.);
-            let num_bullets = 20;
-            for _ in 0..num_bullets {
-                let mut rng = thread_rng();
+            let num_bullets = 15;
+            for i in 0..num_bullets {
                 let new_delta = delta
-                    + rng.gen_range(-3..3) as f32 * 0.04 * f32::consts::PI
+                    + (i - (num_bullets / 2)) as f32 * 0.005 * f32::consts::PI
                     + f32::consts::FRAC_PI_2;
                 let target = Vec2::new(new_delta.cos(), new_delta.sin());
-                let translation = player_pos + target * (PLAYER_SIZE / 2. + 10.);
-                let rotation = Quat::IDENTITY * Quat::from_rotation_z(new_delta);
+                let translation = player_pos + target * PLAYER_SIZE;
+                let rotation =
+                    Quat::IDENTITY * Quat::from_rotation_z(new_delta - f32::consts::FRAC_PI_2);
 
                 cmds.spawn(BulletBundle::new(
                     size,
@@ -118,7 +116,7 @@ fn spawn_bullet_type(
                     translation,
                     rotation,
                     target,
-                    BULLET_SPEED,
+                    BULLET_SPEED * 0.95,
                 ));
             }
         }
