@@ -10,7 +10,7 @@ fn main() {
                     primary_window: Some(Window {
                         title: TITLE.into(),
                         resolution: WINDOW_RES.into(),
-                        present_mode: PresentMode::AutoVsync,
+                        present_mode: PresentMode::AutoNoVsync,
                         ..Default::default()
                     }),
                     ..Default::default()

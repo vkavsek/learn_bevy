@@ -43,7 +43,12 @@ impl Plugin for MainLogicPlugin {
             )
             .add_systems(
                 OnEnter(SetupState::Setup),
-                (setup_player, setup_enemies, setup_game_cameras),
+                (
+                    setup_player,
+                    setup_enemies,
+                    setup_game_cameras,
+                    setup_cursor,
+                ),
             )
             .add_systems(
                 FixedUpdate,
@@ -66,7 +71,7 @@ impl Plugin for MainLogicPlugin {
                             handle_bullet_coll,
                         ),
                         // MOVEMENT
-                        (dynamic_damping, cam_movement).after(handle_kbd_inputs),
+                        (dynamic_damping, cam_movement, move_cursor).after(handle_kbd_inputs),
                     )
                         .run_if(in_state(SetupState::Ready)),
                 ),

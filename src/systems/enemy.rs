@@ -176,7 +176,7 @@ pub fn enemy_follow_attack_player(
                 *e_obj = EnemyObjective::FollowPlayer;
             }
             if ch_timer.is_none() {
-                vel.linvel = new_vel.truncate().normalize_or_zero() * 2400.;
+                vel.linvel = new_vel.truncate().normalize_or_zero() * 1600.;
                 *ch_timer = ChangeStateTimer::new(ENEMY_ATTACK_FREQUENCY)
             }
         }

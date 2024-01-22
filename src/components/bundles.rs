@@ -250,7 +250,7 @@ impl Default for MainCamBundle {
                 },
                 projection: OrthographicProjection {
                     near: -1.0,
-                    scale: 1.,
+                    scale: 0.5,
                     ..default()
                 },
 

@@ -9,13 +9,13 @@ pub fn handle_kbd_inputs(
     let (mut vel, mut gun_type) = player_query.single_mut();
 
     // ——————> GUN TYPE
-    if keycode_input.just_pressed(KeyCode::Key1) {
+    if keycode_input.pressed(KeyCode::Key1) {
         *gun_type = GunType::Pistol;
     }
-    if keycode_input.just_pressed(KeyCode::Key2) {
+    if keycode_input.pressed(KeyCode::Key2) {
         *gun_type = GunType::Shotgun;
     }
-    if keycode_input.just_pressed(KeyCode::Key3) {
+    if keycode_input.pressed(KeyCode::Key3) {
         *gun_type = GunType::Ar;
     }
 
@@ -40,11 +40,6 @@ pub fn handle_kbd_inputs(
     }
 
     vel.linvel += adding_vec.normalize_or_zero() * PLAYER_SPEED;
-
-    // FIX: IF you mash SPACE everything goes to shit
-    if keycode_input.just_pressed(KeyCode::Space) {
-        vel.linvel *= 2.5;
-    }
 
     if let Ok(mut projection) = cam_query.get_single_mut() {
         if keycode_input.pressed(KeyCode::Z) {
