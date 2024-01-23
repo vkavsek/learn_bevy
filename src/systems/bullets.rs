@@ -37,10 +37,7 @@ pub fn spawn_bullet(
     let player_pos = player_pos.translation.truncate();
     if bullet_timer.finished() {
         let window = window_q.single();
-        let window_size = Vec2::new(
-            window.physical_width() as f32,
-            window.physical_height() as f32,
-        );
+        let window_size = Vec2::new(window.width(), window.height());
 
         if let Some(mouse_pos) = window.cursor_position() {
             if mouse_button.pressed(MouseButton::Left) {

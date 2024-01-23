@@ -1,4 +1,7 @@
-use bevy::diagnostic::{DiagnosticsStore, FrameTimeDiagnosticsPlugin};
+use bevy::{
+    diagnostic::{DiagnosticsStore, FrameTimeDiagnosticsPlugin},
+    window::PrimaryWindow,
+};
 
 use crate::prelude::*;
 
@@ -141,6 +144,22 @@ pub fn setup_debug_text(mut cmds: Commands) {
                             ..default()
                         },
                     },
+                    TextSection {
+                        value: "\n\nMouse Pos: ".into(),
+                        style: TextStyle {
+                            font_size: 20.0,
+                            color: Color::WHITE,
+                            ..default()
+                        },
+                    },
+                    TextSection {
+                        value: " N/A".into(),
+                        style: TextStyle {
+                            font_size: 20.0,
+                            color: Color::WHITE,
+                            ..default()
+                        },
+                    },
                 ]),
                 ..Default::default()
             },
@@ -248,9 +267,12 @@ pub fn handle_fps_update(
 pub fn update_debug_text(
     mut text_q: Query<&mut Text, With<DebugText>>,
     player_q: Query<(&Transform, &Damping, &PlayerNoiseDebug, &Velocity), With<Player>>,
+    window_q: Query<&Window, With<PrimaryWindow>>,
 ) {
     let (player_trans, damping, noise_debug, vel) = player_q.single();
     let player_pos = player_trans.translation;
+    let window = window_q.single();
+    let window_size = Vec2::new(window.width(), window.height());
 
     let (x, y) = (
         (((player_pos.x + MAP_SIZE_PX.x / 2.0) / GRID_SIZE.x).floor() as u32),
@@ -280,5 +302,14 @@ pub fn update_debug_text(
         text.sections[7].value = format!("{:30.1}", damping.linear_damping);
 
         text.sections[9].value = format!("{:35.3}", vel.linvel.length());
+
+        if let Some(mouse_pos) = window.cursor_position() {
+            // Remap from window space to a vector around the player.
+            let mut mouse_pos = mouse_pos - window_size / 2.;
+            mouse_pos.y = -mouse_pos.y;
+            text.sections[11].value = format!("{:10.3?}", mouse_pos);
+        } else {
+            text.sections[11].value = format!("{:10.3}", "N/A");
+        }
     }
 }
