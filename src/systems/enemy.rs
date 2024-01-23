@@ -185,10 +185,12 @@ pub fn enemy_follow_attack_player(
 
 pub fn despawn_enemy(
     enemy_q: Query<(Entity, &Health), (With<Enemy>, Changed<Health>)>,
+    mut score: ResMut<Score>,
     mut despawn_event: EventWriter<DespawnEventRecursive>,
 ) {
     for (ent, health) in enemy_q.iter() {
         if health.current <= 0 {
+            **score += 1;
             despawn_event.send(DespawnEventRecursive(ent));
         }
     }

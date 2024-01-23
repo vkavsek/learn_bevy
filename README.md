@@ -11,9 +11,10 @@
 
 - Different gun & bullet types - DONE
 - Enemy attacks - DONE
+- Score - DONE 
 - Particles on bullet hit?
-- Score
-- Xp?
+- Add score display.
+- Xp
 - Proper app exit event.
 - Handle player death.
 - Add menu.

@@ -35,6 +35,7 @@ impl Plugin for MainLogicPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(TilemapPlugin)
             .insert_resource(BulletSpawnTimer::default())
+            .insert_resource(Score(0))
             .add_event::<DespawnEventRecursive>()
             .add_systems(PreStartup, load_spritesheet_texture)
             .add_systems(
@@ -109,6 +110,7 @@ impl Plugin for DebugPlugin {
         .register_type::<BulletSpawnTimer>()
         .register_type::<HealthBar>()
         .register_type::<Health>()
+        .register_type::<Score>()
         .register_type::<Xp>();
     }
 }
