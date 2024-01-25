@@ -49,6 +49,7 @@ impl Plugin for MainLogicPlugin {
                     setup_enemies,
                     setup_game_cameras,
                     setup_cursor,
+                    setup_ui,
                 ),
             )
             .add_systems(

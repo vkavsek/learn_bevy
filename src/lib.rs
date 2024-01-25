@@ -10,7 +10,7 @@ pub mod prelude {
         states::*,
         systems::{
             bullets::*, cursor::*, debug::*, enemy::*, healthbar::*, input::*, map::*, movement::*,
-            player::*, *,
+            player::*, ui::*, *,
         },
     };
     pub use bevy::prelude::*;

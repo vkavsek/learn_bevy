@@ -19,6 +19,13 @@ pub struct DebugText;
 #[derive(Component, Reflect, Deref, DerefMut)]
 pub struct PlayerNoiseDebug(pub Option<f32>);
 
+// —————> UI Components
+#[derive(Component)]
+pub struct UiRoot;
+
+#[derive(Component)]
+pub struct UiElement;
+
 // —————> GAME COMPONENTS
 #[derive(Component)]
 pub struct Player {
