@@ -5,12 +5,12 @@ use crate::prelude::*;
 
 pub fn handle_bullet_timers(
     mut bullet_q: Query<&mut BulletLifeTimer, With<Bullet>>,
-    mut bullet_timer: ResMut<BulletSpawnTimer>,
+    mut shoot_timer: ResMut<BulletSpawnTimer>,
     time: Res<Time>,
 ) {
-    bullet_timer.tick(time.delta());
-    for mut bull_timer in bullet_q.iter_mut() {
-        bull_timer.tick(time.delta());
+    shoot_timer.tick(time.delta());
+    for mut bull_life_timer in bullet_q.iter_mut() {
+        bull_life_timer.tick(time.delta());
     }
 }
 
@@ -18,8 +18,8 @@ pub fn despawn_bullet(
     bullet_q: Query<(&BulletLifeTimer, Entity), With<Bullet>>,
     mut despawn_event: EventWriter<DespawnEventRecursive>,
 ) {
-    for (bullet_timer, bullet_ent) in bullet_q.iter() {
-        if bullet_timer.finished() {
+    for (bullet_life_timer, bullet_ent) in bullet_q.iter() {
+        if bullet_life_timer.finished() {
             despawn_event.send(DespawnEventRecursive(bullet_ent));
         }
     }
