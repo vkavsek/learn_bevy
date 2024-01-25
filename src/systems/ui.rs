@@ -6,8 +6,6 @@ pub fn setup_ui(mut cmds: Commands, sprites: Res<AsciiSpriteSheet>) {
         .spawn((
             UiRoot,
             NodeBundle {
-                background_color: BackgroundColor(Color::RED),
-                // border_color: todo!(),
                 z_index: ZIndex::Global(z_index_offset),
                 style: Style {
                     display: Display::Flex,
@@ -26,6 +24,24 @@ pub fn setup_ui(mut cmds: Commands, sprites: Res<AsciiSpriteSheet>) {
         .id();
     z_index_offset += 1;
 
+    let player_info_text = cmds
+        .spawn(TextBundle::from_sections([
+            TextSection {
+                value: "Player: ".into(),
+                style: TextStyle {
+                    font_size: 32.,
+                    ..default()
+                },
+            },
+            TextSection {
+                value: "N/A".into(),
+                style: TextStyle {
+                    font_size: 32.,
+                    ..default()
+                },
+            },
+        ]))
+        .id();
     let ui_wrapper_left = cmds
         .spawn((
             UiElement,
@@ -45,6 +61,86 @@ pub fn setup_ui(mut cmds: Commands, sprites: Res<AsciiSpriteSheet>) {
                 ..default()
             },
         ))
+        .add_child(player_info_text)
+        .id();
+
+    let score_text = cmds
+        .spawn(TextBundle::from_sections([
+            TextSection {
+                value: "Score: ".into(),
+                style: TextStyle {
+                    font_size: 32.,
+                    ..default()
+                },
+            },
+            TextSection {
+                value: "N/A".into(),
+                style: TextStyle {
+                    font_size: 32.,
+                    ..default()
+                },
+            },
+        ]))
+        .id();
+    let controls_text = cmds
+        .spawn(TextBundle::from_sections([
+            TextSection {
+                value: "CONTROLS\n".into(),
+                style: TextStyle {
+                    font_size: 16.,
+                    ..default()
+                },
+            },
+            TextSection {
+                value: "Movement: WASD\n".into(),
+                style: TextStyle {
+                    font_size: 16.,
+                    ..default()
+                },
+            },
+            TextSection {
+                value: "Shoot: Left Click\n".into(),
+                style: TextStyle {
+                    font_size: 16.,
+                    ..default()
+                },
+            },
+            TextSection {
+                value: "Change weapon: 1 / 2 / 3\n".into(),
+                style: TextStyle {
+                    font_size: 16.,
+                    ..default()
+                },
+            },
+            TextSection {
+                value: "Toggle healthbars: H\n".into(),
+                style: TextStyle {
+                    font_size: 16.,
+                    ..default()
+                },
+            },
+            TextSection {
+                value: "FPS + debug info: F12\n".into(),
+                style: TextStyle {
+                    font_size: 16.,
+                    ..default()
+                },
+            },
+            TextSection {
+                value: "Physics debug: F10\n".into(),
+                style: TextStyle {
+                    font_size: 16.,
+                    ..default()
+                },
+            },
+            TextSection {
+                value: "EGUI: F1\n".into(),
+                style: TextStyle {
+                    font_size: 16.,
+                    ..default()
+                },
+            },
+        ]))
         .id();
     let ui_wrapper_right = cmds
         .spawn((
@@ -55,16 +151,18 @@ pub fn setup_ui(mut cmds: Commands, sprites: Res<AsciiSpriteSheet>) {
                 z_index: ZIndex::Global(z_index_offset),
                 style: Style {
                     display: Display::Flex,
-                    flex_direction: FlexDirection::Column,
+                    padding: UiRect::new(Val::Px(10.), Val::Px(10.), Val::Px(10.), Val::Px(10.)),
                     width: Val::Percent(50.),
                     height: Val::Percent(100.),
                     align_items: AlignItems::Center,
-                    justify_content: JustifyContent::Center,
+                    justify_content: JustifyContent::SpaceAround,
                     ..default()
                 },
                 ..default()
             },
         ))
+        .add_child(score_text)
+        .add_child(controls_text)
         .id();
 
     cmds.entity(ui_root)

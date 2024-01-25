@@ -26,6 +26,9 @@ pub struct UiRoot;
 #[derive(Component)]
 pub struct UiElement;
 
+// #[derive(Component)]
+// pub struct UiPlayerInfo;
+
 // —————> GAME COMPONENTS
 #[derive(Component)]
 pub struct Player {

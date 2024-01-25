@@ -361,7 +361,7 @@ impl GameCursorBundle {
                     ..default()
                 },
                 transform: Transform::from_translation(Vec3::ZERO),
-                z_index: ZIndex::Global(15),
+                z_index: ZIndex::Global(i32::MAX),
                 ..default()
             },
             name: "GameCursor".into(),
