@@ -17,10 +17,11 @@ pub mod prelude {
     pub use bevy_ecs_tilemap::prelude::*;
     pub use bevy_rapier2d::prelude::*;
 
+    pub const WINDOW_RES: Vec2 = Vec2::new(1920., 1080.);
     pub const TITLE: &str = "MARKANE UBIJA ZLOBNE GRDINE";
     pub const BG_COLOR: Color = Color::rgb(0., 0., 0.);
 
-    pub const WINDOW_RES: Vec2 = Vec2::new(1920., 1080.);
+    pub const UI_BG_COLOR: Color = Color::rgba(0.5, 0.2, 0.75, 0.75);
 
     pub const MAP_SIZE: TilemapSize = TilemapSize { x: 100, y: 100 };
     pub const GRID_SIZE: TilemapGridSize = TilemapGridSize { x: 16., y: 16. };
@@ -42,7 +43,7 @@ pub mod prelude {
     pub const PLAYER_SIZE: f32 = 8.0;
     pub const PLAYER_COLOR: Color = Color::rgb(1., 0., 1.);
 
-    pub const NUM_ENEMIES: usize = 30;
+    pub const NUM_ENEMIES: usize = 150;
     pub const ENEMY_CHANGE_TIME: Duration = Duration::from_secs(1);
     pub const ENEMY_FOLLOW_TIME: Duration = Duration::from_secs(10);
     pub const ENEMY_STAGGER_TIME: Duration = Duration::from_millis(300);

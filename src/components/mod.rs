@@ -21,10 +21,19 @@ pub struct PlayerNoiseDebug(pub Option<f32>);
 
 // —————> UI Components
 #[derive(Component)]
-pub struct UiRoot;
+pub struct UiRootBot;
 
 #[derive(Component)]
-pub struct UiElement;
+pub struct UiRootTop;
+
+#[derive(Component)]
+pub struct UiTextPlayerName;
+
+#[derive(Component)]
+pub struct UiTextPlayerHp;
+
+#[derive(Component)]
+pub struct UiTextPlayerScore;
 
 // #[derive(Component)]
 // pub struct UiPlayerInfo;

@@ -49,7 +49,8 @@ impl Plugin for MainLogicPlugin {
                     setup_enemies,
                     setup_game_cameras,
                     setup_cursor,
-                    setup_ui,
+                    setup_ui_bottom,
+                    setup_ui_top,
                 ),
             )
             .add_systems(
@@ -61,6 +62,8 @@ impl Plugin for MainLogicPlugin {
                 (
                     bevy::window::close_on_esc,
                     (
+                        handle_ui_player_hp,
+                        handle_ui_player_score,
                         handle_despawn_event_recursive,
                         handle_player_gun_type,
                         // HEALTHBARS
