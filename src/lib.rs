@@ -21,7 +21,7 @@ pub mod prelude {
     pub const TITLE: &str = "MARKANE UBIJA ZLOBNE GRDINE";
     pub const BG_COLOR: Color = Color::rgb(0., 0., 0.);
 
-    pub const UI_BG_COLOR: Color = Color::rgba(0.5, 0.2, 0.75, 0.75);
+    pub const UI_BG_COLOR: Color = Color::rgba(0.5, 0.2, 0.75, 0.5);
 
     pub const MAP_SIZE: TilemapSize = TilemapSize { x: 100, y: 100 };
     pub const GRID_SIZE: TilemapGridSize = TilemapGridSize { x: 16., y: 16. };

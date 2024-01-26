@@ -24,7 +24,14 @@ pub fn handle_ui_player_score(
     }
 }
 
-pub fn setup_ui_top(mut cmds: Commands, sprites: Res<AsciiSpriteSheet>) {
+pub fn handle_ui_guns(
+    player_q: Query<&GunType, With<Player>>,
+    ui_gun_root: Query<Entity, With<UiGunTypeRoot>>,
+) {
+    todo!()
+}
+
+pub fn setup_ui_top(mut cmds: Commands) {
     let mut z_index_offset = 50;
     let ui_root = cmds
         .spawn((
@@ -35,12 +42,11 @@ pub fn setup_ui_top(mut cmds: Commands, sprites: Res<AsciiSpriteSheet>) {
                 style: Style {
                     display: Display::Flex,
                     position_type: PositionType::Absolute,
-                    right: Val::Percent(70.),
                     left: Val::Percent(0.),
                     top: Val::Percent(0.),
-                    bottom: Val::Percent(80.),
+                    bottom: Val::Percent(90.),
                     align_items: AlignItems::Center,
-                    justify_content: JustifyContent::Center,
+                    justify_content: JustifyContent::Start,
                     ..default()
                 },
                 ..default()
@@ -92,7 +98,7 @@ pub fn setup_ui_top(mut cmds: Commands, sprites: Res<AsciiSpriteSheet>) {
                 padding: UiRect::all(Val::Px(40.)),
                 width: Val::Percent(80.),
                 height: Val::Percent(100.),
-                align_items: AlignItems::Center,
+                align_items: AlignItems::Start,
                 justify_content: JustifyContent::SpaceAround,
                 ..default()
             },
@@ -151,6 +157,99 @@ pub fn setup_ui_bottom(mut cmds: Commands) {
             ]),
         ))
         .id();
+
+    let ui_guns = cmds
+        .spawn((
+            UiGunTypeRoot,
+            NodeBundle {
+                z_index: ZIndex::Global(z_index_offset),
+                // border_color: BorderColor(Color::WHITE),
+                style: Style { ..default() },
+                ..default()
+            },
+        ))
+        .with_children(|parent| {
+            let guns = [GunType::Pistol, GunType::Shotgun, GunType::Ar];
+
+            for gun in &guns {
+                match gun {
+                    GunType::Pistol => {
+                        parent
+                            .spawn((
+                                NodeBundle {
+                                    z_index: ZIndex::Global(z_index_offset),
+                                    // border_color: todo!(),
+                                    style: Style {
+                                        padding: UiRect::all(Val::Px(80.)),
+                                        ..default()
+                                    },
+                                    ..default()
+                                },
+                                UiGunPistol,
+                            ))
+                            .with_children(|gun_wrapper| {
+                                gun_wrapper.spawn(TextBundle::from_section(
+                                    "Pistol",
+                                    TextStyle {
+                                        font_size: 16.,
+                                        ..default()
+                                    },
+                                ));
+                            });
+                    }
+                    GunType::Shotgun => {
+                        parent
+                            .spawn((
+                                NodeBundle {
+                                    z_index: ZIndex::Global(z_index_offset),
+                                    // border_color: todo!(),
+                                    style: Style {
+                                        padding: UiRect::all(Val::Px(80.)),
+                                        ..default()
+                                    },
+                                    ..default()
+                                },
+                                UiGunShotgun,
+                            ))
+                            .with_children(|gun_wrapper| {
+                                gun_wrapper.spawn(TextBundle::from_section(
+                                    "Shotgun",
+                                    TextStyle {
+                                        font_size: 16.,
+                                        ..default()
+                                    },
+                                ));
+                            });
+                    }
+                    GunType::Ar => {
+                        parent
+                            .spawn((
+                                NodeBundle {
+                                    z_index: ZIndex::Global(z_index_offset),
+                                    // border_color: todo!(),
+                                    style: Style {
+                                        padding: UiRect::all(Val::Px(80.)),
+                                        ..default()
+                                    },
+                                    ..default()
+                                },
+                                UiGunAr,
+                            ))
+                            .with_children(|gun_wrapper| {
+                                gun_wrapper.spawn(TextBundle::from_section(
+                                    "AR",
+                                    TextStyle {
+                                        font_size: 16.,
+                                        ..default()
+                                    },
+                                ));
+                            });
+                    }
+                }
+            }
+        })
+        .id();
+
     let ui_wrapper_left = cmds
         .spawn((NodeBundle {
             // border_color: todo!(),
@@ -167,7 +266,7 @@ pub fn setup_ui_bottom(mut cmds: Commands) {
             },
             ..default()
         },))
-        // .add_child(player_name_text)
+        .add_child(ui_guns)
         .add_child(score_text)
         .id();
 
