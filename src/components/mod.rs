@@ -39,6 +39,9 @@ pub struct UiTextPlayerScore;
 pub struct UiGunTypeRoot;
 
 #[derive(Component)]
+pub struct UiGunText;
+
+#[derive(Component)]
 pub struct UiGunPistol;
 
 #[derive(Component)]
@@ -145,7 +148,7 @@ impl GunType {
     pub fn type_to_interval(&self) -> Duration {
         match self {
             GunType::Pistol => Duration::from_millis(600),
-            GunType::Shotgun => Duration::from_millis(750),
+            GunType::Shotgun => Duration::from_millis(1000),
             GunType::Ar => Duration::from_millis(100),
         }
     }

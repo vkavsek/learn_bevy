@@ -26,9 +26,102 @@ pub fn handle_ui_player_score(
 
 pub fn handle_ui_guns(
     player_q: Query<&GunType, With<Player>>,
-    ui_gun_root: Query<Entity, With<UiGunTypeRoot>>,
+    mut ui_gun_root: Query<&Children, With<UiGunTypeRoot>>,
+    mut ui_guns_set: ParamSet<(
+        Query<&mut Style, With<UiGunPistol>>,
+        Query<&mut Style, With<UiGunShotgun>>,
+        Query<&mut Style, With<UiGunAr>>,
+    )>,
+    mut text_q: Query<(&mut Text, &Parent), With<UiGunText>>,
+    bullet_timer: Res<BulletSpawnTimer>,
 ) {
-    todo!()
+    if let Ok(player_gun_type) = player_q.get_single() {
+        for gun_root_children in ui_gun_root.iter_mut() {
+            match player_gun_type {
+                GunType::Pistol => {
+                    let mut ui_pistol = ui_guns_set.p0();
+                    for gr_child in gun_root_children.iter() {
+                        if let Ok(mut style) = ui_pistol.get_mut(*gr_child) {
+                            for (mut text, _) in text_q
+                                .iter_mut()
+                                .filter(|(_, text_parent)| ***text_parent == *gr_child)
+                            {
+                                text.sections[0].value = {
+                                    let percent = bullet_timer.percent();
+                                    if percent == 1. {
+                                        "Pistol".into()
+                                    } else {
+                                        format!("{:.3}", percent)
+                                    }
+                                };
+                            }
+                            style.border = UiRect::all(Val::Px(1.));
+                        }
+                    }
+                    for mut style in ui_guns_set.p1().iter_mut() {
+                        style.border = UiRect::all(Val::Px(0.));
+                    }
+                    for mut style in ui_guns_set.p2().iter_mut() {
+                        style.border = UiRect::all(Val::Px(0.));
+                    }
+                }
+                GunType::Shotgun => {
+                    let mut ui_shotgun = ui_guns_set.p1();
+                    for gr_child in gun_root_children.iter() {
+                        if let Ok(mut style) = ui_shotgun.get_mut(*gr_child) {
+                            for (mut text, _) in text_q
+                                .iter_mut()
+                                .filter(|(_, text_parent)| ***text_parent == *gr_child)
+                            {
+                                text.sections[0].value = {
+                                    let percent = bullet_timer.percent();
+                                    if percent == 1. {
+                                        "Shotgun".into()
+                                    } else {
+                                        format!("{:.3}", percent)
+                                    }
+                                };
+                            }
+                            style.border = UiRect::all(Val::Px(1.));
+                        }
+                    }
+                    for mut style in ui_guns_set.p0().iter_mut() {
+                        style.border = UiRect::all(Val::Px(0.));
+                    }
+                    for mut style in ui_guns_set.p2().iter_mut() {
+                        style.border = UiRect::all(Val::Px(0.));
+                    }
+                }
+                GunType::Ar => {
+                    let mut ui_ar = ui_guns_set.p2();
+                    for gr_child in gun_root_children.iter() {
+                        if let Ok(mut style) = ui_ar.get_mut(*gr_child) {
+                            for (mut text, _) in text_q
+                                .iter_mut()
+                                .filter(|(_, text_parent)| ***text_parent == *gr_child)
+                            {
+                                text.sections[0].value = {
+                                    let percent = bullet_timer.percent();
+                                    if percent == 1. {
+                                        "AR".into()
+                                    } else {
+                                        format!("{:.3}", percent)
+                                    }
+                                };
+                            }
+                            style.border = UiRect::all(Val::Px(1.));
+                        }
+                    }
+                    for mut style in ui_guns_set.p0().iter_mut() {
+                        style.border = UiRect::all(Val::Px(0.));
+                    }
+                    for mut style in ui_guns_set.p1().iter_mut() {
+                        style.border = UiRect::all(Val::Px(0.));
+                    }
+                }
+            }
+        }
+    }
 }
 
 pub fn setup_ui_top(mut cmds: Commands) {
@@ -163,7 +256,6 @@ pub fn setup_ui_bottom(mut cmds: Commands) {
             UiGunTypeRoot,
             NodeBundle {
                 z_index: ZIndex::Global(z_index_offset),
-                // border_color: BorderColor(Color::WHITE),
                 style: Style { ..default() },
                 ..default()
             },
@@ -178,9 +270,9 @@ pub fn setup_ui_bottom(mut cmds: Commands) {
                             .spawn((
                                 NodeBundle {
                                     z_index: ZIndex::Global(z_index_offset),
-                                    // border_color: todo!(),
+                                    border_color: BorderColor(Color::YELLOW),
                                     style: Style {
-                                        padding: UiRect::all(Val::Px(80.)),
+                                        padding: UiRect::all(Val::Px(20.)),
                                         ..default()
                                     },
                                     ..default()
@@ -188,12 +280,15 @@ pub fn setup_ui_bottom(mut cmds: Commands) {
                                 UiGunPistol,
                             ))
                             .with_children(|gun_wrapper| {
-                                gun_wrapper.spawn(TextBundle::from_section(
-                                    "Pistol",
-                                    TextStyle {
-                                        font_size: 16.,
-                                        ..default()
-                                    },
+                                gun_wrapper.spawn((
+                                    UiGunText,
+                                    TextBundle::from_section(
+                                        "Pistol",
+                                        TextStyle {
+                                            font_size: 16.,
+                                            ..default()
+                                        },
+                                    ),
                                 ));
                             });
                     }
@@ -202,9 +297,9 @@ pub fn setup_ui_bottom(mut cmds: Commands) {
                             .spawn((
                                 NodeBundle {
                                     z_index: ZIndex::Global(z_index_offset),
-                                    // border_color: todo!(),
+                                    border_color: BorderColor(Color::YELLOW),
                                     style: Style {
-                                        padding: UiRect::all(Val::Px(80.)),
+                                        padding: UiRect::all(Val::Px(20.)),
                                         ..default()
                                     },
                                     ..default()
@@ -212,12 +307,15 @@ pub fn setup_ui_bottom(mut cmds: Commands) {
                                 UiGunShotgun,
                             ))
                             .with_children(|gun_wrapper| {
-                                gun_wrapper.spawn(TextBundle::from_section(
-                                    "Shotgun",
-                                    TextStyle {
-                                        font_size: 16.,
-                                        ..default()
-                                    },
+                                gun_wrapper.spawn((
+                                    UiGunText,
+                                    TextBundle::from_section(
+                                        "Shotgun",
+                                        TextStyle {
+                                            font_size: 16.,
+                                            ..default()
+                                        },
+                                    ),
                                 ));
                             });
                     }
@@ -226,9 +324,9 @@ pub fn setup_ui_bottom(mut cmds: Commands) {
                             .spawn((
                                 NodeBundle {
                                     z_index: ZIndex::Global(z_index_offset),
-                                    // border_color: todo!(),
+                                    border_color: BorderColor(Color::YELLOW),
                                     style: Style {
-                                        padding: UiRect::all(Val::Px(80.)),
+                                        padding: UiRect::all(Val::Px(20.)),
                                         ..default()
                                     },
                                     ..default()
@@ -236,12 +334,15 @@ pub fn setup_ui_bottom(mut cmds: Commands) {
                                 UiGunAr,
                             ))
                             .with_children(|gun_wrapper| {
-                                gun_wrapper.spawn(TextBundle::from_section(
-                                    "AR",
-                                    TextStyle {
-                                        font_size: 16.,
-                                        ..default()
-                                    },
+                                gun_wrapper.spawn((
+                                    UiGunText,
+                                    TextBundle::from_section(
+                                        "AR",
+                                        TextStyle {
+                                            font_size: 16.,
+                                            ..default()
+                                        },
+                                    ),
                                 ));
                             });
                     }

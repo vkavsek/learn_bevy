@@ -64,6 +64,7 @@ impl Plugin for MainLogicPlugin {
                     (
                         handle_ui_player_hp,
                         handle_ui_player_score,
+                        handle_ui_guns,
                         handle_despawn_event_recursive,
                         handle_player_gun_type,
                         // HEALTHBARS
