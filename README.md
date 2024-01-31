@@ -12,16 +12,14 @@
 - Different gun & bullet types - DONE
 - Enemy attacks - DONE
 - Score - DONE 
-- Particles on bullet hit?
-- Add score display.
-- Xp
-- Proper app exit event.
+- Add score display - DONE
 - Handle player death.
 - Add menu.
-- Pick-up guns/powerups.
+- Particles on bullet hit?
+- Xp
+- Pick-up guns/powerups?
 - Enter something (house, cave, etc.)
 - Create new space upon entering.
 - Procedural map generation?
 - Proper mini-map
 - Save game
-- UI
