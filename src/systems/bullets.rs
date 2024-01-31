@@ -4,22 +4,15 @@ use std::{f32, time::Duration};
 use crate::prelude::*;
 
 pub fn handle_bullet_timers(
-    mut bullet_q: Query<&mut BulletLifeTimer, With<Bullet>>,
+    mut bullet_q: Query<(&mut BulletLifeTimer, Entity), With<Bullet>>,
     mut shoot_timer: ResMut<BulletSpawnTimer>,
     time: Res<Time>,
-) {
-    shoot_timer.tick(time.delta());
-    for mut bull_life_timer in bullet_q.iter_mut() {
-        bull_life_timer.tick(time.delta());
-    }
-}
-
-pub fn despawn_bullet(
-    bullet_q: Query<(&BulletLifeTimer, Entity), With<Bullet>>,
     mut despawn_event: EventWriter<DespawnEventRecursive>,
 ) {
-    for (bullet_life_timer, bullet_ent) in bullet_q.iter() {
-        if bullet_life_timer.finished() {
+    shoot_timer.tick(time.delta());
+    for (mut bull_life_timer, bullet_ent) in bullet_q.iter_mut() {
+        bull_life_timer.tick(time.delta());
+        if bull_life_timer.finished() {
             despawn_event.send(DespawnEventRecursive(bullet_ent));
         }
     }
@@ -33,9 +26,9 @@ pub fn spawn_bullet(
     char_texture: Res<AsciiSpriteSheet>,
     mut bullet_timer: ResMut<BulletSpawnTimer>,
 ) {
-    let (player_pos, gun_type) = player_q.single();
-    let player_pos = player_pos.translation.truncate();
     if bullet_timer.finished() {
+        let (player_pos, gun_type) = player_q.single();
+        let player_pos = player_pos.translation.truncate();
         let window = window_q.single();
         let window_size = Vec2::new(window.width(), window.height());
 
