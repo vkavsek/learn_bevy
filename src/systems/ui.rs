@@ -26,97 +26,103 @@ pub fn handle_ui_player_score(
 
 pub fn handle_ui_guns(
     player_q: Query<&GunType, With<Player>>,
-    mut ui_gun_root: Query<&Children, With<UiGunTypeRoot>>,
     mut ui_guns_set: ParamSet<(
-        Query<&mut Style, With<UiGunPistol>>,
-        Query<&mut Style, With<UiGunShotgun>>,
-        Query<&mut Style, With<UiGunAr>>,
+        Query<(&mut Style, Entity), With<UiGunPistol>>,
+        Query<(&mut Style, Entity), With<UiGunShotgun>>,
+        Query<(&mut Style, Entity), With<UiGunAr>>,
     )>,
     mut text_q: Query<(&mut Text, &Parent), With<UiGunText>>,
     bullet_timer: Res<BulletSpawnTimer>,
 ) {
     if let Ok(player_gun_type) = player_q.get_single() {
-        for gun_root_children in ui_gun_root.iter_mut() {
-            match player_gun_type {
-                GunType::Pistol => {
-                    let mut ui_pistol = ui_guns_set.p0();
-                    for gr_child in gun_root_children.iter() {
-                        if let Ok(mut style) = ui_pistol.get_mut(*gr_child) {
-                            for (mut text, _) in text_q
-                                .iter_mut()
-                                .filter(|(_, text_parent)| ***text_parent == *gr_child)
-                            {
-                                text.sections[0].value = {
-                                    let percent = bullet_timer.percent();
-                                    if percent == 1. {
-                                        "Pistol".into()
-                                    } else {
-                                        format!("{:.3}", percent)
-                                    }
-                                };
+        match player_gun_type {
+            GunType::Pistol => {
+                let mut ui_pistol = ui_guns_set.p0();
+                let (mut style, ui_pistol_ent) = ui_pistol.single_mut();
+                style.border = UiRect::all(Val::Px(1.));
+
+                let mut ui_shotgun = ui_guns_set.p1();
+                let (mut style, ui_shotgun_ent) = ui_shotgun.single_mut();
+                style.border = UiRect::all(Val::Px(0.));
+
+                let mut ui_ar = ui_guns_set.p2();
+                let (mut style, ui_ar_ent) = ui_ar.single_mut();
+                style.border = UiRect::all(Val::Px(0.));
+
+                for (mut text, text_parent) in text_q.iter_mut() {
+                    if **text_parent == ui_pistol_ent {
+                        text.sections[0].value = {
+                            let percent = bullet_timer.percent();
+                            if percent == 1. {
+                                "Pistol".into()
+                            } else {
+                                format!("{:.3}", percent)
                             }
-                            style.border = UiRect::all(Val::Px(1.));
-                        }
-                    }
-                    for mut style in ui_guns_set.p1().iter_mut() {
-                        style.border = UiRect::all(Val::Px(0.));
-                    }
-                    for mut style in ui_guns_set.p2().iter_mut() {
-                        style.border = UiRect::all(Val::Px(0.));
+                        };
+                    } else if **text_parent == ui_shotgun_ent {
+                        text.sections[0].value = "Shotgun".into();
+                    } else if **text_parent == ui_ar_ent {
+                        text.sections[0].value = "AR".into();
                     }
                 }
-                GunType::Shotgun => {
-                    let mut ui_shotgun = ui_guns_set.p1();
-                    for gr_child in gun_root_children.iter() {
-                        if let Ok(mut style) = ui_shotgun.get_mut(*gr_child) {
-                            for (mut text, _) in text_q
-                                .iter_mut()
-                                .filter(|(_, text_parent)| ***text_parent == *gr_child)
-                            {
-                                text.sections[0].value = {
-                                    let percent = bullet_timer.percent();
-                                    if percent == 1. {
-                                        "Shotgun".into()
-                                    } else {
-                                        format!("{:.3}", percent)
-                                    }
-                                };
+            }
+            GunType::Shotgun => {
+                let mut ui_pistol = ui_guns_set.p0();
+                let (mut style, ui_pistol_ent) = ui_pistol.single_mut();
+                style.border = UiRect::all(Val::Px(0.));
+
+                let mut ui_shotgun = ui_guns_set.p1();
+                let (mut style, ui_shotgun_ent) = ui_shotgun.single_mut();
+                style.border = UiRect::all(Val::Px(1.));
+
+                let mut ui_ar = ui_guns_set.p2();
+                let (mut style, ui_ar_ent) = ui_ar.single_mut();
+                style.border = UiRect::all(Val::Px(0.));
+
+                for (mut text, text_parent) in text_q.iter_mut() {
+                    if **text_parent == ui_shotgun_ent {
+                        text.sections[0].value = {
+                            let percent = bullet_timer.percent();
+                            if percent == 1. {
+                                "Shotgun".into()
+                            } else {
+                                format!("{:.3}", percent)
                             }
-                            style.border = UiRect::all(Val::Px(1.));
-                        }
-                    }
-                    for mut style in ui_guns_set.p0().iter_mut() {
-                        style.border = UiRect::all(Val::Px(0.));
-                    }
-                    for mut style in ui_guns_set.p2().iter_mut() {
-                        style.border = UiRect::all(Val::Px(0.));
+                        };
+                    } else if **text_parent == ui_pistol_ent {
+                        text.sections[0].value = "Pistol".into();
+                    } else if **text_parent == ui_ar_ent {
+                        text.sections[0].value = "AR".into();
                     }
                 }
-                GunType::Ar => {
-                    let mut ui_ar = ui_guns_set.p2();
-                    for gr_child in gun_root_children.iter() {
-                        if let Ok(mut style) = ui_ar.get_mut(*gr_child) {
-                            for (mut text, _) in text_q
-                                .iter_mut()
-                                .filter(|(_, text_parent)| ***text_parent == *gr_child)
-                            {
-                                text.sections[0].value = {
-                                    let percent = bullet_timer.percent();
-                                    if percent == 1. {
-                                        "AR".into()
-                                    } else {
-                                        format!("{:.3}", percent)
-                                    }
-                                };
+            }
+            GunType::Ar => {
+                let mut ui_pistol = ui_guns_set.p0();
+                let (mut style, ui_pistol_ent) = ui_pistol.single_mut();
+                style.border = UiRect::all(Val::Px(0.));
+
+                let mut ui_shotgun = ui_guns_set.p1();
+                let (mut style, ui_shotgun_ent) = ui_shotgun.single_mut();
+                style.border = UiRect::all(Val::Px(0.));
+
+                let mut ui_ar = ui_guns_set.p2();
+                let (mut style, ui_ar_ent) = ui_ar.single_mut();
+                style.border = UiRect::all(Val::Px(1.));
+
+                for (mut text, text_parent) in text_q.iter_mut() {
+                    if **text_parent == ui_ar_ent {
+                        text.sections[0].value = {
+                            let percent = bullet_timer.percent();
+                            if percent == 1. {
+                                "AR".into()
+                            } else {
+                                format!("{:.3}", percent)
                             }
-                            style.border = UiRect::all(Val::Px(1.));
-                        }
-                    }
-                    for mut style in ui_guns_set.p0().iter_mut() {
-                        style.border = UiRect::all(Val::Px(0.));
-                    }
-                    for mut style in ui_guns_set.p1().iter_mut() {
-                        style.border = UiRect::all(Val::Px(0.));
+                        };
+                    } else if **text_parent == ui_shotgun_ent {
+                        text.sections[0].value = "Shotgun".into();
+                    } else if **text_parent == ui_pistol_ent {
+                        text.sections[0].value = "Pistol".into();
                     }
                 }
             }
@@ -252,14 +258,11 @@ pub fn setup_ui_bottom(mut cmds: Commands) {
         .id();
 
     let ui_guns = cmds
-        .spawn((
-            UiGunTypeRoot,
-            NodeBundle {
-                z_index: ZIndex::Global(z_index_offset),
-                style: Style { ..default() },
-                ..default()
-            },
-        ))
+        .spawn((NodeBundle {
+            z_index: ZIndex::Global(z_index_offset),
+            style: Style { ..default() },
+            ..default()
+        },))
         .with_children(|parent| {
             let guns = [GunType::Pistol, GunType::Shotgun, GunType::Ar];
 

@@ -36,9 +36,6 @@ pub struct UiTextPlayerHp;
 pub struct UiTextPlayerScore;
 
 #[derive(Component)]
-pub struct UiGunTypeRoot;
-
-#[derive(Component)]
 pub struct UiGunText;
 
 #[derive(Component)]
