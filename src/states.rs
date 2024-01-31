@@ -1,9 +1,12 @@
 use crate::prelude::*;
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, States)]
-pub enum SetupState {
+pub enum AppState {
+    // MainMenu,
     #[default]
     Build,
     Setup,
-    Ready,
+    Playing,
+    Paused,
+    GameOver,
 }

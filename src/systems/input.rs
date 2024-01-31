@@ -1,6 +1,27 @@
 use crate::prelude::*;
 
-/// TODO: Improve input handling
+pub fn pause_game(
+    keycode_input: Res<Input<KeyCode>>,
+    current_state: Res<State<AppState>>,
+    mut rapier_configuration: ResMut<RapierConfiguration>,
+    mut next_state: ResMut<NextState<AppState>>,
+) {
+    // ——————> PAUSE GAME
+    if keycode_input.just_pressed(KeyCode::P) {
+        match **current_state {
+            AppState::Playing => {
+                next_state.set(AppState::Paused);
+                rapier_configuration.physics_pipeline_active = false;
+            }
+            AppState::Paused => {
+                next_state.set(AppState::Playing);
+                rapier_configuration.physics_pipeline_active = true;
+            }
+            _ => (),
+        }
+    }
+}
+
 pub fn handle_kbd_inputs(
     keycode_input: Res<Input<KeyCode>>,
     mut player_query: Query<(&mut Velocity, &mut GunType), With<Player>>,
@@ -9,13 +30,13 @@ pub fn handle_kbd_inputs(
     let (mut vel, mut gun_type) = player_query.single_mut();
 
     // ——————> GUN TYPE
-    if keycode_input.pressed(KeyCode::Key1) {
+    if keycode_input.pressed(KeyCode::Key1) && !matches!(*gun_type, GunType::Pistol) {
         *gun_type = GunType::Pistol;
     }
-    if keycode_input.pressed(KeyCode::Key2) {
+    if keycode_input.pressed(KeyCode::Key2) && !matches!(*gun_type, GunType::Shotgun) {
         *gun_type = GunType::Shotgun;
     }
-    if keycode_input.pressed(KeyCode::Key3) {
+    if keycode_input.pressed(KeyCode::Key3) && !matches!(*gun_type, GunType::Ar) {
         *gun_type = GunType::Ar;
     }
 

@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 pub fn setup_player(
     mut cmds: Commands,
-    mut next_state: ResMut<NextState<SetupState>>,
+    mut next_state: ResMut<NextState<AppState>>,
     char_texture: Res<AsciiSpriteSheet>,
 ) {
     let player_name = PLAYER_NAME;
@@ -26,7 +26,7 @@ pub fn setup_player(
     })
     .add_child(healthbar);
 
-    next_state.set(SetupState::Ready)
+    next_state.set(AppState::Playing)
 }
 
 pub fn handle_player_gun_type(

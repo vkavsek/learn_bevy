@@ -25,7 +25,7 @@ impl Plugin for EnemyLogicPlugin {
                     handle_enemy_timers,
                     (change_enemy_color, handle_enemy_player_coll).after(handle_enemy_timers),
                 )
-                    .run_if(in_state(SetupState::Ready)),
+                    .run_if(in_state(AppState::Playing)),
             );
     }
 }
@@ -39,11 +39,11 @@ impl Plugin for MainLogicPlugin {
             .add_event::<DespawnEventRecursive>()
             .add_systems(PreStartup, load_spritesheet_texture)
             .add_systems(
-                OnEnter(SetupState::Build),
+                OnEnter(AppState::Build),
                 (generate_tilemap, build_outside_walls),
             )
             .add_systems(
-                OnEnter(SetupState::Setup),
+                OnEnter(AppState::Setup),
                 (
                     setup_player,
                     setup_enemies,
@@ -55,12 +55,13 @@ impl Plugin for MainLogicPlugin {
             )
             .add_systems(
                 FixedUpdate,
-                handle_kbd_inputs.run_if(in_state(SetupState::Ready)),
+                handle_kbd_inputs.run_if(in_state(AppState::Playing)),
             )
             .add_systems(
                 Update,
                 (
                     bevy::window::close_on_esc,
+                    pause_game,
                     (
                         handle_ui_player_hp,
                         handle_ui_player_score,
@@ -70,16 +71,11 @@ impl Plugin for MainLogicPlugin {
                         // HEALTHBARS
                         (handle_healthbars, toggle_healthbar_vis),
                         // BULLETS
-                        (
-                            spawn_bullet,
-                            despawn_bullet,
-                            handle_bullet_timers,
-                            handle_bullet_coll,
-                        ),
+                        (spawn_bullet, handle_bullet_timers, handle_bullet_coll),
                         // MOVEMENT
                         (dynamic_damping, cam_movement, move_cursor).after(handle_kbd_inputs),
                     )
-                        .run_if(in_state(SetupState::Ready)),
+                        .run_if(in_state(AppState::Playing)),
                 ),
             );
     }
@@ -95,7 +91,7 @@ impl Plugin for DebugPlugin {
             FrameTimeDiagnosticsPlugin,
         ))
         .add_systems(
-            OnEnter(SetupState::Setup),
+            OnEnter(AppState::Setup),
             (setup_fps_counter, setup_debug_text),
         )
         .add_systems(

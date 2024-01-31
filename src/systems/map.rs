@@ -22,7 +22,7 @@ fn generate_noise_map(commands: &mut Commands) -> NoiseMap {
 pub fn generate_tilemap(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    mut next_state: ResMut<NextState<SetupState>>,
+    mut next_state: ResMut<NextState<AppState>>,
 ) {
     let noise_map = generate_noise_map(&mut commands);
     let map_size = MAP_SIZE;
@@ -75,7 +75,7 @@ pub fn generate_tilemap(
         ))
         .push_children(&collected_tiles);
 
-    next_state.set(SetupState::Setup)
+    next_state.set(AppState::Setup)
 }
 
 fn get_color(val: f64) -> Color {

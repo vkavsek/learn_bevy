@@ -69,7 +69,7 @@ pub struct GamePlugin;
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(ClearColor(BG_COLOR))
-            .add_state::<SetupState>()
+            .add_state::<AppState>()
             .add_plugins((
                 //
                 DebugPlugin,
