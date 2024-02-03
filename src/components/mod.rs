@@ -225,3 +225,13 @@ impl WallLocation {
 
 #[derive(Component)]
 pub struct GameCursor;
+
+// Tags for despawning based on where the entity appears
+#[derive(Component)]
+pub struct OnGameScreen;
+
+#[derive(Component)]
+pub struct OnMenuScreen;
+
+#[derive(Component)]
+pub struct OnPauseScreen;

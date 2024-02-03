@@ -4,6 +4,7 @@ use crate::prelude::*;
 
 #[derive(Bundle)]
 pub struct PlayerBundle {
+    pub _gs: OnGameScreen,
     pub player: Player,
     pub spritesheet: SpriteSheetBundle,
     pub health: Health,
@@ -29,6 +30,7 @@ pub struct PlayerBundle {
 impl Default for PlayerBundle {
     fn default() -> Self {
         Self {
+            _gs: OnGameScreen,
             player: Player::init("NoName"),
             health: Health::init(PLAYER_HEALTH, PLAYER_HEALTH),
             size: Size(Vec2::splat(PLAYER_SIZE)),
@@ -64,6 +66,7 @@ impl Default for PlayerBundle {
 
 #[derive(Bundle)]
 pub struct BulletBundle {
+    pub _gs: OnGameScreen,
     pub _b: Bullet,
     pub sprite: SpriteSheetBundle,
     pub name: Name,
@@ -126,6 +129,7 @@ impl BulletBundle {
 impl Default for BulletBundle {
     fn default() -> Self {
         Self {
+            _gs: OnGameScreen,
             sprite: SpriteSheetBundle { ..default() },
             _b: Bullet,
             bullet_life: BulletLifeTimer::new(BULLET_LIFE),
@@ -160,6 +164,7 @@ impl Default for BulletBundle {
 
 #[derive(Bundle)]
 pub struct EnemyBundle {
+    pub _gs: OnGameScreen,
     pub _e: Enemy,
     pub enemy_type: EnemyType,
     pub objective: EnemyObjective,
@@ -184,6 +189,7 @@ pub struct EnemyBundle {
 impl Default for EnemyBundle {
     fn default() -> Self {
         Self {
+            _gs: OnGameScreen,
             _e: Enemy,
             enemy_type: EnemyType::default(),
             objective: EnemyObjective::default(),
@@ -216,6 +222,7 @@ impl Default for EnemyBundle {
 
 #[derive(Bundle)]
 pub struct WallBundle {
+    pub _gs: OnGameScreen,
     pub _w: Wall,
     pub size: Size,
     pub sprite: SpriteBundle,
@@ -228,6 +235,7 @@ impl WallBundle {
     pub fn new(location: WallLocation) -> Self {
         let size = location.size();
         WallBundle {
+            _gs: OnGameScreen,
             _w: Wall,
             size: Size(size),
             sprite: SpriteBundle {
@@ -284,6 +292,7 @@ impl Default for MainCamBundle {
 
 #[derive(Bundle)]
 pub struct MinimapCamBundle {
+    pub _gs: OnGameScreen,
     pub camera_bundle: Camera2dBundle,
     pub _c: MinimapCam,
     pub name: Name,
@@ -293,6 +302,7 @@ impl Default for MinimapCamBundle {
     fn default() -> Self {
         let (size_x, size_y) = (300, 200);
         Self {
+            _gs: OnGameScreen,
             camera_bundle: Camera2dBundle {
                 camera: Camera {
                     viewport: Some(Viewport {
@@ -321,12 +331,14 @@ impl Default for MinimapCamBundle {
 
 #[derive(Bundle)]
 pub struct HealthBarBundle {
+    pub _gs: OnGameScreen,
     health_sprite: SpriteBundle,
     _hb: HealthBar,
 }
 impl HealthBarBundle {
     pub fn new(color: Color, size: Vec2) -> Self {
         HealthBarBundle {
+            _gs: OnGameScreen,
             health_sprite: SpriteBundle {
                 sprite: Sprite {
                     color,

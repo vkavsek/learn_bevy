@@ -135,6 +135,7 @@ pub fn setup_ui_top(mut cmds: Commands) {
     let ui_root = cmds
         .spawn((
             UiRootTop,
+            OnGameScreen,
             NodeBundle {
                 background_color: BackgroundColor(UI_BG_COLOR),
                 z_index: ZIndex::Global(z_index_offset),
@@ -215,6 +216,7 @@ pub fn setup_ui_bottom(mut cmds: Commands) {
     let ui_root = cmds
         .spawn((
             UiRootBot,
+            OnGameScreen,
             NodeBundle {
                 z_index: ZIndex::Global(z_index_offset),
                 background_color: BackgroundColor(UI_BG_COLOR),

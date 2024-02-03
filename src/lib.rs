@@ -5,6 +5,7 @@ pub mod prelude {
     pub use crate::{
         components::{bundles::*, *},
         events::*,
+        main_menu::*,
         plugins::*,
         resources::*,
         states::*,
@@ -57,6 +58,7 @@ pub mod prelude {
 
 mod components;
 mod events;
+mod main_menu;
 mod plugins;
 mod resources;
 mod states;
